@@ -340,14 +340,18 @@ body {
 }
 
 .iframe-modulo {
-  width: 100%;
-  height: calc(100vh - 88px);
-  border: none;
-  display: block;
-  background: transparent;
+  width: 100% !important;
+  height: calc(100vh - 88px) !important;
+  border: none !important;
+  display: block !important;
+  background: transparent !important;
 }
 
-.conteudo:has(.iframe-modulo) {
-  padding: 0;
-  overflow: hidden;
+#conteudo {
+  padding: 0 !important;
+}
+
+#conteudo iframe {
+  width: 100% !important;
+  height: calc(100vh - 88px) !important;
 }
