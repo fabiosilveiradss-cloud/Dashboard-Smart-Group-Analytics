@@ -1240,3 +1240,25 @@ select:hover{
   padding: 0;
   overflow: hidden;
 }
+
+html,
+body {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+body {
+  transform: none !important;
+  zoom: 1 !important;
+}
+
+.container,
+.dashboard,
+.main,
+.content,
+.wrapper {
+  width: 100% !important;
+  max-width: none !important;
+}
