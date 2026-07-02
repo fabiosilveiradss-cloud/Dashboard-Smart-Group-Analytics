@@ -1302,18 +1302,35 @@ body {
   display: block;
 }
 
-.btn-voltar-portal {
-  position: fixed;
-  top: 18px;
-  right: 18px;
-  z-index: 999999;
-  width: 42px;
-  height: 42px;
-  border: none;
-  border-radius: 50%;
-  background: #0d6efd;
-  color: #fff;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
+#btnVoltarPortal{
+    position: fixed;
+    top: 20px;
+    right: 25px;
+
+    width: 50px;
+    height: 50px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: linear-gradient(135deg,#2f89ff,#0d6efd);
+    color:#fff;
+
+    font-size:24px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.35);
+
+    z-index:999999;
+
+    transition:.25s;
+}
+
+#btnVoltarPortal:hover{
+    transform:translateY(-2px) scale(1.08);
 }
