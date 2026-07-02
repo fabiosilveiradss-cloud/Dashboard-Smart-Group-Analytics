@@ -1262,3 +1262,23 @@ body {
   width: 100% !important;
   max-width: none !important;
 }
+
+.container {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+}
+
+.cards,
+.graficos,
+.produtos,
+.barra-filtros,
+.topo {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+body {
+  width: 100vw !important;
+  overflow-x: hidden !important;
+}
