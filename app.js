@@ -158,4 +158,21 @@ function alternarTelaCheia(){
 
     document.body.classList.toggle("modo-fullscreen");
 
+    const icone =
+        document.getElementById("iconeFullscreen");
+
+    if(!icone) return;
+
+    if(document.body.classList.contains("modo-fullscreen")){
+
+        icone.classList.remove("fa-expand");
+        icone.classList.add("fa-xmark");
+
+    } else {
+
+        icone.classList.remove("fa-xmark");
+        icone.classList.add("fa-expand");
+
+    }
+
 }
