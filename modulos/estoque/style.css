@@ -1235,3 +1235,8 @@ select:hover{
   display: block;
   background: transparent;
 }
+
+.conteudo:has(.iframe-modulo) {
+  padding: 0;
+  overflow: hidden;
+}
