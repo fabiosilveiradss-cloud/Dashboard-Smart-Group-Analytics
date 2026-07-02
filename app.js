@@ -34,55 +34,37 @@ function abrirModulo(modulo, elemento){
 
         break;
 
-        case "estoque":
+      case "estoque":
 
-            titulo.innerText="Estoque Comercial";
+    titulo.innerText = "Estoque Comercial";
 
-            subtitulo.innerText=
-            "Controle inteligente dos estoques.";
+    subtitulo.innerText =
+    "Controle inteligente dos estoques.";
 
-            conteudo.innerHTML=`
-            
-            <div class="loading-dashboard">
+    conteudo.innerHTML = `
+        <iframe 
+            src="modulos/estoque/index.html"
+            class="iframe-modulo">
+        </iframe>
+    `;
 
-                <i class="fa-solid fa-boxes-stacked"></i>
+break;
 
-                <h2>Dashboard de Estoque</h2>
+     case "vendas":
 
-                <p>
-                Em breve seu dashboard será carregado aqui.
-                </p>
+    titulo.innerText = "Dashboard Comercial";
 
-            </div>
+    subtitulo.innerText =
+    "Faturamento, clientes e produtos.";
 
-            `;
+    conteudo.innerHTML = `
+        <iframe 
+            src="modulos/vendas/index.html"
+            class="iframe-modulo">
+        </iframe>
+    `;
 
-        break;
-
-        case "vendas":
-
-            titulo.innerText="Dashboard Comercial";
-
-            subtitulo.innerText=
-            "Faturamento, clientes e produtos.";
-
-            conteudo.innerHTML=`
-            
-            <div class="loading-dashboard">
-
-                <i class="fa-solid fa-chart-line"></i>
-
-                <h2>Dashboard de Vendas</h2>
-
-                <p>
-                Em breve seu dashboard será carregado aqui.
-                </p>
-
-            </div>
-
-            `;
-
-        break;
+break;
 
         case "usuarios":
 
