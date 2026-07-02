@@ -1227,3 +1227,11 @@ select:hover{
     font-size:16px;
     color:#fff;
 }
+
+.iframe-modulo {
+  width: 100%;
+  height: calc(100vh - 88px);
+  border: none;
+  display: block;
+  background: transparent;
+}
