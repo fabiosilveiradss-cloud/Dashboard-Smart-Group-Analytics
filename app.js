@@ -176,3 +176,48 @@ function alternarTelaCheia(){
     }
 
 }
+
+function voltarPortal(){
+
+    document.getElementById("tituloPagina").innerText="Dashboard";
+
+    document.getElementById("subtituloPagina").innerText=
+    "Visão geral do Smart Group Analytics";
+
+    document.getElementById("conteudo").innerHTML = `
+        <div class="home">
+
+            <div class="boas-vindas">
+                <h2>Olá, Fabio! 👋</h2>
+                <p>Bem-vindo ao Smart Group Analytics.</p>
+            </div>
+
+            <div class="cards-home">
+
+                <div class="card-home">
+                    <i class="fa-solid fa-cube"></i>
+                    <h3>Estoque Comercial</h3>
+                    <p>Acompanhe saldos, locais e famílias de materiais.</p>
+                </div>
+
+                <div class="card-home">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h3>Vendas</h3>
+                    <p>Visualize faturamento, clientes e produtos vendidos.</p>
+                </div>
+
+                <div class="card-home">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h3>Controle de Acesso</h3>
+                    <p>Portal preparado para permissões por usuário.</p>
+                </div>
+
+            </div>
+
+            <img class="marca-dagua" src="logo.png">
+        </div>
+    `;
+
+    document.querySelectorAll(".menu a").forEach(a=>a.classList.remove("active"));
+    document.querySelector(".menu a").classList.add("active");
+}
