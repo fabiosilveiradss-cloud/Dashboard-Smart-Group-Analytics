@@ -1301,3 +1301,19 @@ body {
 .modo-fullscreen .btn-sair-fullscreen {
   display: block;
 }
+
+.btn-voltar-portal {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 999999;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #0d6efd;
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
