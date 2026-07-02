@@ -1282,3 +1282,22 @@ body {
   width: 100vw !important;
   overflow-x: hidden !important;
 }
+
+.btn-sair-fullscreen {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 99999;
+  background: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: none;
+}
+
+.modo-fullscreen .btn-sair-fullscreen {
+  display: block;
+}
