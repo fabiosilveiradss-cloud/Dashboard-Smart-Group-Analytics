@@ -1,3 +1,255 @@
-<h1 style="color:white;background:#071633;padding:40px;">
-Dashboard de Estoque será carregado aqui
-</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard Estoque Comercial</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- CABEÇALHO -->
+
+    <header class="topo">
+
+        <div class="logo">
+
+            <img src="imagens/logo.png.jpg" alt="Smart Group">
+
+        </div>
+
+        <div class="titulo">
+
+            <h1>Dashboard - Estoque Comercial</h1>
+
+            <span>Estoque Comercial em Tempo Real</span>
+
+        </div>
+
+        <div class="atualizacao">
+
+            <i class="fa-regular fa-calendar"></i>
+
+            <span id="ultimaAtualizacao">Última atualização --</span>
+
+        </div>
+
+    </header>
+
+    <!-- FILTROS -->
+
+    <section class="barra-filtros">
+
+        <div class="upload">
+
+            <input
+                type="file"
+                id="arquivoExcel"
+                accept=".xlsx,.xls">
+
+        </div>
+
+        <div class="pesquisa">
+
+           
+        </div>
+
+        <select id="filtroEmpresa">
+
+            <option value="">Todas Empresas</option>
+
+        </select>
+
+        <select id="filtroLocal">
+
+            <option value="">Todos Locais</option>
+
+        </select>
+
+    </section>
+
+    <!-- CARDS -->
+
+    <section class="cards">
+
+        <div class="card">
+
+            <h3>📦 Produtos</h3>
+
+            <span id="totalProdutos">0</span>
+
+        </div>
+
+        <div class="card">
+
+            <h3>📏 Quantidade Total</h3>
+
+            <span id="quantidadeTotal">0</span>
+
+        </div>
+
+        <div class="card">
+
+    <h3>🏢 Empresas</h3>
+
+    <span id="totalEmpresas">0</span>
+
+</div>
+
+<div class="card">
+
+    <h3>📍 Locais</h3>
+
+    <span id="totalLocais">0</span>
+
+</div>
+
+    </section>
+
+    <!-- GRÁFICOS -->
+
+    <section class="graficos">
+
+        <!-- LOCAL -->
+
+        <div class="card-grafico">
+
+            <div class="titulo-card">
+
+                📍 Estoque por Local
+
+            </div>
+
+            <canvas id="graficoLocais"></canvas>
+
+            <div id="legendaLocais"></div>
+
+        </div>
+
+        <!-- FAMÍLIA -->
+
+        <div class="card-grafico">
+
+            <div class="titulo-card">
+
+                📊 Estoque por Família de Material
+
+            </div>
+
+            <button id="limparFamilia" class="btn-limpar">
+    Limpar filtro
+</button>
+
+<div class="grafico-familia-container">
+
+<div id="rankingFamilias" class="ranking-familias"></div>
+
+</div>
+
+    </section>
+
+    <!-- TABELA -->
+
+    <section class="produtos">
+
+        <div class="titulo-produtos">
+
+            <h2>📦 Produtos</h2>
+
+<div class="barra-pesquisa-tabela">
+
+    <input
+        type="text"
+        id="pesquisaProduto"
+        placeholder="Pesquisar código ou descrição...">
+
+</div>
+
+
+            <span id="familiaSelecionada"></span>
+
+        </div>
+
+   <div class="tabela-scroll">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th width="50"></th>
+
+                <th>Código</th>
+
+                <th>Produto</th>
+
+                <th>Saldo Total</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="tabelaProdutos">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script src="js/util.js"></script>
+<script src="js/processamento.js"></script>
+
+
+
+<script src="js/cards.js"></script>
+<script src="js/graficoLocal.js"></script>
+
+<script src="js/agruparProdutos.js"></script>
+
+<script src="js/graficoFamilia.js"></script>
+<script src="js/tabela.js"></script>
+<script src="js/filtros.js"></script>
+<script src="js/excel.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+function atualizarUltimaAtualizacao() {
+    const agora = new Date();
+
+    const data = agora.toLocaleDateString("pt-BR");
+    const hora = agora.toLocaleTimeString("pt-BR");
+
+    document.getElementById("ultimaAtualizacao").textContent =
+        `Última atualização ${data} às ${hora}`;
+}
+
+document.addEventListener("DOMContentLoaded", atualizarUltimaAtualizacao);
+
+document.getElementById("arquivoExcel").addEventListener("change", function () {
+    atualizarUltimaAtualizacao();
+});
+</script>
+
+
+</body>
+
+</html>
