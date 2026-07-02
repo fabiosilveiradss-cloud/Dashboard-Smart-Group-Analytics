@@ -339,10 +339,15 @@ body {
   min-height: calc(100vh - 160px);
 }
 
-  .iframe-modulo {
+.iframe-modulo {
   width: 100%;
   height: calc(100vh - 88px);
   border: none;
-  border-radius: 0;
+  display: block;
   background: transparent;
+}
+
+.conteudo:has(.iframe-modulo) {
+  padding: 0;
+  overflow: hidden;
 }
