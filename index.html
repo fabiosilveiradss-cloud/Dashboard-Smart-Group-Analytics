@@ -1,1 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Group Analytics</title>
 
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  <aside class="sidebar">
+    <div class="logo-box">
+      <img src="logo.png" alt="Smart Group">
+      <div>
+        <h2>SMART GROUP</h2>
+        <span>ANALYTICS</span>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a class="active" onclick="abrirModulo('dashboard', this)">
+        <i class="fa-solid fa-house"></i>
+        Dashboard
+      </a>
+
+      <a onclick="abrirModulo('estoque', this)">
+        <i class="fa-solid fa-cube"></i>
+        Estoque Comercial
+      </a>
+
+      <a onclick="abrirModulo('vendas', this)">
+        <i class="fa-solid fa-chart-line"></i>
+        Vendas
+      </a>
+    </nav>
+
+    <div class="admin-title">ADMINISTRAÇÃO</div>
+
+    <nav class="menu">
+      <a onclick="abrirModulo('usuarios', this)">
+        <i class="fa-solid fa-user"></i>
+        Usuários
+      </a>
+
+      <a onclick="abrirModulo('permissoes', this)">
+        <i class="fa-solid fa-shield-halved"></i>
+        Perfis e Permissões
+      </a>
+
+      <a onclick="abrirModulo('logs', this)">
+        <i class="fa-solid fa-file-lines"></i>
+        Logs de Acesso
+      </a>
+
+      <a onclick="abrirModulo('configuracoes', this)">
+        <i class="fa-solid fa-gear"></i>
+        Configurações
+      </a>
+    </nav>
+
+    <div class="versao">
+      SMART GROUP BI<br>
+      <small>Versão 1.0.0</small>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="titulo-area">
+        <button class="menu-btn">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div>
+          <h1 id="tituloPagina">Dashboard</h1>
+          <p id="subtituloPagina">Visão geral do seu negócio em tempo real</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="search-box">
+          <input type="text" placeholder="Buscar por módulo, relatório, cliente...">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+
+        <button class="icon-btn">
+          <i class="fa-regular fa-bell"></i>
+          <span>3</span>
+        </button>
+
+        <button class="icon-btn" onclick="alternarTelaCheia()">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+
+        <div class="user-box">
+          <div class="avatar">F</div>
+          <div>
+            <strong>Fabio Silveira</strong>
+            <small>Administrador</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="conteudo" class="conteudo">
+      <div class="home">
+        <div class="boas-vindas">
+          <h2>Olá, Fabio! 👋</h2>
+          <p>Bem-vindo ao Smart Group Analytics.</p>
+        </div>
+
+        <div class="cards-home">
+          <div class="card-home">
+            <i class="fa-solid fa-cube"></i>
+            <h3>Estoque Comercial</h3>
+            <p>Acompanhe saldos, locais e famílias de materiais.</p>
+          </div>
+
+          <div class="card-home">
+            <i class="fa-solid fa-chart-line"></i>
+            <h3>Vendas</h3>
+            <p>Visualize faturamento, clientes e produtos vendidos.</p>
+          </div>
+
+          <div class="card-home">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3>Controle de Acesso</h3>
+            <p>Portal preparado para permissões por usuário.</p>
+          </div>
+        </div>
+
+        <img class="marca-dagua" src="logo.png" alt="Smart Group">
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
