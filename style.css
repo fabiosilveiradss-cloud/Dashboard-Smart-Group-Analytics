@@ -343,3 +343,28 @@ body {
     right: 20px;
   }
 }
+
+.modo-fullscreen .topbar {
+  display: flex !important;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 64px;
+  background: transparent;
+  z-index: 999999;
+}
+
+.modo-fullscreen .titulo-area,
+.modo-fullscreen .search-box,
+.modo-fullscreen .user-box,
+.modo-fullscreen .icon-btn:first-of-type {
+  display: none !important;
+}
+
+.modo-fullscreen .top-actions {
+  display: flex !important;
+}
+
+.modo-fullscreen #btnFullscreen {
+  display: flex !important;
+}
