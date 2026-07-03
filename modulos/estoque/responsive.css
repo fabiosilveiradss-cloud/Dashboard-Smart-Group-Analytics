@@ -87,4 +87,34 @@
   table {
     min-width: 620px !important;
   }
+
+  .produtos table {
+  min-width: 100% !important;
+  table-layout: fixed !important;
+}
+
+.produtos th:nth-child(1),
+.produtos td:nth-child(1) {
+  width: 35px !important;
+}
+
+.produtos th:nth-child(2),
+.produtos td:nth-child(2) {
+  width: 65px !important;
+}
+
+.produtos th:nth-child(3),
+.produtos td:nth-child(3) {
+  width: auto !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  text-align: left !important;
+}
+
+.produtos th:nth-child(4),
+.produtos td:nth-child(4) {
+  width: 80px !important;
+  text-align: center !important;
+}
+  
 }
