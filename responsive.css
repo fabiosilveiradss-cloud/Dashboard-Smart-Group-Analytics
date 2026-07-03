@@ -127,4 +127,14 @@
     left: 18px;
   }
 
+   body.menu-aberto-mobile .main {
+  transform: translateX(210px);
+  transition: .3s;
+}
+
+.main {
+  transition: .3s;
+}
+   
+
 }
