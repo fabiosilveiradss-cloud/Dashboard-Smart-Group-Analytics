@@ -224,4 +224,5 @@ function voltarPortal(){
 
 document.querySelector(".menu-btn")?.addEventListener("click", () => {
     document.querySelector(".sidebar").classList.toggle("aberto");
+    document.body.classList.toggle("menu-aberto-mobile");
 });
