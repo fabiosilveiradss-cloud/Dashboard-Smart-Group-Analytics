@@ -221,3 +221,7 @@ function voltarPortal(){
     document.querySelectorAll(".menu a").forEach(a=>a.classList.remove("active"));
     document.querySelector(".menu a").classList.add("active");
 }
+
+document.querySelector(".menu-btn")?.addEventListener("click", () => {
+    document.querySelector(".sidebar").classList.toggle("aberto");
+});
