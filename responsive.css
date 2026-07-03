@@ -30,10 +30,16 @@
     display: block;
   }
 
- .sidebar {
-  position: fixed;
-  width: 210px;
-  left: -210px;
+  .sidebar {
+    position: fixed;
+    width: 210px;
+    left: -210px;
+    top: 0;
+    bottom: 0;
+    z-index: 10002;
+    transition: .3s;
+    padding: 22px 16px;
+  }
 
   .sidebar.aberto {
     left: 0;
@@ -45,10 +51,18 @@
   }
 
   .topbar {
+    position: relative;
+    z-index: 10001;
     height: auto;
     min-height: 76px;
     padding: 14px;
     gap: 12px;
+  }
+
+  .menu-btn {
+    display: flex !important;
+    position: relative;
+    z-index: 10003;
   }
 
   .titulo-area h1 {
@@ -84,9 +98,32 @@
   .iframe-modulo {
     height: calc(100vh - 76px) !important;
   }
-}
-    .logo-box h2 {
-  font-size: 16px;
-}
-    
+
+  .logo-box img {
+    width: 40px;
+  }
+
+  .logo-box h2 {
+    font-size: 16px;
+  }
+
+  .logo-box span {
+    font-size: 12px;
+  }
+
+  .menu a {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .admin-title {
+    font-size: 11px;
+    margin: 22px 0 10px;
+  }
+
+  .versao {
+    font-size: 11px;
+    left: 18px;
+  }
+
 }
