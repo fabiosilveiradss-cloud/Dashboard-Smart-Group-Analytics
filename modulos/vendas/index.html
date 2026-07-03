@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Vendas</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="topo">
+        <img src="../../logo.png" class="logo">
+        <div>
+            <h1>Dashboard - Vendas</h1>
+            <p>Faturamento, clientes e produtos vendidos.</p>
+        </div>
+    </div>
+
+    <div class="upload">
+        <input type="file" id="csvFile" accept=".csv,.xlsx,.xls">
+
+        <div class="filters">
+
+            <select id="ufFiltro">
+                <option value="">Todas UF</option>
+            </select>
+
+            <div class="multi-box">
+                <button id="btnClientes" onclick="toggleClientesMulti()">
+                    👥 Selecionar Clientes
+                </button>
+                <div id="clientesMulti" class="multi-list"></div>
+            </div>
+
+            <div class="multi-box">
+                <button id="btnRepresentantes" onclick="toggleRepresentantesMulti()">
+                    👤 Selecionar Representantes
+                </button>
+                <div id="representantesMulti" class="multi-list"></div>
+            </div>
+
+            <select id="grupoFiltro">
+                <option value="">Todos os Grupos</option>
+                <option value="MATERIAIS PARAGUAI">Materiais Paraguai</option>
+                <option value="SMART CATALOGO">Smart Catálogo</option>
+                <option value="STK">STK</option>
+                <option value="PRODUCAO">Produção</option>
+                <option value="SUBSTRATO">Substrato</option>
+            </select>
+
+            <select id="anoFiltro">
+                <option value="">Todos os Anos</option>
+            </select>
+
+            <input type="date" id="dataInicial">
+            <input type="date" id="dataFinal">
+
+        </div>
+    </div>
+
+    <div id="statusCarregamento" class="status">
+        Carregando dados...
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <h3>💰 Faturamento Total</h3>
+            <h1 id="fat">R$ 0</h1>
+        </div>
+
+        <div class="card">
+            <h3>👥 Clientes Ativos</h3>
+            <h1 id="cli">0</h1>
+        </div>
+
+        <div class="card">
+            <h3>Quantidade de Produtos Vendidos</h3>
+            <h1 id="qtd">0</h1>
+        </div>
+    </div>
+
+    <div class="grid">
+
+        <div class="chart">
+            <h2>🏆 Top Clientes</h2>
+            <div id="clientes"></div>
+        </div>
+
+        <div class="chart">
+            <h2>🔥 Top 10 Produtos</h2>
+            <div id="grupo"></div>
+        </div>
+
+        <div class="chart full">
+            <h2>🗺️ Participação por UF</h2>
+            <div id="ufs"></div>
+        </div>
+
+        <div class="chart full">
+
+            <div class="titulo-produtos">
+                <h2>🔥 Produtos Vendidos</h2>
+
+                <div id="totalMetros">
+                    0 m
+                </div>
+
+                <input
+                    type="text"
+                    id="produtoBusca"
+                    placeholder="🔎 Buscar produto..."
+                >
+            </div>
+
+            <div id="produtos"></div>
+
+            <button id="btnCarregarMais" onclick="carregarMaisProdutos()">
+                Carregar mais produtos
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
