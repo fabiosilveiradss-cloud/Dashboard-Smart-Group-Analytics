@@ -1,0 +1,90 @@
+@media (max-width: 768px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .container {
+    padding: 14px !important;
+    width: 100% !important;
+  }
+
+  .topo {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+  }
+
+  .topo .logo img {
+    width: 80px !important;
+  }
+
+  .titulo h1 {
+    font-size: 26px !important;
+    line-height: 1.15;
+  }
+
+  .titulo span {
+    font-size: 16px !important;
+  }
+
+  .atualizacao {
+    position: static !important;
+    font-size: 13px !important;
+  }
+
+  .barra-filtros {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .barra-filtros > * {
+    width: 100% !important;
+  }
+
+  .cards {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .card {
+    min-height: 115px !important;
+  }
+
+  .graficos {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+
+  .card-grafico {
+    width: 100% !important;
+    min-height: auto !important;
+    overflow: hidden !important;
+  }
+
+  #graficoLocais {
+    max-width: 260px !important;
+    max-height: 260px !important;
+    margin: 0 auto !important;
+  }
+
+  .ranking-familias {
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .produtos {
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .tabela-scroll {
+    overflow-x: auto !important;
+    width: 100% !important;
+  }
+
+  table {
+    min-width: 620px !important;
+  }
+}
