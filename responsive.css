@@ -84,4 +84,11 @@
   .iframe-modulo {
     height: calc(100vh - 76px) !important;
   }
+.logo-box img {
+  width: 40px;
+}
+    .logo-box h2 {
+  font-size: 16px;
+}
+    
 }
