@@ -116,5 +116,71 @@
   width: 80px !important;
   text-align: center !important;
 }
+
+  /* TABELA MOBILE COMO APP */
+.produtos table,
+.produtos thead,
+.produtos tbody,
+.produtos tr,
+.produtos th,
+.produtos td {
+  display: block !important;
+}
+
+.produtos thead {
+  display: none !important;
+}
+
+.produtos tr {
+  position: relative;
+  padding: 14px 12px 14px 46px !important;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+
+.produtos td {
+  border: none !important;
+  padding: 4px 0 !important;
+}
+
+.produtos td:nth-child(1) {
+  position: absolute;
+  left: 12px;
+  top: 18px;
+  width: 24px !important;
+  font-size: 20px;
+}
+
+.produtos td:nth-child(2)::before {
+  content: "Código: ";
+  color: #9fb8e8;
+  font-weight: 600;
+}
+
+.produtos td:nth-child(3) {
+  font-size: 15px;
+  font-weight: 700;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+.produtos td:nth-child(4)::before {
+  content: "Saldo: ";
+  color: #9fb8e8;
+  font-weight: 600;
+}
+
+.produtos td:nth-child(4) {
+  color: #fff;
+  font-weight: 700;
+}
+
+.produtos table {
+  min-width: 100% !important;
+}
+
+.tabela-scroll {
+  overflow-x: hidden !important;
+}
+  
   
 }
