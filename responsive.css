@@ -21,6 +21,7 @@
   .cards-home {
     grid-template-columns: repeat(2, 1fr);
   }
+
 }
 
 /* CELULAR */
@@ -31,9 +32,9 @@
   }
 
   .sidebar {
-    position: fixed;
-    width: 210px;
-    left: -210px;
+    position: fixed !important;
+    width: 210px !important;
+    left: -210px !important;
     top: 0;
     bottom: 0;
     z-index: 10002;
@@ -42,12 +43,12 @@
   }
 
   .sidebar.aberto {
-    left: 0;
+    left: 0 !important;
   }
 
   .main {
-    margin-left: 0;
-    width: 100%;
+    margin-left: 0 !important;
+    width: 100% !important;
   }
 
   .topbar {
