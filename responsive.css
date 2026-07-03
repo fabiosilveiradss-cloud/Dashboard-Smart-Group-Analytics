@@ -1,0 +1,91 @@
+/* ================================
+   RESPONSIVO - SMART GROUP ANALYTICS
+================================ */
+
+/* TABLET */
+@media (max-width: 1200px) {
+
+  .sidebar {
+    width: 240px;
+  }
+
+  .main {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+  }
+
+  .search-box {
+    width: 300px;
+  }
+
+  .cards-home {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* CELULAR */
+@media (max-width: 768px) {
+
+  body {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: -290px;
+    top: 0;
+    bottom: 0;
+    z-index: 9999;
+    transition: .3s;
+  }
+
+  .sidebar.aberto {
+    left: 0;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .topbar {
+    height: auto;
+    min-height: 76px;
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .titulo-area h1 {
+    font-size: 19px;
+  }
+
+  .titulo-area p {
+    font-size: 13px;
+  }
+
+  .search-box {
+    display: none;
+  }
+
+  .user-box {
+    display: none;
+  }
+
+  .conteudo {
+    padding: 18px;
+  }
+
+  .cards-home {
+    grid-template-columns: 1fr;
+  }
+
+  .marca-dagua {
+    width: 260px;
+    right: 10px;
+    bottom: 20px;
+  }
+
+  .iframe-modulo {
+    height: calc(100vh - 76px) !important;
+  }
+}
