@@ -1834,6 +1834,95 @@ el.innerHTML=html;
 
 }
 
+function mostrarBotaoProdutos(){
+
+  const botaoAntigo = document.getElementById('btnCarregarMaisProdutos');
+
+  if(botaoAntigo){
+    botaoAntigo.remove();
+  }
+
+  const totalProdutos = Object.keys(produtosAgrupadosGlobal).length;
+
+  if(totalProdutos <= 100){
+    return;
+  }
+
+  const ehTelaGrande = window.innerWidth >= 1024;
+
+  const textoBotao = ehTelaGrande
+    ? 'Ver todos os produtos'
+    : 'Carregar mais 100 produtos';
+
+  document.getElementById('produtos').insertAdjacentHTML(
+    'afterend',
+    `
+    <button
+      id="btnCarregarMaisProdutos"
+      onclick="acaoProdutos()"
+      style="
+        margin:25px auto;
+        display:block;
+        padding:12px 22px;
+        border:none;
+        border-radius:10px;
+        background:#2563eb;
+        color:white;
+        font-weight:bold;
+        cursor:pointer;
+      ">
+      ${textoBotao}
+    </button>
+    `
+  );
+
+}
+
+function acaoProdutos(){
+
+  const ehTelaGrande = window.innerWidth >= 1024;
+
+  if(ehTelaGrande){
+
+    barras('produtos', produtosAgrupadosGlobal, 9999);
+
+    const botao = document.getElementById('btnCarregarMaisProdutos');
+
+    if(botao){
+      botao.remove();
+    }
+
+    return;
+
+  }
+
+  carregarMaisProdutos();
+
+}
+
+function carregarMaisProdutos(){
+
+  paginaProdutos++;
+
+  const limite = paginaProdutos * 100;
+
+  barras('produtos', produtosAgrupadosGlobal, limite);
+
+  const totalProdutos = Object.keys(produtosAgrupadosGlobal).length;
+
+  if(limite >= totalProdutos){
+
+    const botao = document.getElementById('btnCarregarMaisProdutos');
+
+    if(botao){
+      botao.remove();
+    }
+
+  }
+
+}
+  
+  
 </script>
 
 </body>
