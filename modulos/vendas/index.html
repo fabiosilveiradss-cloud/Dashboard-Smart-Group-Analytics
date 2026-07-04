@@ -1,132 +1,1798 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Vendas</title>
 
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<title>Dashboard Comercial Smart Group</title>
 </head>
 
+<style>
+body{background:#071633;color:white;font-family:Arial;padding:28px}
+h1{font-size:38px}
+.upload,.card,.chart{
+background:#10224a;
+border-radius:18px;
+padding:28px;
+margin:0;
+box-sizing:border-box;
+}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin:25px 0}
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+@media(max-width:1200px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+}
+
+.full{grid-column:1/-1;}
+.filters{display:flex;gap:15px;margin-top:15px;flex-wrap:wrap;}
+select,input[type="date"]{padding:12px;border:none;border-radius:10px;background:#18356d;color:white;flex:1;min-width:220px;}
+
+input[type="date"]::-webkit-calendar-picker-indicator{
+filter:invert(1);
+cursor:pointer;
+}
+.row{
+display:grid;
+grid-template-columns:420px 1fr;
+gap:12px;
+align-items:center;
+margin-bottom:18px;
+}
+.bar-bg{
+background:#18356d;
+height:28px;
+border-radius:10px;
+overflow:hidden;
+}
+.bar{
+height:100%;
+background:#4f8cff;
+border-radius:10px;
+}
+.uf{
+display:inline-block;
+background:#18356d;
+padding:14px;
+border-radius:12px;
+margin:8px;
+min-width:100px;
+text-align:center;
+cursor:pointer;
+}
+.uf:hover{
+background:#2563eb;
+}
+
+@media(max-width:768px){
+
+body{
+padding:10px;
+}
+
+h1{
+font-size:28px;
+}
+
+.filters{
+flex-direction:column;
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.cards{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
 <body>
 
-    <div class="topo">
-        <img src="../../logo.png" class="logo">
-        <div>
-            <h1>Dashboard - Vendas</h1>
-            <p>Faturamento, clientes e produtos vendidos.</p>
-        </div>
-    </div>
+<div style="display:flex;align-items:center;gap:15px;">
 
-    <div class="upload">
-        <input type="file" id="csvFile" accept=".csv,.xlsx,.xls">
+<img src="logo.png"
+style="
+height:70px;
+border-radius:12px;
+">
 
-        <div class="filters">
+<div>
 
-            <select id="ufFiltro">
-                <option value="">Todas UF</option>
-            </select>
+<h1>Dashboard - Vendas</h1>
 
-            <div class="multi-box">
-                <button id="btnClientes" onclick="toggleClientesMulti()">
-                    👥 Selecionar Clientes
-                </button>
-                <div id="clientesMulti" class="multi-list"></div>
-            </div>
 
-            <div class="multi-box">
-                <button id="btnRepresentantes" onclick="toggleRepresentantesMulti()">
-                    👤 Selecionar Representantes
-                </button>
-                <div id="representantesMulti" class="multi-list"></div>
-            </div>
+</div>
 
-            <select id="grupoFiltro">
-                <option value="">Todos os Grupos</option>
-                <option value="MATERIAIS PARAGUAI">Materiais Paraguai</option>
-                <option value="SMART CATALOGO">Smart Catálogo</option>
-                <option value="STK">STK</option>
-                <option value="PRODUCAO">Produção</option>
-                <option value="SUBSTRATO">Substrato</option>
-            </select>
+</div>
 
-            <select id="anoFiltro">
-                <option value="">Todos os Anos</option>
-            </select>
+<div class="upload">
 
-            <input type="date" id="dataInicial">
-            <input type="date" id="dataFinal">
+<input type="file" id="csvFile" accept=".csv,.xlsx,.xls">
 
-        </div>
-    </div>
+<div class="filters">
 
-    <div id="statusCarregamento" class="status">
-        Carregando dados...
-    </div>
+<select id="ufFiltro">
+<option value="">Todas UF</option>
+</select>
 
-    <div class="cards">
-        <div class="card">
-            <h3>💰 Faturamento Total</h3>
-            <h1 id="fat">R$ 0</h1>
-        </div>
+<div style="position:relative;">
 
-        <div class="card">
-            <h3>👥 Clientes Ativos</h3>
-            <h1 id="cli">0</h1>
-        </div>
+<button
+id="btnClientes"
+onclick="toggleClientesMulti()"
+style="
+padding:10px;
+border:none;
+border-radius:10px;
+background:#1d3b7a;
+color:white;
+cursor:pointer;
+min-width:220px;
+">
+👥 Selecionar Clientes
+</button>
 
-        <div class="card">
-            <h3>Quantidade de Produtos Vendidos</h3>
-            <h1 id="qtd">0</h1>
-        </div>
-    </div>
+<div
+id="clientesMulti"
+style="
+display:none;
+position:absolute;
+top:45px;
+left:0;
+width:300px;
+max-height:220px;
+overflow-y:auto;
+background:#18356d;
+padding:15px;
+border-radius:10px;
+z-index:9999;
+box-shadow:0 10px 25px rgba(0,0,0,.4);
+">
+</div>
 
-    <div class="grid">
+</div>
 
-        <div class="chart">
-            <h2>🏆 Top Clientes</h2>
-            <div id="clientes"></div>
-        </div>
+<div style="position:relative;">
 
-        <div class="chart">
-            <h2>🔥 Top 10 Produtos</h2>
-            <div id="grupo"></div>
-        </div>
+<button
+id="btnRepresentantes"
+onclick="toggleRepresentantesMulti()"
+style="
+padding:10px;
+border:none;
+border-radius:10px;
+background:#1d3b7a;
+color:white;
+cursor:pointer;
+min-width:220px;
+">
+👤 Selecionar Representantes
+</button>
 
-        <div class="chart full">
-            <h2>🗺️ Participação por UF</h2>
-            <div id="ufs"></div>
-        </div>
+<div
+id="representantesMulti"
+style="
+display:none;
+position:absolute;
+top:45px;
+left:0;
+width:300px;
+max-height:220px;
+overflow-y:auto;
+background:#18356d;
+padding:15px;
+border-radius:10px;
+z-index:9999;
+box-shadow:0 10px 25px rgba(0,0,0,.4);
+">
+</div>
 
-        <div class="chart full">
+</div>
 
-            <div class="titulo-produtos">
-                <h2>🔥 Produtos Vendidos</h2>
+<select id="grupoFiltro">
 
-                <div id="totalMetros">
-                    0 m
-                </div>
+<option value="">
+Todos os Grupos
+</option>
 
-                <input
-                    type="text"
-                    id="produtoBusca"
-                    placeholder="🔎 Buscar produto..."
-                >
-            </div>
+<option value="MATERIAIS PARAGUAI">
+Materiais Paraguai
+</option>
 
-            <div id="produtos"></div>
+<option value="SMART CATALOGO">
+Smart Catálogo
+</option>
 
-            <button id="btnCarregarMais" onclick="carregarMaisProdutos()">
-                Carregar mais produtos
-            </button>
+<option value="STK">
+STK
+</option>
 
-        </div>
+<option value="PRODUCAO">
+PRODUCAO
+</option>
 
-    </div>
+<option value="SUBSTRATO">
+Substrato
+</option>
 
-    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-    <script src="app.js"></script>
+</select>
+
+
+<select id="anoFiltro">
+<option value="">Todos os Anos</option>
+</select>
+
+<input type="date" id="dataInicial">
+
+<input type="date" id="dataFinal">
+
+</div>
+
+</div>
+
+
+
+<div class="cards">
+<div class="card"><h3>💰 Faturamento Total</h3><h1 id="fat">R$ 0</h1></div>
+<div class="card"><h3>👥 Clientes Ativos</h3><h1 id="cli">0</h1></div>
+<div class="card"><h3>Quantidade de Produtos Vendidos</h3><h1 id="qtd">0</h1></div>
+</div>
+
+<div class="grid">
+
+<div class="chart">
+<h2>🏆 Top Clientes</h2>
+<div id="clientes"></div>
+</div>
+
+<div class="chart">
+<h2>🔥 Top 10 Produtos</h2>
+<div id="grupo"></div>
+</div>
+
+<div class="chart full">
+<h2>🗺️ Participação por UF</h2>
+<div id="ufs"></div>
+</div>
+
+<div class="chart full">
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+">
+
+<h2>🔥 Produtos Vendidos</h2>
+
+<div id="totalMetros"
+style="
+font-size:18px;
+font-weight:600;
+color:#fff;
+margin:15px 0;
+text-align:center;
+">
+0 m
+</div>
+
+<input
+type="text"
+id="produtoBusca"
+placeholder="🔎 Buscar produto..."
+style="
+padding:10px;
+border:none;
+border-radius:10px;
+background:#1d3b7a;
+color:white;
+width:280px;
+">
+
+</div>
+
+<div id="produtos"></div>
+</div>
+
+</div>
+
+<script>
+
+let dados = [];
+let filtrados = [];
+
+let produtoSelecionado = '';
+let produtoDetalheHTML = '';
+
+let clientesSelecionados = [];
+let representantesSelecionados = [];
+  
+async function carregarAutomatico(){
+
+try{
+
+const url =
+'https://script.google.com/macros/s/AKfycbwhRhN4FMhCLy4abvrZ4JjAu6JkQFurf_CY5eyyoB010FWGkHIl3Jc15NNudk6aRoOz/exec';
+
+const resposta =
+await fetch(
+url + '?t=' + Date.now()
+);
+
+dados =
+await resposta.json();
+
+console.log(
+'Total carregado:',
+dados.length
+);
+
+popularUF();
+popularClientesMulti();
+popularRepresentantesMulti();
+popularAnos();
+
+aplicarFiltros();
+
+}catch(e){
+
+console.error(
+'Erro ao carregar dados:',
+e
+);
+
+alert(
+'Erro ao carregar dados do Apps Script'
+);
+
+}
+
+}
+
+setInterval(
+carregarAutomatico,
+20 * 60 * 1000
+);
+  
+document.getElementById('csvFile').addEventListener('change', carregar);
+window.addEventListener(
+'load',
+carregarAutomatico
+);
+document.getElementById('ufFiltro')
+.addEventListener('change', ()=>{
+aplicarFiltros();
+});
+
+document.getElementById('dataInicial')
+.addEventListener('change', aplicarFiltros);
+
+document.getElementById('dataFinal')
+.addEventListener('change', aplicarFiltros);
+
+document.getElementById('produtoBusca')
+.addEventListener('input', aplicarFiltros);
+
+document.getElementById('anoFiltro')
+.addEventListener('change', aplicarFiltros);
+
+document.getElementById('grupoFiltro')
+.addEventListener('change', aplicarFiltros);
+
+function carregar(e){
+
+const file = e.target.files[0];
+
+if(!file) return;
+
+const nome =
+file.name.toLowerCase();
+
+if(nome.endsWith('.csv')){
+
+const reader =
+new FileReader();
+
+reader.onload = function(evt){
+
+dados =
+parseCSV(evt.target.result);
+
+popularUF();
+popularClientesMulti();
+popularRepresentantesMulti();
+popularAnos();
+
+aplicarFiltros();
+
+};
+
+reader.readAsText(
+file,
+'utf-8'
+);
+
+return;
+
+}
+
+if(
+nome.endsWith('.xlsx')
+||
+nome.endsWith('.xls')
+){
+
+const reader =
+new FileReader();
+
+reader.onload =
+function(evt){
+
+const data =
+new Uint8Array(
+evt.target.result
+);
+
+const workbook =
+XLSX.read(
+data,
+{
+type:'array'
+}
+);
+
+const sheet =
+workbook.Sheets[
+workbook.SheetNames[0]
+];
+
+const linhas =
+XLSX.utils.sheet_to_json(
+sheet,
+{
+header:1,
+defval:''
+}
+);
+
+const idxCabecalho =
+linhas.findIndex(
+l =>
+Array.isArray(l) &&
+l.some(c =>
+String(c)
+.includes('Razão')
+)
+);
+
+const headers =
+linhas[idxCabecalho];
+
+dados =
+linhas
+.slice(idxCabecalho + 1)
+.map(l=>{
+
+let obj = {};
+
+headers.forEach((h,i)=>{
+
+let valor = l[i];
+
+if(
+h === 'Dt.faturam' &&
+typeof valor === 'number'
+){
+
+const dataExcel =
+new Date(
+(Date.UTC(1899,11,30))
++
+(valor * 86400000)
+);
+
+valor =
+dataExcel
+.toISOString()
+.substring(0,10);
+
+}
+
+obj[h] = valor;
+
+});
+
+return obj;
+
+})
+.filter(
+x => x['Razão social']
+);
+
+const total2025 = dados
+.filter(x =>
+String(x['Dt.faturam']).includes('2025')
+)
+.reduce(
+(a,b) =>
+a + numero(
+b['Valor Fat+Valor IPI+Valor Frete']
+),
+0
+);
+
+const total2026 = dados
+.filter(x =>
+String(x['Dt.faturam']).includes('2026')
+)
+.reduce(
+(a,b) =>
+a + numero(
+b['Valor Fat+Valor IPI+Valor Frete']
+),
+0
+);
+
+popularUF();
+popularClientesMulti();
+popularRepresentantesMulti();
+popularAnos();
+
+aplicarFiltros();
+
+};
+
+reader.readAsArrayBuffer(
+file
+);
+
+}
+
+}
+
+function parseCSV(texto){
+
+const linhas = texto
+  .split(/\r?\n/)
+  .filter(l => l.trim());
+
+const idx = linhas.findIndex(
+  l => l.includes('Razão social')
+);
+
+if(idx === -1){
+  console.error('Cabeçalho não encontrado');
+  return [];
+}
+
+const headers = linhas[idx]
+  .split(',')
+  .map(h => h.replace(/"/g,'').trim());
+
+const resultado = [];
+
+for(let i = idx + 1; i < linhas.length; i++){
+
+  const linha = linhas[i];
+
+  let valores = [];
+  let atual = '';
+  let dentroAspas = false;
+
+  for(let c of linha){
+
+    if(c === '"'){
+      dentroAspas = !dentroAspas;
+      continue;
+    }
+
+    if(c === ',' && !dentroAspas){
+      valores.push(atual);
+      atual = '';
+      continue;
+    }
+
+    atual += c;
+  }
+
+  valores.push(atual);
+
+  if(valores.length < headers.length){
+    continue;
+  }
+
+  let obj = {};
+
+  headers.forEach((h,j)=>{
+    obj[h] = (valores[j] || '').trim();
+  });
+
+  resultado.push(obj);
+}
+
+return resultado.filter(
+  x => x['Razão social']
+);
+
+}
+
+function numero(v){
+
+if(typeof v === 'number'){
+return v;
+}
+
+const txt =
+String(v || '').trim();
+
+if(txt === ''){
+return 0;
+}
+
+if(
+txt.includes('.') &&
+txt.includes(',')
+){
+
+return Number(
+txt
+.replace(/\./g,'')
+.replace(',','.')
+);
+
+}
+
+if(txt.includes(',')){
+
+return Number(
+txt.replace(',','.')
+);
+
+}
+
+return Number(txt);
+
+}
+
+function moeda(v){
+
+return new Intl.NumberFormat('pt-BR',{
+style:'currency',
+currency:'BRL'
+}).format(v||0);
+
+}
+
+function popularUF(){
+
+const uf=document.getElementById('ufFiltro');
+
+uf.innerHTML='<option value="">Todas UF</option>';
+
+[...new Set(dados.map(x=>x['UF']).filter(Boolean))]
+.sort()
+.forEach(u=>{
+
+uf.innerHTML += `<option value="${u}">${u}</option>`;
+
+});
+
+}
+
+function popularClientesMulti(){
+
+const el =
+document.getElementById('clientesMulti');
+
+const clientes = [
+...new Set(
+dados.map(x => x['Razão social'])
+.filter(Boolean)
+)
+].sort();
+
+let html = `
+
+<label style="
+display:block;
+margin-bottom:10px;
+font-weight:bold;
+">
+
+<input
+type="checkbox"
+id="todosClientes"
+checked
+onchange="toggleTodosClientes()"
+>
+
+Selecionar Todos
+
+</label>
+
+`;
+
+clientes.forEach(c=>{
+
+html += `
+
+<label style="
+display:block;
+margin-bottom:5px;
+">
+
+<input
+type="checkbox"
+class="clienteCheck"
+value="${c}"
+checked
+onchange="atualizarClientesSelecionados()"
+>
+
+${c}
+
+</label>
+
+`;
+
+});
+
+el.innerHTML = html;
+
+clientesSelecionados = [...clientes];
+
+}
+
+function toggleTodosClientes(){
+
+const marcado =
+document.getElementById('todosClientes')
+.checked;
+
+document
+.querySelectorAll('.clienteCheck')
+.forEach(chk=>{
+
+chk.checked = marcado;
+
+});
+
+atualizarClientesSelecionados();
+
+}
+
+function toggleClientesMulti(){
+
+const box =
+document.getElementById('clientesMulti');
+
+if(box.style.display === 'block'){
+
+box.style.display = 'none';
+
+}else{
+
+box.style.display = 'block';
+
+}
+
+}
+
+function atualizarClientesSelecionados(){
+
+clientesSelecionados = [];
+
+document
+.querySelectorAll('.clienteCheck')
+.forEach(chk=>{
+
+if(chk.checked){
+
+clientesSelecionados.push(
+chk.value
+);
+
+}
+
+});
+
+aplicarFiltros();
+
+}
+function popularRepresentantesMulti(){
+
+const el =
+document.getElementById('representantesMulti');
+
+const reps = [
+...new Set(
+dados.map(x => x['Abreviação'])
+.filter(Boolean)
+)
+].sort();
+
+let html = `
+
+<label style="
+display:block;
+margin-bottom:10px;
+font-weight:bold;
+">
+
+<input
+type="checkbox"
+id="todosRepresentantes"
+checked
+onchange="toggleTodosRepresentantes()"
+>
+
+Selecionar Todos
+
+</label>
+
+`;
+
+reps.forEach(r=>{
+
+html += `
+
+<label style="
+display:block;
+margin-bottom:5px;
+">
+
+<input
+type="checkbox"
+class="repCheck"
+value="${r}"
+checked
+onchange="atualizarRepresentantesSelecionados()"
+>
+
+${r}
+
+</label>
+
+`;
+
+});
+
+el.innerHTML = html;
+
+representantesSelecionados = [...reps];
+
+}
+
+function toggleTodosRepresentantes(){
+
+const marcado =
+document.getElementById('todosRepresentantes')
+.checked;
+
+document
+.querySelectorAll('.repCheck')
+.forEach(chk=>{
+
+chk.checked = marcado;
+
+});
+
+atualizarRepresentantesSelecionados();
+
+}
+
+function atualizarRepresentantesSelecionados(){
+
+representantesSelecionados = [];
+
+document
+.querySelectorAll('.repCheck')
+.forEach(chk=>{
+
+if(chk.checked){
+
+representantesSelecionados.push(
+chk.value
+);
+
+}
+
+});
+
+const total =
+document.querySelectorAll('.repCheck').length;
+
+document.getElementById(
+'todosRepresentantes'
+).checked =
+representantesSelecionados.length === total;
+
+aplicarFiltros();
+
+}
+
+function toggleRepresentantesMulti(){
+
+const box =
+document.getElementById('representantesMulti');
+
+box.style.display =
+box.style.display === 'block'
+? 'none'
+: 'block';
+
+}
+
+document.addEventListener('click', function(e){
+
+const boxClientes =
+document.getElementById('clientesMulti');
+
+const btnClientes =
+document.getElementById('btnClientes');
+
+if(
+boxClientes &&
+btnClientes &&
+!boxClientes.contains(e.target) &&
+!btnClientes.contains(e.target)
+){
+boxClientes.style.display = 'none';
+}
+
+const boxRepresentantes =
+document.getElementById('representantesMulti');
+
+const btnRepresentantes =
+document.getElementById('btnRepresentantes');
+
+if(
+boxRepresentantes &&
+btnRepresentantes &&
+!boxRepresentantes.contains(e.target) &&
+!btnRepresentantes.contains(e.target)
+){
+boxRepresentantes.style.display = 'none';
+}
+
+});
+
+function popularAnos(){
+
+const select =
+document.getElementById('anoFiltro');
+
+select.innerHTML =
+'<option value="">Todos os Anos</option>';
+
+const anos = [
+...new Set(
+
+dados.map(x=>{
+
+const data =
+String(x['Dt.faturam'] || '').trim();
+
+if(!data) return '';
+
+if(data.includes('/')){
+
+return data.split('/').pop();
+
+}
+
+if(data.includes('-')){
+
+return data.substring(0,4);
+
+}
+
+return '';
+
+})
+
+.filter(Boolean)
+
+)
+
+].sort();
+
+anos.forEach(a=>{
+
+select.innerHTML +=
+`<option value="${a}">${a}</option>`;
+
+});
+
+}
+
+function aplicarFiltros(){
+
+const uf =
+document.getElementById('ufFiltro').value;
+
+const grupo =
+document.getElementById('grupoFiltro').value;
+
+const rep = '';
+
+const ano =
+document.getElementById('anoFiltro').value;
+
+const dataInicial =
+document.getElementById('dataInicial').value;
+
+const dataFinal =
+document.getElementById('dataFinal').value;
+
+const buscaProduto =
+document.getElementById('produtoBusca')
+.value
+.toLowerCase();
+
+filtrados=dados.filter(x=>{
+
+const okUF=!uf || x['UF']===uf;
+const okCliente =
+clientesSelecionados.length === 0 ||
+clientesSelecionados.length ===
+document.querySelectorAll('.clienteCheck').length
+? true
+: clientesSelecionados.includes(
+x['Razão social']
+);
+
+const descricao =
+String(x['Descrição'] || '')
+.toUpperCase();
+
+let okGrupo = true;
+
+if(grupo){
+
+okGrupo =
+descricao.includes(grupo);
+
+}
+
+const okRep =
+representantesSelecionados.length === 0 ||
+representantesSelecionados.length ===
+document.querySelectorAll('.repCheck').length
+? true
+: representantesSelecionados.includes(
+x['Abreviação']
+);
+
+const dataFat =
+String(x['Dt.faturam'] || '');
+
+let okAno = true;
+
+if(ano && dataFat){
+
+if(String(dataFat).includes('/')){
+
+okAno =
+dataFat.split('/')[2] === ano;
+
+}else{
+
+okAno =
+String(dataFat).substring(0,4) === ano;
+
+}
+
+}
+
+let okData = true;
+
+if(dataFat){
+
+let dataLinha = '';
+
+if(String(dataFat).includes('/')){
+
+const [dia, mes, anoLinha] =
+dataFat.split('/');
+
+dataLinha =
+`${anoLinha}-${mes}-${dia}`;
+
+}else{
+
+dataLinha =
+String(dataFat).substring(0,10);
+
+}
+
+if(dataInicial){
+
+okData =
+okData &&
+dataLinha >= dataInicial;
+
+}
+
+if(dataFinal){
+
+okData =
+okData &&
+dataLinha <= dataFinal;
+
+}
+
+}
+
+const produto =
+(x['Desc.completa'] || '')
+.toLowerCase();
+
+const okProduto =
+!buscaProduto ||
+produto.includes(buscaProduto);
+
+return okUF &&
+okGrupo &&
+okCliente &&
+okRep &&
+okAno &&
+okProduto &&
+okData;
+
+});
+
+render();
+
+}
+
+const produtosExcluidos = [
+'27',
+'47',
+'51',
+'205',
+'214',
+'218',
+'259',
+'261',
+'348',
+'383',
+'4251',
+'4553',
+'6496',
+'7109',
+'8938',
+'8939',
+'10021',
+'11056',
+'11477',
+'11772',
+'11860',
+'12331',
+'12691',
+'12696',
+'13029',
+'13069',
+'13166',
+'13168',
+'13199',
+'13327',
+'13534',
+'16405',
+'16423',
+'16526',
+'16528',
+'16612',
+'16682',
+'16827',
+'16830',
+'17117',
+'17132',
+'17134',
+'17166',
+'17169',
+'17171',
+'17173',
+'17175'
+];
+
+const gruposExcluidos = [
+'LACA/GLITTER',
+'SERVIÇOS..',
+'IMPRESSÃO'
+
+
+];
+
+function agrupar(campo){
+
+let o={};
+
+filtrados.forEach(x=>{
+
+    if (
+        campo === 'Desc.completa' &&
+        produtosExcluidos.includes(
+            String(x['Produto']).trim()
+        )
+    ){
+        return;
+    }
+
+  const k = (x[campo] || '').trim();
+
+if(k === ''){
+  return o;
+}
+
+    const valor = numero(
+        x['Valor Fat+Valor IPI+Valor Frete']
+    );
+
+    const qtd = numero(
+        x['Qtd.item/Ft']
+    );
+
+if(!o[k]){
+
+o[k]={
+valor:0,
+qtd:0,
+codigo:x['Produto']
+};
+
+}
+
+o[k].valor += valor;
+o[k].qtd += qtd;
+});
+
+return o;
+
+}
+
+function render(){
+
+const fat=filtrados.reduce((a,b)=>
+a+numero(b['Valor Fat+Valor IPI+Valor Frete']),0);
+
+const metrosVendidos = filtrados.reduce((a,b)=>
+a + numero(b['Qtd.item/Ft'])
+,0);
+
+const qtd = filtrados.length;
+
+const cli=new Set(
+filtrados.map(x=>x['Razão social'])
+).size;
+
+document.getElementById('fat').innerText=moeda(fat);
+document.getElementById('cli').innerText=cli;
+document.getElementById('qtd').innerText=qtd.toLocaleString('pt-BR');
+
+document.getElementById('totalMetros').innerText =
+'📏 ' +
+metrosVendidos.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}) +
+' Total de Metros';
+
+const clientesAgrupados =
+agrupar('Razão social');
+
+const produtosAgrupados =
+agrupar('Desc.completa');
+
+barras('clientes',clientesAgrupados,10);
+barras('grupo',produtosAgrupados,10);
+ufs();
+
+document.getElementById('produtos').innerHTML =
+'<p>Carregando produtos vendidos...</p>';
+
+setTimeout(() => {
+  barras('produtos',produtosAgrupados,9999);
+}, 100);
+
+}
+
+function barras(id,obj,lim){
+
+const el = document.getElementById(id);
+
+const produtos =
+id === 'grupo' ||
+id === 'produtos';
+
+const listaProdutos =
+id === 'produtos';
+
+const itens = Object.entries(obj)
+.sort((a,b)=>{
+
+if(id === 'grupo'){
+
+return b[1].valor - a[1].valor;
+
+}
+
+if(id === 'produtos'){
+
+return b[1].qtd - a[1].qtd;
+
+}
+
+return b[1].valor - a[1].valor;
+
+})
+.slice(0,lim);
+
+let html = '';
+
+itens.forEach(i=>{
+
+const base =
+produtos
+? i[1].qtd
+: i[1].valor;
+
+const max =
+itens[0]
+? (
+produtos
+? itens[0][1].qtd
+: itens[0][1].valor
+)
+: 1;
+
+const pct =
+(max > 0)
+? (base / max) * 100
+: 0;
+
+if(listaProdutos){
+
+html += `
+
+<div style="
+margin-bottom:28px;
+">
+
+<div
+onclick="detalharProduto('${i[0].replace(/'/g,"\\'")}')"
+style="
+font-weight:600;
+font-size:14px;
+margin-bottom:10px;
+cursor:pointer;
+"
+>
+${i[1].codigo} • ${i[0]}
+</div>
+
+<div style="
+background:#1d3f7f;
+height:30px;
+border-radius:12px;
+overflow:hidden;
+">
+
+<div style="
+width:${pct}%;
+height:100%;
+background:#5a8df5;
+border-radius:12px;
+">
+</div>
+
+</div>
+
+<div style="
+display:flex;
+justify-content:flex-end;
+gap:12px;
+margin-top:8px;
+align-items:flex-start;
+">
+
+<div style="
+width:140px;
+text-align:center;
+">
+
+<div style="
+font-size:10px;
+color:#8fb3ff;
+letter-spacing:1px;
+margin-bottom:4px;
+">
+METROS
+</div>
+
+<div style="
+background:#16356d;
+height:28px;
+border-radius:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:600;
+">
+📏 ${i[1].qtd.toLocaleString('pt-BR')} m
+</div>
+
+</div>
+
+<div style="
+width:190px;
+text-align:center;
+">
+
+<div style="
+font-size:10px;
+color:#8fb3ff;
+letter-spacing:1px;
+margin-bottom:4px;
+">
+FATURAMENTO
+</div>
+
+<div style="
+background:#2563eb;
+height:28px;
+border-radius:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:600;
+box-shadow:0 0 12px rgba(37,99,235,.35);
+">
+💰 ${moeda(i[1].valor)}
+</div>
+
+</div>
+
+<div style="
+width:140px;
+text-align:center;
+">
+
+<div style="
+font-size:10px;
+color:#8fb3ff;
+letter-spacing:1px;
+margin-bottom:4px;
+">
+PREÇO MÉDIO
+</div>
+
+<div style="
+background:#0f766e;
+height:28px;
+border-radius:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:600;
+box-shadow:0 0 12px rgba(15,118,110,.35);
+">
+🏷️ ${moeda(
+i[1].qtd
+? i[1].valor / i[1].qtd
+: 0
+)}
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+if(produtoSelecionado === i[0]){
+
+html += produtoDetalheHTML;
+
+}
+
+return;
+}
+
+html += `
+
+<div style="
+padding:10px 0;
+border-bottom:1px solid rgba(255,255,255,.08);
+">
+
+<div style="
+display:grid;
+grid-template-columns:
+minmax(0,1fr)
+130px
+210px
+120px;
+gap:12px;
+align-items:center;
+font-size:14px;
+width:100%;
+box-sizing:border-box;
+">
+
+<div
+${produtos ? `onclick="detalharProduto('${i[0].replace(/'/g,"\\'")}')"` : ''}
+style="
+font-weight:600;
+cursor:${produtos ? 'pointer' : 'default'};
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+padding-right:20px;
+"
+>
+${i[1].codigo} • ${i[0]}
+</div>
+
+<div style="
+width:130px;
+text-align:left;
+font-variant-numeric:tabular-nums;
+">
+📏 ${i[1].qtd.toLocaleString('pt-BR')}
+</div>
+
+<div style="
+width:210px;
+text-align:left;
+font-variant-numeric:tabular-nums;
+">
+💰 ${moeda(i[1].valor)}
+</div>
+
+<div style="
+width:120px;
+text-align:left;
+font-variant-numeric:tabular-nums;
+">
+🏷️ ${moeda(
+i[1].qtd
+? i[1].valor / i[1].qtd
+: 0
+)}
+</div>
+
+</div>
+
+</div>
+`;
+
+if(produtos && produtoSelecionado === i[0]){
+
+const vendasProduto =
+filtrados.filter(
+x => x['Desc.completa'] === i[0]
+);
+
+let clientes = {};
+
+vendasProduto.forEach(x=>{
+
+const cli = x['Razão social'];
+
+if(!clientes[cli]){
+
+clientes[cli] = {
+metros:0,
+valor:0
+};
+
+}
+
+clientes[cli].metros +=
+numero(x['Qtd.item/Ft']);
+
+clientes[cli].valor +=
+numero(x['Valor Fat+Valor IPI+Valor Frete']);
+
+});
+
+html += `
+
+<div style="
+background:#10295e;
+padding:20px;
+margin:10px 0 20px 0;
+border-radius:12px;
+">
+
+<h3>${i[0]}</h3>
+
+<table style="
+width:100%;
+border-collapse:collapse;
+">
+
+<tr>
+<th align="left">Cliente</th>
+<th align="right">Metros</th>
+<th align="right">Faturamento</th>
+</tr>
+
+${Object.entries(clientes)
+.sort((a,b)=>b[1].valor-a[1].valor)
+.map(([cliente,d])=>`
+
+<tr>
+<td>${cliente}</td>
+<td align="right">
+${d.metros.toLocaleString('pt-BR')}
+</td>
+<td align="right">
+${moeda(d.valor)}
+</td>
+</tr>
+
+`).join('')}
+
+</table>
+
+</div>
+`;
+
+}
+
+});
+
+el.innerHTML = html;
+
+}
+
+function detalharProduto(produto){
+
+if(produtoSelecionado === produto){
+
+produtoSelecionado = '';
+produtoDetalheHTML = '';
+
+render();
+
+return;
+
+}
+
+produtoSelecionado = produto;
+
+const vendas = filtrados.filter(
+x => x['Desc.completa'] === produto
+);
+
+let clientes = {};
+
+vendas.forEach(x=>{
+
+const cli = x['Razão social'];
+
+if(!clientes[cli]){
+
+clientes[cli] = {
+metros:0,
+valor:0
+};
+
+}
+
+clientes[cli].metros +=
+numero(x['Qtd.item/Ft']);
+
+clientes[cli].valor +=
+numero(x['Valor Fat+Valor IPI+Valor Frete']);
+
+});
+
+let html = `
+<div style="
+margin:20px 0;
+padding:20px;
+background:#10295e;
+border-radius:12px;
+">
+
+<h3 style="
+margin-bottom:15px;
+color:white;
+">
+📦 ${produto}
+</h3>
+
+<table style="
+width:100%;
+border-collapse:collapse;
+color:white;
+">
+<tr>
+<th align="left">Cliente</th>
+<th align="right">Metros</th>
+<th align="right">Faturamento</th>
+</tr>
+`;
+
+Object.entries(clientes)
+.sort((a,b)=>
+b[1].valor - a[1].valor
+)
+.forEach(([cliente,dados])=>{
+
+html += `
+<tr>
+<td>${cliente}</td>
+
+<td align="right">
+${dados.metros.toLocaleString('pt-BR')} m
+</td>
+
+<td align="right">
+${moeda(dados.valor)}
+</td>
+
+</tr>
+`;
+
+});
+
+html += `
+</table>
+</div>
+`;
+
+produtoDetalheHTML = html;
+
+render();
+
+}
+
+function ufs(){
+
+const el=document.getElementById('ufs');
+
+const obj=agrupar('UF');
+
+let html='';
+
+Object.entries(obj)
+.sort((a,b)=>b[1].valor-a[1].valor)
+.forEach(i=>{
+
+html += `
+<div class="uf">
+<strong>${i[0]}</strong>
+<br><br>
+${moeda(i[1].valor)}
+</div>
+`;
+
+});
+
+el.innerHTML=html;
+
+}
+
+</script>
 
 </body>
 </html>
