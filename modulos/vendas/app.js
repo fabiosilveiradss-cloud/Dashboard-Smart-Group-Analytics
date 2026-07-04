@@ -3,7 +3,6 @@
  Dashboard de Vendas
 =========================================*/
 
-const CONFIG = {
     API_URL:
     "https://script.google.com/macros/s/AKfycbwhRhN4FMhCLy4abvrZ4JjAu6JkQFurf_CY5eyyoB010FWGkHIl3Jc15NNudk6aRoOz/exec",
 
