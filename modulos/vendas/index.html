@@ -398,6 +398,8 @@ if(cacheLocal){
 
 }
 
+}
+
 setInterval(
 carregarAutomatico,
 20 * 60 * 1000
@@ -1353,6 +1355,8 @@ setTimeout(() => {
 
 }, 100);
 
+}
+
 function barras(id,obj,lim){
 
 const el = document.getElementById(id);
@@ -1918,6 +1922,10 @@ function carregarMaisProdutos(){
     if(botao){
       botao.remove();
     }
+
+  }else{
+
+    mostrarBotaoProdutos();
 
   }
 
