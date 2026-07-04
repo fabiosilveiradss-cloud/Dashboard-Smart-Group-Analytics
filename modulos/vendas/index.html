@@ -313,6 +313,9 @@ width:280px;
 
 let dados = [];
 let filtrados = [];
+let paginaProdutos = 1;
+let produtosAgrupadosGlobal = {};
+  
 
 let produtoSelecionado = '';
 let produtoDetalheHTML = '';
@@ -1337,11 +1340,17 @@ ufs();
 document.getElementById('produtos').innerHTML =
 '<p>Carregando produtos vendidos...</p>';
 
-setTimeout(() => {
- barras('produtos',produtosAgrupados,100);
-}, 100);
+paginaProdutos = 1;
 
-}
+produtosAgrupadosGlobal = produtosAgrupados;
+
+setTimeout(() => {
+
+    barras('produtos', produtosAgrupadosGlobal, 100);
+
+    mostrarBotaoProdutos();
+
+}, 100);
 
 function barras(id,obj,lim){
 
