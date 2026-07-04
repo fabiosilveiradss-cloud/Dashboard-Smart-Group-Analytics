@@ -327,6 +327,21 @@ try{
 const url =
 'https://script.google.com/macros/s/AKfycbwhRhN4FMhCLy4abvrZ4JjAu6JkQFurf_CY5eyyoB010FWGkHIl3Jc15NNudk6aRoOz/exec';
 
+const cacheLocal = localStorage.getItem('dashboard_vendas_cache');
+
+if (cacheLocal) {
+  dados = JSON.parse(cacheLocal);
+
+  popularUF();
+  popularClientesMulti();
+  popularRepresentantesMulti();
+  popularAnos();
+
+  aplicarFiltros();
+
+  console.log('Dados carregados do cache local:', dados.length);
+}
+
 const resposta =
 await fetch(
 url + '?t=' + Date.now()
@@ -335,6 +350,10 @@ url + '?t=' + Date.now()
 dados =
 await resposta.json();
 
+localStorage.setItem(
+  'dashboard_vendas_cache',
+  JSON.stringify(dados)
+);
 console.log(
 'Total carregado:',
 dados.length
