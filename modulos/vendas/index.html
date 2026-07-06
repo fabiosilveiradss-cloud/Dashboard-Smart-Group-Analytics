@@ -351,6 +351,12 @@ console.log(
 dados.length
 );
 
+setTimeout(() => {
+  atualizarServidorEmSegundoPlano();
+}, 5000);
+
+return;
+  
 // deixa o dashboard abrir primeiro
 await new Promise(resolve => setTimeout(resolve, 300));
 
@@ -442,6 +448,36 @@ Tente novamente em uma internet estável.
 }
 
 }
+
+async function atualizarServidorEmSegundoPlano(){
+
+try{
+
+const url =
+'https://script.google.com/macros/s/AKfycbwhRhN4FMhCLy4abvrZ4JjAu6JkQFurf_CY5eyyoB010FWGkHIl3Jc15NNudk6aRoOz/exec';
+
+const resposta = await fetch(url + '?t=' + Date.now());
+
+const novosDados = await resposta.json();
+
+dados = novosDados;
+
+localStorage.setItem(
+'dashboard_vendas_cache',
+JSON.stringify(dados)
+);
+
+console.log('Cache atualizado em segundo plano:', dados.length);
+
+}catch(e){
+
+console.warn('Não foi possível atualizar em segundo plano:', e);
+
+}
+
+}
+
+  
 
 setInterval(
 carregarAutomatico,
