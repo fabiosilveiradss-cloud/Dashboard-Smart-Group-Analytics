@@ -324,7 +324,32 @@ let produtoDetalheHTML = '';
 
 let clientesSelecionados = [];
 let representantesSelecionados = [];
-  
+
+function ehMobile(){
+  return window.innerWidth <= 900 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}
+
+function prepararFiltrosDepoisDeCarregar(){
+  popularUF();
+  popularAnos();
+
+  if(ehMobile()){
+    clientesSelecionados = [];
+    representantesSelecionados = [];
+
+    document.getElementById('clientesMulti').innerHTML =
+    '<p style="padding:10px;margin:0;">Filtro de clientes será carregado ao abrir.</p>';
+
+    document.getElementById('representantesMulti').innerHTML =
+    '<p style="padding:10px;margin:0;">Filtro de representantes será carregado ao abrir.</p>';
+  }else{
+    popularClientesMulti();
+    popularRepresentantesMulti();
+  }
+
+  aplicarFiltros();
+}
+
 async function carregarAutomatico(){
 
 const url =
@@ -337,11 +362,7 @@ if(cacheLocal){
 
 dados = JSON.parse(cacheLocal);
 
-popularUF();
-popularClientesMulti();
-popularRepresentantesMulti();
-popularAnos();
-aplicarFiltros();
+prepararFiltrosDepoisDeCarregar();
 
 console.log('Dados carregados do cache local:', dados.length);
 
@@ -363,11 +384,7 @@ localStorage.setItem(
 JSON.stringify(dados)
 );
 
-popularUF();
-popularClientesMulti();
-popularRepresentantesMulti();
-popularAnos();
-aplicarFiltros();
+prepararFiltrosDepoisDeCarregar();
 
 console.log('Dados atualizados do Apps Script:', dados.length);
 
@@ -824,6 +841,10 @@ function toggleClientesMulti(){
 const box =
 document.getElementById('clientesMulti');
 
+if(ehMobile() && !box.querySelector('.clienteCheck')){
+  popularClientesMulti();
+}
+
 if(box.style.display === 'block'){
 
 box.style.display = 'none';
@@ -973,6 +994,10 @@ function toggleRepresentantesMulti(){
 
 const box =
 document.getElementById('representantesMulti');
+
+if(ehMobile() && !box.querySelector('.repCheck')){
+  popularRepresentantesMulti();
+}
 
 box.style.display =
 box.style.display === 'block'
@@ -1358,7 +1383,7 @@ setTimeout(() => {
     barras(
         'produtos',
         produtosAgrupadosGlobal,
-        PRODUTOS_POR_PAGINA
+        ehMobile() ? 30 : PRODUTOS_POR_PAGINA
     );
 
     mostrarBotaoProdutos();
@@ -1945,6 +1970,5 @@ function carregarMaisProdutos(){
 }
 
 </script>
-
 </body>
 </html>
