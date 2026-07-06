@@ -323,6 +323,127 @@ let produtoDetalheHTML = '';
 let clientesSelecionados = [];
 let representantesSelecionados = [];
   
+
+async function carregarAutomatico(){
+
+try{
+
+const url =
+'https://script.google.com/macros/s/AKfycbwhRhN4FMhCLy4abvrZ4JjAu6JkQFurf_CY5eyyoB010FWGkHIl3Jc15NNudk6aRoOz/exec';
+
+const cacheLocal =
+localStorage.getItem('dashboard_vendas_cache');
+
+if(cacheLocal){
+
+dados =
+JSON.parse(cacheLocal);
+
+popularUF();
+popularClientesMulti();
+popularRepresentantesMulti();
+popularAnos();
+
+aplicarFiltros();
+
+console.log(
+'Dados carregados do cache local:',
+dados.length
+);
+
+}
+
+const resposta =
+await fetch(
+url + '?t=' + Date.now()
+);
+
+const novosDados =
+await resposta.json();
+
+dados =
+novosDados;
+
+localStorage.setItem(
+'dashboard_vendas_cache',
+JSON.stringify(dados)
+);
+
+console.log(
+'Dados atualizados do Apps Script:',
+dados.length
+);
+
+popularUF();
+popularClientesMulti();
+popularRepresentantesMulti();
+popularAnos();
+
+aplicarFiltros();
+
+}catch(e){
+
+console.error(
+'Erro ao carregar dados:',
+e
+);
+
+const cacheLocal =
+localStorage.getItem('dashboard_vendas_cache');
+
+if(cacheLocal){
+
+dados =
+JSON.parse(cacheLocal);
+
+popularUF();
+popularClientesMulti();
+popularRepresentantesMulti();
+popularAnos();
+
+aplicarFiltros();
+
+console.log(
+'Carregado pelo cache após erro:',
+dados.length
+);
+
+}else{
+
+const produtos =
+document.getElementById('produtos');
+
+if(produtos){
+
+produtos.innerHTML =
+`
+<div style="
+padding:20px;
+background:#7f1d1d;
+border-radius:12px;
+color:white;
+text-align:center;
+">
+Não foi possível carregar os dados neste aparelho.
+<br>
+Tente novamente em uma internet estável.
+</div>
+`;
+
+}
+
+}
+
+}
+
+}
+
+setInterval(
+carregarAutomatico,
+20 * 60 * 1000
+);
+
+
 document.getElementById('csvFile').addEventListener('change', carregar);
 window.addEventListener(
 'load',
