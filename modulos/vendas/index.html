@@ -1925,26 +1925,32 @@ el.innerHTML=html;
 
 function mostrarBotaoProdutos(){
 
-  const botaoAntigo = document.getElementById('btnCarregarMaisProdutos');
+  const botaoAntigo =
+  document.getElementById('btnCarregarMaisProdutos');
 
   if(botaoAntigo){
     botaoAntigo.remove();
   }
 
-  const totalProdutos = Object.keys(produtosAgrupadosGlobal).length;
+  const totalProdutos =
+  Object.keys(produtosAgrupadosGlobal).length;
 
-  if(totalProdutos <= 100){
+  const limiteAtual =
+  paginaProdutos * PRODUTOS_POR_PAGINA;
+
+  if(limiteAtual >= totalProdutos){
     return;
   }
 
-  const ehTelaGrande = window.innerWidth >= 1024;
+  const ehTelaGrande =
+  window.innerWidth >= 1024;
 
   const textoBotao = ehTelaGrande
-    ? 'Ver todos os produtos'
-    : 'Carregar mais 100 produtos';
+  ? 'Ver todos os produtos'
+  : 'Carregar mais 100 produtos';
 
   document.getElementById('produtos').insertAdjacentHTML(
-  'beforeend',
+    'afterend',
     `
     <button
       id="btnCarregarMaisProdutos"
@@ -1969,13 +1975,19 @@ function mostrarBotaoProdutos(){
 
 function acaoProdutos(){
 
-  const ehTelaGrande = window.innerWidth >= 1024;
+  const ehTelaGrande =
+  window.innerWidth >= 1024;
 
   if(ehTelaGrande){
 
-    barras('produtos', produtosAgrupadosGlobal, 9999);
+    barras(
+      'produtos',
+      produtosAgrupadosGlobal,
+      999999
+    );
 
-    const botao = document.getElementById('btnCarregarMaisProdutos');
+    const botao =
+    document.getElementById('btnCarregarMaisProdutos');
 
     if(botao){
       botao.remove();
@@ -1993,23 +2005,18 @@ function carregarMaisProdutos(){
 
   paginaProdutos++;
 
-  const limite = paginaProdutos * 100;
+  const limite =
+  paginaProdutos * PRODUTOS_POR_PAGINA;
 
-  barras('produtos', produtosAgrupadosGlobal, limite);
+  barras(
+    'produtos',
+    produtosAgrupadosGlobal,
+    limite
+  );
 
-  const totalProdutos = Object.keys(produtosAgrupadosGlobal).length;
+  mostrarBotaoProdutos();
 
-  if(limite >= totalProdutos){
-
-    const botao = document.getElementById('btnCarregarMaisProdutos');
-
-    if(botao){
-      botao.remove();
-    }
-
-  }else{
-
-    mostrarBotaoProdutos();
+}
 
   }
 
