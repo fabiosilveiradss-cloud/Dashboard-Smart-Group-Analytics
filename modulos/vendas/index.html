@@ -353,7 +353,7 @@ function prepararFiltrosDepoisDeCarregar(){
 async function carregarAutomatico(){
 
 const url =
-'https://script.google.com/macros/s/AKfycbwhRhN4FMhCLy4abvrZ4JjAu6JkQFurf_CY5eyyoB010FWGkHIl3Jc15NNudk6aRoOz/exec';
+'https://script.google.com/macros/s/AKfycbx6qiKN8B72HDasjWiyd8NMluboduWGGUQToCgHmVhCOtsZKausC6-JvXr-yvtQuVGX/exec';
 
 const cacheLocal =
 localStorage.getItem('dashboard_vendas_cache');
@@ -402,7 +402,7 @@ async function atualizarServidorEmSegundoPlano(){
 try{
 
 const url =
-'https://script.google.com/macros/s/AKfycbwhRhN4FMhCLy4abvrZ4JjAu6JkQFurf_CY5eyyoB010FWGkHIl3Jc15NNudk6aRoOz/exec';
+'https://script.google.com/macros/s/AKfycbx6qiKN8B72HDasjWiyd8NMluboduWGGUQToCgHmVhCOtsZKausC6-JvXr-yvtQuVGX/exec';
 
 const resposta = await fetch(url + '?t=' + Date.now());
 const novosDados = await resposta.json();
