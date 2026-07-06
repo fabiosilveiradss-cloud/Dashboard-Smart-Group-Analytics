@@ -315,6 +315,8 @@ let dados = [];
 let filtrados = [];
 let paginaProdutos = 1;
 let produtosAgrupadosGlobal = {};
+
+const PRODUTOS_POR_PAGINA = 100;
   
 
 let produtoSelecionado = '';
@@ -1424,15 +1426,18 @@ document.getElementById('produtos').innerHTML =
 paginaProdutos = 1;
 
 produtosAgrupadosGlobal = produtosAgrupados;
-  console.log('Total produtos agrupados:', Object.keys(produtosAgrupadosGlobal).length);
 
-  setTimeout(() => {
+setTimeout(() => {
 
-    barras('produtos', produtosAgrupadosGlobal, 100);
+    barras(
+        'produtos',
+        produtosAgrupadosGlobal,
+        PRODUTOS_POR_PAGINA
+    );
 
     mostrarBotaoProdutos();
 
-}, 100);
+},100);
 
 }
 
