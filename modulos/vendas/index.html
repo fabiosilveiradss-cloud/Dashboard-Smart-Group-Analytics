@@ -325,10 +325,7 @@ let produtoDetalheHTML = '';
 let clientesSelecionados = [];
 let representantesSelecionados = [];
   
-
 async function carregarAutomatico(){
-
-try{
 
 const url =
 'https://script.google.com/macros/s/AKfycbwhRhN4FMhCLy4abvrZ4JjAu6JkQFurf_CY5eyyoB010FWGkHIl3Jc15NNudk6aRoOz/exec';
@@ -358,13 +355,10 @@ setTimeout(() => {
 }, 5000);
 
 return;
-  
-// deixa o dashboard abrir primeiro
-await new Promise(resolve => setTimeout(resolve, 300));
 
 }
 
-}
+try{
 
 const resposta =
 await fetch(
@@ -416,40 +410,12 @@ popularAnos();
 
 aplicarFiltros();
 
-console.log(
-'Carregado pelo cache após erro:',
-dados.length
-);
-
-}else{
-
-const produtos =
-document.getElementById('produtos');
-
-if(produtos){
-
-produtos.innerHTML =
-`
-<div style="
-padding:20px;
-background:#7f1d1d;
-border-radius:12px;
-color:white;
-text-align:center;
-">
-Não foi possível carregar os dados neste aparelho.
-<br>
-Tente novamente em uma internet estável.
-</div>
-`;
-
 }
 
 }
 
 }
 
-}
 
 async function atualizarServidorEmSegundoPlano(){
 
