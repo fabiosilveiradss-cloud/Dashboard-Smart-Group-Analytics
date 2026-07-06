@@ -350,6 +350,46 @@ function prepararFiltrosDepoisDeCarregar(){
   aplicarFiltros();
 }
 
+function carregarJSONP(url){
+
+  return new Promise((resolve, reject) => {
+
+    const callbackName =
+      'callbackDashboard_' + Date.now();
+
+    window[callbackName] = function(dadosRecebidos){
+
+      resolve(dadosRecebidos);
+
+      delete window[callbackName];
+
+      script.remove();
+
+    };
+
+    const script =
+      document.createElement('script');
+
+    script.src =
+      url + '?callback=' + callbackName + '&t=' + Date.now();
+
+    script.onerror = function(){
+
+      delete window[callbackName];
+
+      script.remove();
+
+      reject('Erro JSONP');
+
+    };
+
+    document.body.appendChild(script);
+
+  });
+
+}
+  
+
 async function carregarAutomatico(){
 
 const url =
@@ -376,8 +416,7 @@ return;
 
 try{
 
-const resposta = await fetch(url + '?t=' + Date.now());
-dados = await resposta.json();
+dados = await carregarJSONP(url);
 
 localStorage.setItem(
 'dashboard_vendas_cache',
@@ -404,8 +443,7 @@ try{
 const url =
 'https://script.google.com/macros/s/AKfycbx6qiKN8B72HDasjWiyd8NMluboduWGGUQToCgHmVhCOtsZKausC6-JvXr-yvtQuVGX/exec';
 
-const resposta = await fetch(url + '?t=' + Date.now());
-const novosDados = await resposta.json();
+const novosDados = await carregarJSONP(url);
 
 dados = novosDados;
 
