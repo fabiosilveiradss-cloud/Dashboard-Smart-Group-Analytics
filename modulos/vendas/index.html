@@ -335,23 +335,18 @@ localStorage.getItem('dashboard_vendas_cache');
 
 if(cacheLocal){
 
-dados =
-JSON.parse(cacheLocal);
+dados = JSON.parse(cacheLocal);
 
 popularUF();
 popularClientesMulti();
 popularRepresentantesMulti();
 popularAnos();
-
 aplicarFiltros();
 
-console.log(
-'Dados carregados do cache local:',
-dados.length
-);
+console.log('Dados carregados do cache local:', dados.length);
 
 setTimeout(() => {
-  atualizarServidorEmSegundoPlano();
+atualizarServidorEmSegundoPlano();
 }, 5000);
 
 return;
@@ -360,57 +355,25 @@ return;
 
 try{
 
-const resposta =
-await fetch(
-url + '?t=' + Date.now()
-);
-
-const novosDados =
-await resposta.json();
-
-dados =
-novosDados;
+const resposta = await fetch(url + '?t=' + Date.now());
+dados = await resposta.json();
 
 localStorage.setItem(
 'dashboard_vendas_cache',
 JSON.stringify(dados)
 );
 
-console.log(
-'Dados atualizados do Apps Script:',
-dados.length
-);
-
 popularUF();
 popularClientesMulti();
 popularRepresentantesMulti();
 popularAnos();
-
 aplicarFiltros();
+
+console.log('Dados atualizados do Apps Script:', dados.length);
 
 }catch(e){
 
-console.error(
-'Erro ao carregar dados:',
-e
-);
-
-const cacheLocal =
-localStorage.getItem('dashboard_vendas_cache');
-
-if(cacheLocal){
-
-dados =
-JSON.parse(cacheLocal);
-
-popularUF();
-popularClientesMulti();
-popularRepresentantesMulti();
-popularAnos();
-
-aplicarFiltros();
-
-}
+console.error('Erro ao carregar dados:', e);
 
 }
 
@@ -425,7 +388,6 @@ const url =
 'https://script.google.com/macros/s/AKfycbwhRhN4FMhCLy4abvrZ4JjAu6JkQFurf_CY5eyyoB010FWGkHIl3Jc15NNudk6aRoOz/exec';
 
 const resposta = await fetch(url + '?t=' + Date.now());
-
 const novosDados = await resposta.json();
 
 dados = novosDados;
@@ -444,8 +406,6 @@ console.warn('Não foi possível atualizar em segundo plano:', e);
 }
 
 }
-
-  
 
 setInterval(
 carregarAutomatico,
