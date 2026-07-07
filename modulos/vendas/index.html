@@ -311,6 +311,9 @@ width:280px;
 
 <script>
 
+console.log('VERSAO_JSON_SEM_LOCALSTORAGE_06_07_2135');
+
+
 let dados = [];
 let filtrados = [];
 let paginaProdutos = 1;
@@ -355,29 +358,51 @@ function carregarJSONP(url){
   return new Promise((resolve, reject) => {
 
     const callbackName =
-      'callbackDashboard_' + Date.now();
+      'callbackDashboard_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+
+    const script =
+      document.createElement('script');
+
+    const tempoLimite = setTimeout(() => {
+
+      delete window[callbackName];
+
+      if(script && script.parentNode){
+        script.parentNode.removeChild(script);
+      }
+
+      reject('Tempo limite ao carregar JSONP');
+
+    }, 120000);
 
     window[callbackName] = function(dadosRecebidos){
+
+      clearTimeout(tempoLimite);
 
       resolve(dadosRecebidos);
 
       delete window[callbackName];
 
-      script.remove();
+      if(script && script.parentNode){
+        script.parentNode.removeChild(script);
+      }
 
     };
 
-    const script =
-      document.createElement('script');
+    script.async = true;
 
     script.src =
       url + '?callback=' + callbackName + '&t=' + Date.now();
 
     script.onerror = function(){
 
+      clearTimeout(tempoLimite);
+
       delete window[callbackName];
 
-      script.remove();
+      if(script && script.parentNode){
+        script.parentNode.removeChild(script);
+      }
 
       reject('Erro JSONP');
 
@@ -689,35 +714,34 @@ if(typeof v === 'number'){
 return v;
 }
 
-const txt =
+let txt =
 String(v || '').trim();
 
 if(txt === ''){
 return 0;
 }
 
-if(
-txt.includes('.') &&
-txt.includes(',')
-){
+txt = txt
+.replace(/R\$/g,'')
+.replace(/\s/g,'')
+.replace(/[^\d,.-]/g,'');
 
-return Number(
-txt
-.replace(/\./g,'')
-.replace(',','.')
-);
+if(txt.includes('.') && txt.includes(',')){
 
-}
+txt =
+txt.replace(/\./g,'')
+.replace(',','.');
 
-if(txt.includes(',')){
+}else if(txt.includes(',')){
 
-return Number(
-txt.replace(',','.')
-);
+txt =
+txt.replace(',','.');
 
 }
 
-return Number(txt);
+const n = Number(txt);
+
+return isNaN(n) ? 0 : n;
 
 }
 
