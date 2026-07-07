@@ -227,6 +227,7 @@ body {
   border-radius: 16px;
   padding: 28px;
   backdrop-filter: blur(8px);
+  cursor: pointer;
 }
 
 .card-home i {
