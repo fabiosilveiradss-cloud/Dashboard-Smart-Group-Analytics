@@ -389,76 +389,30 @@ function carregarJSONP(url){
 
 }
   
-
 async function carregarAutomatico(){
 
 const url =
 'https://script.google.com/macros/s/AKfycbx6qiKN8B72HDasjWiyd8NMluboduWGGUQToCgHmVhCOtsZKausC6-JvXr-yvtQuVGX/exec';
 
-const cacheLocal =
-localStorage.getItem('dashboard_vendas_cache');
-
-if(cacheLocal){
-
-dados = JSON.parse(cacheLocal);
-
-prepararFiltrosDepoisDeCarregar();
-
-console.log('Dados carregados do cache local:', dados.length);
-
-setTimeout(() => {
-atualizarServidorEmSegundoPlano();
-}, 5000);
-
-return;
-
-}
-
 try{
 
 dados = await carregarJSONP(url);
 
-localStorage.setItem(
-'dashboard_vendas_cache',
-JSON.stringify(dados)
-);
-
 prepararFiltrosDepoisDeCarregar();
 
-console.log('Dados atualizados do Apps Script:', dados.length);
+console.log('Dados carregados do JSON:', dados.length);
 
 }catch(e){
 
-console.error('Erro ao carregar dados:', e);
+console.error('Erro ao carregar JSON:', e);
 
 }
 
 }
-
 
 async function atualizarServidorEmSegundoPlano(){
 
-try{
-
-const url =
-'https://script.google.com/macros/s/AKfycbx6qiKN8B72HDasjWiyd8NMluboduWGGUQToCgHmVhCOtsZKausC6-JvXr-yvtQuVGX/exec';
-  
-const novosDados = await carregarJSONP(url);
-
-dados = novosDados;
-
-localStorage.setItem(
-'dashboard_vendas_cache',
-JSON.stringify(dados)
-);
-
-console.log('Cache atualizado em segundo plano:', dados.length);
-
-}catch(e){
-
-console.warn('Não foi possível atualizar em segundo plano:', e);
-
-}
+carregarAutomatico();
 
 }
 
