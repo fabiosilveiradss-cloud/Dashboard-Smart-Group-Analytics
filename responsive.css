@@ -138,3 +138,46 @@
    
 
 }
+
+
+/* AJUSTE FINAL MOBILE - DASHBOARD ANALYTICS */
+@media (max-width: 768px) {
+
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .sidebar {
+    left: -210px !important;
+  }
+
+  .sidebar.aberto {
+    left: 0 !important;
+  }
+
+  body.menu-aberto-mobile .main {
+    transform: none !important;
+  }
+
+  .main {
+    margin-left: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  .conteudo {
+    padding: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  .iframe-modulo,
+  #conteudo iframe {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: calc(100vh - 76px) !important;
+  }
+
+}
+
+
