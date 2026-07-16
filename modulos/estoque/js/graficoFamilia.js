@@ -2,14 +2,14 @@ window.familiaSelecionada = null;
 
 function obterFamilia(descricao){
 
-    if(!descricao) return "SEM FAMÍLIA";
+    if(!descricao) return "SEM FAMILIA";
 
     const texto = String(descricao)
         .trim()
         .toUpperCase()
         .replace(/\s+/g, " ");
 
-    return texto.split(" ")[0] || "SEM FAMÍLIA";
+    return texto.split(" ")[0] || "SEM FAMILIA";
 
 }
 
