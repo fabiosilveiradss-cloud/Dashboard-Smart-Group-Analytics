@@ -269,7 +269,7 @@ function desenharTopProdutos() {
 //-----------------------------------------------------
 
 function atualizarGraficoLocal(dados) {
-
+    console.log("Colunas da planilha:", Object.keys(dados[0] || {}));
     /*
     Mantivemos o nome atualizarGraficoLocal para não
     quebrar as chamadas feitas nos outros arquivos.
