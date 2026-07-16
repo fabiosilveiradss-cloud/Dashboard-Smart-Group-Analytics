@@ -2,50 +2,24 @@
 // LOCALIZAR DESCRIÇÃO DO PRODUTO
 //-----------------------------------------------------
 
+//-----------------------------------------------------
+// OBTER DESCRIÇÃO DO PRODUTO
+//-----------------------------------------------------
+
 function obterDescricaoProduto(item) {
 
-    if (!item || typeof item !== "object") {
-        return "Produto sem descrição";
+    const descricao = item["Desc.completa"];
+
+    if (
+        descricao !== undefined &&
+        descricao !== null &&
+        String(descricao).trim() !== ""
+    ) {
+        return String(descricao).trim();
     }
 
-    // Nomes comuns que podem existir na planilha
-    const nomesPossiveis = [
-        "Descrição do Produto",
-        "Descricao do Produto",
-        "Descrição Produto",
-        "Descricao Produto",
-        "Descrição",
-        "Descricao",
-        "Desc. Produto",
-        "Desc Produto",
-        "Desc.produto",
-        "Desc.prod.",
-        "Descrição do Item",
-        "Descricao do Item",
-        "Nome do Produto",
-        "Nome Produto",
-        "Denominação",
-        "Denominacao",
-        "Material",
-        "Descrição Material",
-        "Descricao Material",
-        "Descrição do Material",
-        "Descricao do Material"
-    ];
-
-    // Primeiro tenta localizar pelo nome exato
-    for (const nome of nomesPossiveis) {
-
-        const valor = item[nome];
-
-        if (
-            valor !== undefined &&
-            valor !== null &&
-            String(valor).trim() !== ""
-        ) {
-            return String(valor).trim();
-        }
-    }
+    return "Produto sem descrição";
+}
 
     //-------------------------------------------------
     // NORMALIZAR O NOME DAS COLUNAS
