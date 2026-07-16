@@ -1,5 +1,41 @@
 @media (max-width: 768px) {
 
+    .cabecalho-top-produtos {
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .titulo-top-produtos {
+    font-size: 17px !important;
+  }
+
+  .seletor-top-produtos {
+    min-width: 88px !important;
+    height: 38px !important;
+    padding: 0 8px !important;
+  }
+
+  .ranking-top-produtos {
+    height: 440px !important;
+    padding-right: 5px !important;
+  }
+
+  .top-produto-descricao {
+    max-width: 190px !important;
+    white-space: normal !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .top-produto-cabecalho {
+    align-items: flex-start !important;
+  }
+
+  .top-produto-quantidade {
+    font-size: 10px !important;
+  }
+
   body {
     overflow-x: hidden;
   }
@@ -61,12 +97,6 @@
     width: 100% !important;
     min-height: auto !important;
     overflow: hidden !important;
-  }
-
-  #graficoLocais {
-    max-width: 260px !important;
-    max-height: 260px !important;
-    margin: 0 auto !important;
   }
 
   .ranking-familias {
