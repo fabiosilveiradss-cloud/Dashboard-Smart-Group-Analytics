@@ -10,20 +10,68 @@ let dadosAtuaisTopProdutos = [];
 // LOCALIZAR DESCRIÇÃO DO PRODUTO
 //-----------------------------------------------------
 
+//-----------------------------------------------------
+// LOCALIZAR DESCRIÇÃO DO PRODUTO
+//-----------------------------------------------------
+
 function obterDescricaoProduto(item) {
 
-    return (
+    /*
+    Primeiro procura pelos nomes mais comuns.
+    */
+
+    const descricaoDireta =
         item["Descrição do Produto"] ||
         item["Descricao do Produto"] ||
+        item["Descrição Produto"] ||
+        item["Descricao Produto"] ||
         item["Desc. Produto"] ||
         item["Desc.produto"] ||
         item["Descrição"] ||
         item["Descricao"] ||
         item["Nome do Produto"] ||
+        item["Nome Produto"] ||
         item["Produto Descrição"] ||
-        ""
-    );
+        item["Produto Descricao"] ||
+        item["Desc.material"] ||
+        item["Descrição do Material"] ||
+        item["Descricao do Material"] ||
+        item["Nome do Material"];
 
+    if (descricaoDireta) {
+        return String(descricaoDireta).trim();
+    }
+
+    /*
+    Caso o nome da coluna seja diferente, procura
+    automaticamente entre todas as colunas da planilha.
+    */
+
+    const chaveDescricao = Object.keys(item).find(chave => {
+
+        const chaveNormalizada = chave
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "");
+
+        return (
+            chaveNormalizada.includes("descricao") ||
+            chaveNormalizada.includes("descproduto") ||
+            chaveNormalizada.includes("descrproduto") ||
+            chaveNormalizada.includes("nomedoproduto") ||
+            chaveNormalizada.includes("nomeproduto") ||
+            chaveNormalizada.includes("descmaterial") ||
+            chaveNormalizada.includes("nomedomaterial")
+        );
+
+    });
+
+    if (chaveDescricao && item[chaveDescricao]) {
+        return String(item[chaveDescricao]).trim();
+    }
+
+    return "Produto sem descrição";
 }
 
 //-----------------------------------------------------
