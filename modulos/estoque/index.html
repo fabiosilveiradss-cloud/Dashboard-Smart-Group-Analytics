@@ -122,43 +122,64 @@
 
     <section class="graficos">
 
-        <!-- LOCAL -->
+        
+        <!-- TOP PRODUTOS -->
 
-        <div class="card-grafico">
+<div class="card-grafico card-top-produtos">
 
-            <div class="titulo-card">
+    <div class="cabecalho-top-produtos">
 
-                📍 Estoque por Local
-
-            </div>
-
-            <canvas id="graficoLocais"></canvas>
-
-            <div id="legendaLocais"></div>
-
+        <div class="titulo-card titulo-top-produtos">
+            🏆 Produtos com Maior Estoque
         </div>
 
-        <!-- FAMÍLIA -->
+        <select id="quantidadeTopProdutos" class="seletor-top-produtos">
 
-        <div class="card-grafico">
+            <option value="5">Top 5</option>
+            <option value="10" selected>Top 10</option>
+            <option value="15">Top 15</option>
+            <option value="20">Top 20</option>
 
-            <div class="titulo-card">
+        </select>
 
-                📊 Estoque por Família de Material
+    </div>
 
-            </div>
+    <div
+        id="rankingTopProdutos"
+        class="ranking-top-produtos">
 
-            <button id="limparFamilia" class="btn-limpar">
-    Limpar filtro
-</button>
+        <div class="sem-dados">
+            Carregue a planilha para visualizar o ranking.
+        </div>
 
-<div class="grafico-familia-container">
-
-<div id="rankingFamilias" class="ranking-familias"></div>
+    </div>
 
 </div>
 
-    </section>
+<!-- FAMÍLIA -->
+
+    <div class="card-grafico">
+
+        <div class="titulo-card">
+            📊 Estoque por Família de Material
+        </div>
+
+        <button id="limparFamilia" class="btn-limpar">
+            Limpar filtro
+        </button>
+
+        <div class="grafico-familia-container">
+
+            <div
+                id="rankingFamilias"
+                class="ranking-familias">
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
     <!-- TABELA -->
 
