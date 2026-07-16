@@ -1,304 +1,160 @@
 //-----------------------------------------------------
-// TOP PRODUTOS COM MAIOR QUANTIDADE EM ESTOQUE
-//-----------------------------------------------------
-
-window.localSelecionado = null;
-
-let dadosAtuaisTopProdutos = [];
-
-//-----------------------------------------------------
-// LOCALIZAR DESCRIÇÃO DO PRODUTO
-//-----------------------------------------------------
-
-//-----------------------------------------------------
 // LOCALIZAR DESCRIÇÃO DO PRODUTO
 //-----------------------------------------------------
 
 function obterDescricaoProduto(item) {
 
-    /*
-    Primeiro procura pelos nomes mais comuns.
-    */
-
-    const descricaoDireta =
-        item["Descrição do Produto"] ||
-        item["Descricao do Produto"] ||
-        item["Descrição Produto"] ||
-        item["Descricao Produto"] ||
-        item["Desc. Produto"] ||
-        item["Desc.produto"] ||
-        item["Descrição"] ||
-        item["Descricao"] ||
-        item["Nome do Produto"] ||
-        item["Nome Produto"] ||
-        item["Produto Descrição"] ||
-        item["Produto Descricao"] ||
-        item["Desc.material"] ||
-        item["Descrição do Material"] ||
-        item["Descricao do Material"] ||
-        item["Nome do Material"];
-
-    if (descricaoDireta) {
-        return String(descricaoDireta).trim();
+    if (!item || typeof item !== "object") {
+        return "Produto sem descrição";
     }
 
-    /*
-    Caso o nome da coluna seja diferente, procura
-    automaticamente entre todas as colunas da planilha.
-    */
+    // Nomes comuns que podem existir na planilha
+    const nomesPossiveis = [
+        "Descrição do Produto",
+        "Descricao do Produto",
+        "Descrição Produto",
+        "Descricao Produto",
+        "Descrição",
+        "Descricao",
+        "Desc. Produto",
+        "Desc Produto",
+        "Desc.produto",
+        "Desc.prod.",
+        "Descrição do Item",
+        "Descricao do Item",
+        "Nome do Produto",
+        "Nome Produto",
+        "Denominação",
+        "Denominacao",
+        "Material",
+        "Descrição Material",
+        "Descricao Material",
+        "Descrição do Material",
+        "Descricao do Material"
+    ];
 
-    const chaveDescricao = Object.keys(item).find(chave => {
+    // Primeiro tenta localizar pelo nome exato
+    for (const nome of nomesPossiveis) {
 
-        const chaveNormalizada = chave
+        const valor = item[nome];
+
+        if (
+            valor !== undefined &&
+            valor !== null &&
+            String(valor).trim() !== ""
+        ) {
+            return String(valor).trim();
+        }
+    }
+
+    //-------------------------------------------------
+    // NORMALIZAR O NOME DAS COLUNAS
+    //-------------------------------------------------
+
+    function normalizar(texto) {
+
+        return String(texto)
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
             .toLowerCase()
             .replace(/[^a-z0-9]/g, "");
 
-        return (
-            chaveNormalizada.includes("descricao") ||
-            chaveNormalizada.includes("descproduto") ||
-            chaveNormalizada.includes("descrproduto") ||
-            chaveNormalizada.includes("nomedoproduto") ||
-            chaveNormalizada.includes("nomeproduto") ||
-            chaveNormalizada.includes("descmaterial") ||
-            chaveNormalizada.includes("nomedomaterial")
+    }
+
+    const chaves = Object.keys(item);
+
+    //-------------------------------------------------
+    // PROCURA AUTOMATICAMENTE POR DESCRIÇÃO
+    //-------------------------------------------------
+
+    const palavrasDescricao = [
+        "descricao",
+        "descr",
+        "descproduto",
+        "descitem",
+        "descmaterial",
+        "denominacao",
+        "nomeproduto",
+        "nomematerial"
+    ];
+
+    const chaveEncontrada = chaves.find(chave => {
+
+        const chaveNormalizada = normalizar(chave);
+
+        return palavrasDescricao.some(palavra =>
+            chaveNormalizada.includes(palavra)
         );
 
     });
 
-    if (chaveDescricao && item[chaveDescricao]) {
-        return String(item[chaveDescricao]).trim();
+    if (chaveEncontrada) {
+
+        const valor = item[chaveEncontrada];
+
+        if (
+            valor !== undefined &&
+            valor !== null &&
+            String(valor).trim() !== ""
+        ) {
+            return String(valor).trim();
+        }
+    }
+
+    //-------------------------------------------------
+    // ÚLTIMA TENTATIVA:
+    // LOCALIZA O TEXTO MAIS LONGO DA LINHA
+    //-------------------------------------------------
+
+    const colunasIgnoradas = [
+        "produto",
+        "qtdfisica",
+        "vlrtotest",
+        "sigemp",
+        "nomedolocaldeestoque",
+        "familia",
+        "codigofamilia",
+        "empresa",
+        "local"
+    ];
+
+    const candidatos = chaves
+        .filter(chave => {
+
+            const chaveNormalizada = normalizar(chave);
+
+            return !colunasIgnoradas.some(ignorada =>
+                chaveNormalizada === ignorada
+            );
+
+        })
+        .map(chave => ({
+            chave: chave,
+            valor: item[chave]
+        }))
+        .filter(candidato => {
+
+            const valor = candidato.valor;
+
+            if (valor === undefined || valor === null) {
+                return false;
+            }
+
+            const texto = String(valor).trim();
+
+            return (
+                texto.length >= 4 &&
+                isNaN(Number(texto))
+            );
+
+        })
+        .sort((a, b) =>
+            String(b.valor).length - String(a.valor).length
+        );
+
+    if (candidatos.length > 0) {
+        return String(candidatos[0].valor).trim();
     }
 
     return "Produto sem descrição";
 }
-
-//-----------------------------------------------------
-// PROTEGER TEXTO INSERIDO NO HTML
-//-----------------------------------------------------
-
-function escaparTextoTopProdutos(texto) {
-
-    return String(texto ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-
-}
-
-//-----------------------------------------------------
-// FORMATAR QUANTIDADE
-//-----------------------------------------------------
-
-function formatarQuantidadeTopProdutos(valor) {
-
-    const numero = Number(valor) || 0;
-
-    if (typeof formatarNumero === "function") {
-        return formatarNumero(numero);
-    }
-
-    return numero.toLocaleString("pt-BR", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 3
-    });
-
-}
-
-//-----------------------------------------------------
-// AGRUPAR E SOMAR PRODUTOS
-//-----------------------------------------------------
-
-function montarResumoTopProdutos(dados) {
-
-    const resumo = {};
-
-    dados.forEach(item => {
-
-        const codigo = String(item["Produto"] ?? "").trim();
-
-        if (!codigo) {
-            return;
-        }
-
-        const descricao = obterDescricaoProduto(item);
-        const quantidade = Number(item["Qtd.fisica"]) || 0;
-
-        if (!resumo[codigo]) {
-
-            resumo[codigo] = {
-                codigo: codigo,
-                descricao: descricao,
-                quantidade: 0
-            };
-
-        }
-
-        resumo[codigo].quantidade += quantidade;
-
-        /*
-        Mantém a primeira descrição válida encontrada.
-        */
-
-        if (!resumo[codigo].descricao && descricao) {
-            resumo[codigo].descricao = descricao;
-        }
-
-    });
-
-    return Object.values(resumo)
-        .filter(produto => produto.quantidade > 0)
-        .sort((a, b) => b.quantidade - a.quantidade);
-
-}
-
-//-----------------------------------------------------
-// DESENHAR RANKING
-//-----------------------------------------------------
-
-function desenharTopProdutos() {
-
-    const container =
-        document.getElementById("rankingTopProdutos");
-
-    const seletor =
-        document.getElementById("quantidadeTopProdutos");
-
-    if (!container) {
-        return;
-    }
-
-    const quantidadeExibida =
-        Number(seletor?.value) || 10;
-
-    const produtos =
-        montarResumoTopProdutos(dadosAtuaisTopProdutos)
-            .slice(0, quantidadeExibida);
-
-    if (produtos.length === 0) {
-
-        container.innerHTML = `
-            <div class="sem-dados">
-                Nenhum produto encontrado para os filtros selecionados.
-            </div>
-        `;
-
-        return;
-    }
-
-    const maiorQuantidade =
-        produtos[0].quantidade || 1;
-
-    container.innerHTML = produtos.map((produto, indice) => {
-
-        const percentual =
-            Math.max(
-                2,
-                (produto.quantidade / maiorQuantidade) * 100
-            );
-
-        const posicao = indice + 1;
-
-        const descricao =
-            produto.descricao || "Produto sem descrição";
-
-        return `
-
-            <div class="top-produto-item">
-
-                <div class="top-produto-cabecalho">
-
-                    <div class="top-produto-identificacao">
-
-                        <span class="top-produto-posicao">
-                            ${posicao}º
-                        </span>
-
-                        <div class="top-produto-textos">
-
-                            <strong
-                                class="top-produto-codigo"
-                                title="${escaparTextoTopProdutos(produto.codigo)}">
-
-                                ${escaparTextoTopProdutos(produto.codigo)}
-
-                            </strong>
-
-                            <span
-                                class="top-produto-descricao"
-                                title="${escaparTextoTopProdutos(descricao)}">
-
-                                ${escaparTextoTopProdutos(descricao)}
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <span class="top-produto-quantidade">
-
-                        ${formatarQuantidadeTopProdutos(produto.quantidade)} m
-
-                    </span>
-
-                </div>
-
-                <div class="top-produto-barra-fundo">
-
-                    <div
-                        class="top-produto-barra"
-                        style="width:${percentual}%">
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }).join("");
-
-}
-
-//-----------------------------------------------------
-// FUNÇÃO UTILIZADA PELO DASHBOARD
-//-----------------------------------------------------
-
-function atualizarGraficoLocal(dados) {
-    console.log("Colunas da planilha:", Object.keys(dados[0] || {}));
-    /*
-    Mantivemos o nome atualizarGraficoLocal para não
-    quebrar as chamadas feitas nos outros arquivos.
-    */
-
-    dadosAtuaisTopProdutos =
-        Array.isArray(dados) ? dados : [];
-
-    desenharTopProdutos();
-
-}
-
-//-----------------------------------------------------
-// ALTERAR TOP 5, 10, 15 OU 20
-//-----------------------------------------------------
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const seletor =
-        document.getElementById("quantidadeTopProdutos");
-
-    if (!seletor) {
-        return;
-    }
-
-    seletor.addEventListener("change", function () {
-
-        desenharTopProdutos();
-
-    });
-
-});
