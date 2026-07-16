@@ -1,82 +1,256 @@
+//-----------------------------------------------------
+// TOP PRODUTOS COM MAIOR QUANTIDADE EM ESTOQUE
+//-----------------------------------------------------
+
 window.localSelecionado = null;
 
-let chartLocal = null;
+let dadosAtuaisTopProdutos = [];
 
-function atualizarGraficoLocal(dados){
+//-----------------------------------------------------
+// LOCALIZAR DESCRIÇÃO DO PRODUTO
+//-----------------------------------------------------
 
-    const resumo = {};
+function obterDescricaoProduto(item) {
 
-    dados.forEach(item=>{
+    return (
+        item["Descrição do Produto"] ||
+        item["Descricao do Produto"] ||
+        item["Desc. Produto"] ||
+        item["Desc.produto"] ||
+        item["Descrição"] ||
+        item["Descricao"] ||
+        item["Nome do Produto"] ||
+        item["Produto Descrição"] ||
+        ""
+    );
 
-        const local = item["Nome do Local de Estoque"] || "SEM LOCAL";
-        const qtd = Number(item["Qtd.fisica"]) || 0;
+}
 
-        resumo[local] = (resumo[local] || 0) + qtd;
+//-----------------------------------------------------
+// PROTEGER TEXTO INSERIDO NO HTML
+//-----------------------------------------------------
 
-    });
+function escaparTextoTopProdutos(texto) {
 
-    const labels = Object.keys(resumo);
-    const valores = Object.values(resumo);
+    return String(texto ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 
-    const ctx = document.getElementById("graficoLocais");
+}
 
-    if(chartLocal){
-        chartLocal.destroy();
+//-----------------------------------------------------
+// FORMATAR QUANTIDADE
+//-----------------------------------------------------
+
+function formatarQuantidadeTopProdutos(valor) {
+
+    const numero = Number(valor) || 0;
+
+    if (typeof formatarNumero === "function") {
+        return formatarNumero(numero);
     }
 
-    chartLocal = new Chart(ctx, {
-        type:"pie",
-        data:{
-            labels:labels,
-            datasets:[{
-                data:valores,
-                backgroundColor:[
-                    "#2563eb",
-                    "#8b5cf6",
-                    "#f97316",
-                    "#22c55e",
-                    "#ef4444",
-                    "#06b6d4"
-                ],
-                borderWidth:0
-            }]
-        },
-        options:{
-            responsive:true,
-            plugins:{
-                legend:{
-                    position:"bottom",
-                    labels:{
-                        color:"white"
-                    }
-                },
-                tooltip:{
-                    callbacks:{
-                        label:function(context){
-                            return context.label + ": " + formatarNumero(context.raw) + " M";
-                        }
-                    }
-                }
-            },
-            onClick:function(event, elements){
-
-                if(elements.length === 0) return;
-
-                const index = elements[0].index;
-                const local = labels[index];
-
-                window.localSelecionado = local;
-
-                aplicarFiltrosTabela();
-
-                atualizarGraficoFamilia(
-                    dadosFiltrados.filter(item =>
-                        item["Nome do Local de Estoque"] === local
-                    )
-                );
-
-            }
-        }
+    return numero.toLocaleString("pt-BR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 3
     });
 
 }
+
+//-----------------------------------------------------
+// AGRUPAR E SOMAR PRODUTOS
+//-----------------------------------------------------
+
+function montarResumoTopProdutos(dados) {
+
+    const resumo = {};
+
+    dados.forEach(item => {
+
+        const codigo = String(item["Produto"] ?? "").trim();
+
+        if (!codigo) {
+            return;
+        }
+
+        const descricao = obterDescricaoProduto(item);
+        const quantidade = Number(item["Qtd.fisica"]) || 0;
+
+        if (!resumo[codigo]) {
+
+            resumo[codigo] = {
+                codigo: codigo,
+                descricao: descricao,
+                quantidade: 0
+            };
+
+        }
+
+        resumo[codigo].quantidade += quantidade;
+
+        /*
+        Mantém a primeira descrição válida encontrada.
+        */
+
+        if (!resumo[codigo].descricao && descricao) {
+            resumo[codigo].descricao = descricao;
+        }
+
+    });
+
+    return Object.values(resumo)
+        .filter(produto => produto.quantidade > 0)
+        .sort((a, b) => b.quantidade - a.quantidade);
+
+}
+
+//-----------------------------------------------------
+// DESENHAR RANKING
+//-----------------------------------------------------
+
+function desenharTopProdutos() {
+
+    const container =
+        document.getElementById("rankingTopProdutos");
+
+    const seletor =
+        document.getElementById("quantidadeTopProdutos");
+
+    if (!container) {
+        return;
+    }
+
+    const quantidadeExibida =
+        Number(seletor?.value) || 10;
+
+    const produtos =
+        montarResumoTopProdutos(dadosAtuaisTopProdutos)
+            .slice(0, quantidadeExibida);
+
+    if (produtos.length === 0) {
+
+        container.innerHTML = `
+            <div class="sem-dados">
+                Nenhum produto encontrado para os filtros selecionados.
+            </div>
+        `;
+
+        return;
+    }
+
+    const maiorQuantidade =
+        produtos[0].quantidade || 1;
+
+    container.innerHTML = produtos.map((produto, indice) => {
+
+        const percentual =
+            Math.max(
+                2,
+                (produto.quantidade / maiorQuantidade) * 100
+            );
+
+        const posicao = indice + 1;
+
+        const descricao =
+            produto.descricao || "Produto sem descrição";
+
+        return `
+
+            <div class="top-produto-item">
+
+                <div class="top-produto-cabecalho">
+
+                    <div class="top-produto-identificacao">
+
+                        <span class="top-produto-posicao">
+                            ${posicao}º
+                        </span>
+
+                        <div class="top-produto-textos">
+
+                            <strong
+                                class="top-produto-codigo"
+                                title="${escaparTextoTopProdutos(produto.codigo)}">
+
+                                ${escaparTextoTopProdutos(produto.codigo)}
+
+                            </strong>
+
+                            <span
+                                class="top-produto-descricao"
+                                title="${escaparTextoTopProdutos(descricao)}">
+
+                                ${escaparTextoTopProdutos(descricao)}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <span class="top-produto-quantidade">
+
+                        ${formatarQuantidadeTopProdutos(produto.quantidade)} m
+
+                    </span>
+
+                </div>
+
+                <div class="top-produto-barra-fundo">
+
+                    <div
+                        class="top-produto-barra"
+                        style="width:${percentual}%">
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }).join("");
+
+}
+
+//-----------------------------------------------------
+// FUNÇÃO UTILIZADA PELO DASHBOARD
+//-----------------------------------------------------
+
+function atualizarGraficoLocal(dados) {
+
+    /*
+    Mantivemos o nome atualizarGraficoLocal para não
+    quebrar as chamadas feitas nos outros arquivos.
+    */
+
+    dadosAtuaisTopProdutos =
+        Array.isArray(dados) ? dados : [];
+
+    desenharTopProdutos();
+
+}
+
+//-----------------------------------------------------
+// ALTERAR TOP 5, 10, 15 OU 20
+//-----------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const seletor =
+        document.getElementById("quantidadeTopProdutos");
+
+    if (!seletor) {
+        return;
+    }
+
+    seletor.addEventListener("change", function () {
+
+        desenharTopProdutos();
+
+    });
+
+});
