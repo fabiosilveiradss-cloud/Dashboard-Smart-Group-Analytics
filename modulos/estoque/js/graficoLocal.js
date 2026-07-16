@@ -1,14 +1,18 @@
 //-----------------------------------------------------
-// LOCALIZAR DESCRIÇÃO DO PRODUTO
+// TOP PRODUTOS COM MAIOR ESTOQUE
 //-----------------------------------------------------
 
+window.localSelecionado = null;
+
+let dadosAtuaisTopProdutos = [];
+
 //-----------------------------------------------------
-// OBTER DESCRIÇÃO DO PRODUTO
+// OBTER DESCRIÇÃO
 //-----------------------------------------------------
 
 function obterDescricaoProduto(item) {
 
-    const descricao = item["Desc.completa"];
+    const descricao = item?.["Desc.completa"];
 
     if (
         descricao !== undefined &&
@@ -21,114 +25,218 @@ function obterDescricaoProduto(item) {
     return "Produto sem descrição";
 }
 
-    //-------------------------------------------------
-    // NORMALIZAR O NOME DAS COLUNAS
-    //-------------------------------------------------
+//-----------------------------------------------------
+// PROTEGER TEXTO NO HTML
+//-----------------------------------------------------
 
-    function normalizar(texto) {
+function escaparTextoTopProdutos(texto) {
 
-        return String(texto)
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .replace(/[^a-z0-9]/g, "");
+    return String(texto ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
+//-----------------------------------------------------
+// FORMATAR QUANTIDADE
+//-----------------------------------------------------
+
+function formatarQuantidadeTopProdutos(valor) {
+
+    const numero = Number(valor) || 0;
+
+    if (typeof formatarNumero === "function") {
+        return formatarNumero(numero);
     }
 
-    const chaves = Object.keys(item);
-
-    //-------------------------------------------------
-    // PROCURA AUTOMATICAMENTE POR DESCRIÇÃO
-    //-------------------------------------------------
-
-    const palavrasDescricao = [
-        "descricao",
-        "descr",
-        "descproduto",
-        "descitem",
-        "descmaterial",
-        "denominacao",
-        "nomeproduto",
-        "nomematerial"
-    ];
-
-    const chaveEncontrada = chaves.find(chave => {
-
-        const chaveNormalizada = normalizar(chave);
-
-        return palavrasDescricao.some(palavra =>
-            chaveNormalizada.includes(palavra)
-        );
-
+    return numero.toLocaleString("pt-BR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 3
     });
+}
 
-    if (chaveEncontrada) {
+//-----------------------------------------------------
+// AGRUPAR OS PRODUTOS
+//-----------------------------------------------------
 
-        const valor = item[chaveEncontrada];
+function montarResumoTopProdutos(dados) {
+
+    const resumo = {};
+
+    dados.forEach(item => {
+
+        const codigo =
+            String(item?.Produto ?? "").trim();
+
+        if (!codigo) {
+            return;
+        }
+
+        const descricao =
+            obterDescricaoProduto(item);
+
+        const quantidade =
+            Number(item?.["Qtd.fisica"]) || 0;
+
+        if (!resumo[codigo]) {
+
+            resumo[codigo] = {
+                codigo: codigo,
+                descricao: descricao,
+                unidade: item?.UN || "m",
+                quantidade: 0
+            };
+        }
+
+        resumo[codigo].quantidade += quantidade;
 
         if (
-            valor !== undefined &&
-            valor !== null &&
-            String(valor).trim() !== ""
+            resumo[codigo].descricao === "Produto sem descrição" &&
+            descricao !== "Produto sem descrição"
         ) {
-            return String(valor).trim();
+            resumo[codigo].descricao = descricao;
         }
+    });
+
+    return Object.values(resumo)
+        .filter(produto => produto.quantidade > 0)
+        .sort((a, b) => b.quantidade - a.quantidade);
+}
+
+//-----------------------------------------------------
+// DESENHAR O RANKING
+//-----------------------------------------------------
+
+function desenharTopProdutos() {
+
+    const container =
+        document.getElementById("rankingTopProdutos");
+
+    const seletor =
+        document.getElementById("quantidadeTopProdutos");
+
+    if (!container) {
+        return;
     }
 
-    //-------------------------------------------------
-    // ÚLTIMA TENTATIVA:
-    // LOCALIZA O TEXTO MAIS LONGO DA LINHA
-    //-------------------------------------------------
+    const limite =
+        Number(seletor?.value) || 10;
 
-    const colunasIgnoradas = [
-        "produto",
-        "qtdfisica",
-        "vlrtotest",
-        "sigemp",
-        "nomedolocaldeestoque",
-        "familia",
-        "codigofamilia",
-        "empresa",
-        "local"
-    ];
+    const produtos =
+        montarResumoTopProdutos(dadosAtuaisTopProdutos)
+            .slice(0, limite);
 
-    const candidatos = chaves
-        .filter(chave => {
+    if (produtos.length === 0) {
 
-            const chaveNormalizada = normalizar(chave);
+        container.innerHTML = `
+            <div class="sem-dados">
+                Nenhum produto encontrado para os filtros selecionados.
+            </div>
+        `;
 
-            return !colunasIgnoradas.some(ignorada =>
-                chaveNormalizada === ignorada
-            );
+        return;
+    }
 
-        })
-        .map(chave => ({
-            chave: chave,
-            valor: item[chave]
-        }))
-        .filter(candidato => {
+    const maiorQuantidade =
+        produtos[0]?.quantidade || 1;
 
-            const valor = candidato.valor;
+    container.innerHTML = produtos.map((produto, indice) => {
 
-            if (valor === undefined || valor === null) {
-                return false;
-            }
-
-            const texto = String(valor).trim();
-
-            return (
-                texto.length >= 4 &&
-                isNaN(Number(texto))
-            );
-
-        })
-        .sort((a, b) =>
-            String(b.valor).length - String(a.valor).length
+        const percentual = Math.max(
+            2,
+            (produto.quantidade / maiorQuantidade) * 100
         );
 
-    if (candidatos.length > 0) {
-        return String(candidatos[0].valor).trim();
+        return `
+            <div class="top-produto-item">
+
+                <div class="top-produto-cabecalho">
+
+                    <div class="top-produto-identificacao">
+
+                        <span class="top-produto-posicao">
+                            ${indice + 1}º
+                        </span>
+
+                        <div class="top-produto-textos">
+
+                            <strong class="top-produto-codigo">
+                                ${escaparTextoTopProdutos(produto.codigo)}
+                            </strong>
+
+                            <span
+                                class="top-produto-descricao"
+                                title="${escaparTextoTopProdutos(produto.descricao)}">
+
+                                ${escaparTextoTopProdutos(produto.descricao)}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <span class="top-produto-quantidade">
+
+                        ${formatarQuantidadeTopProdutos(produto.quantidade)}
+                        ${escaparTextoTopProdutos(produto.unidade)}
+
+                    </span>
+
+                </div>
+
+                <div class="top-produto-barra-fundo">
+
+                    <div
+                        class="top-produto-barra"
+                        style="width: ${percentual}%">
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+}
+
+//-----------------------------------------------------
+// FUNÇÃO CHAMADA PELO APP.JS
+//-----------------------------------------------------
+
+function atualizarGraficoLocal(dados) {
+
+    dadosAtuaisTopProdutos =
+        Array.isArray(dados) ? dados : [];
+
+    desenharTopProdutos();
+}
+
+/*
+Deixa a função disponível globalmente.
+Isso garante que o app.js consiga chamá-la.
+*/
+
+window.atualizarGraficoLocal = atualizarGraficoLocal;
+
+//-----------------------------------------------------
+// ALTERAÇÃO TOP 5, 10, 15 OU 20
+//-----------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const seletor =
+        document.getElementById("quantidadeTopProdutos");
+
+    if (!seletor) {
+        return;
     }
 
-    return "Produto sem descrição";
-}
+    seletor.addEventListener("change", function () {
+        desenharTopProdutos();
+    });
+});
+
+console.log("graficoLocal.js carregado corretamente");
