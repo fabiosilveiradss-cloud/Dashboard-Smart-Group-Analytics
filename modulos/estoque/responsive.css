@@ -125,26 +125,21 @@
 
 .produtos th:nth-child(1),
 .produtos td:nth-child(1) {
-  width: 35px !important;
+    width: 75px !important;
 }
 
 .produtos th:nth-child(2),
 .produtos td:nth-child(2) {
-  width: 65px !important;
+    width: auto !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    text-align: left !important;
 }
 
 .produtos th:nth-child(3),
 .produtos td:nth-child(3) {
-  width: auto !important;
-  white-space: normal !important;
-  word-break: break-word !important;
-  text-align: left !important;
-}
-
-.produtos th:nth-child(4),
-.produtos td:nth-child(4) {
-  width: 80px !important;
-  text-align: center !important;
+    width: 90px !important;
+    text-align: right !important;
 }
 
   /* TABELA MOBILE COMO APP */
@@ -162,46 +157,38 @@
 }
 
 .produtos tr {
-  position: relative;
-  padding: 14px 12px 14px 46px !important;
-  border-bottom: 1px solid rgba(255,255,255,.12);
+    position: relative;
+    padding: 14px 12px !important;
+    border-bottom: 1px solid rgba(255,255,255,.12);
 }
 
 .produtos td {
-  border: none !important;
-  padding: 4px 0 !important;
+    border: none !important;
+    padding: 4px 0 !important;
 }
 
-.produtos td:nth-child(1) {
-  position: absolute;
-  left: 12px;
-  top: 18px;
-  width: 24px !important;
-  font-size: 20px;
+.produtos td:nth-child(1)::before {
+    content: "Código: ";
+    color: #9fb8e8;
+    font-weight: 600;
 }
 
-.produtos td:nth-child(2)::before {
-  content: "Código: ";
-  color: #9fb8e8;
-  font-weight: 600;
+.produtos td:nth-child(2) {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+.produtos td:nth-child(3)::before {
+    content: "Saldo: ";
+    color: #9fb8e8;
+    font-weight: 600;
 }
 
 .produtos td:nth-child(3) {
-  font-size: 15px;
-  font-weight: 700;
-  white-space: normal !important;
-  word-break: break-word !important;
-}
-
-.produtos td:nth-child(4)::before {
-  content: "Saldo: ";
-  color: #9fb8e8;
-  font-weight: 600;
-}
-
-.produtos td:nth-child(4) {
-  color: #fff;
-  font-weight: 700;
+    color: #ffffff;
+    font-weight: 700;
 }
 
 .produtos table {
