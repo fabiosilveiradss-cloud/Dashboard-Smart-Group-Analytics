@@ -1,31 +1,40 @@
 //-----------------------------------------------------
-// TABELA
+// TABELA DE PRODUTOS
 //-----------------------------------------------------
 
-function atualizarTabela(dados){
+function atualizarTabela(dados) {
 
-    const tbody = document.getElementById("tabelaProdutos");
+    const tbody =
+        document.getElementById("tabelaProdutos");
 
     const html = dados.map(item => {
 
         const codigo = Number(item.Produto);
         const familia = item.Familia;
 
+        const descricao =
+            item["Desc.completa"] || "Produto sem descrição";
+
+        const unidade =
+            item.UN || "";
+
         return `
-            <tr class="linha-produto"
+            <tr
+                class="linha-produto"
                 data-codigo="${codigo}"
                 data-familia="${familia}"
-                data-texto="${String(item.Produto + ' ' + item["Desc.completa"]).toLowerCase()}">
-
-                <td>
-                    <button class="btnExpandir" onclick="expandirProduto(this, ${codigo})">
-                        +
-                    </button>
-                </td>
+                data-texto="${String(
+                    item.Produto + " " + descricao
+                ).toLowerCase()}">
 
                 <td>${item.Produto}</td>
-                <td>${item["Desc.completa"]}</td>
-                <td>${formatarNumero(item["Qtd.fisica"])} ${item.UN}</td>
+
+                <td>${descricao}</td>
+
+                <td>
+                    ${formatarNumero(item["Qtd.fisica"])}
+                    ${unidade}
+                </td>
 
             </tr>
         `;
@@ -33,142 +42,150 @@ function atualizarTabela(dados){
     }).join("");
 
     tbody.innerHTML = html;
-
 }
 
-function aplicarFiltrosTabela(){
+//-----------------------------------------------------
+// APLICAR FILTROS NA TABELA
+//-----------------------------------------------------
 
-    const texto = document.getElementById("pesquisaProduto")?.value.toLowerCase() || "";
-    const empresa = document.getElementById("filtroEmpresa")?.value || "";
-    const localSelect = document.getElementById("filtroLocal")?.value || "";
-    const localGrafico = window.localSelecionado || "";
-    const local = localGrafico || localSelect;
-    const familia = window.familiaSelecionada || "";
+function aplicarFiltrosTabela() {
 
-    document.querySelectorAll(".linha-detalhes").forEach(linha => linha.remove());
+    const texto =
+        document.getElementById("pesquisaProduto")
+            ?.value
+            .toLowerCase() || "";
 
-    document.querySelectorAll(".btnExpandir").forEach(btn => {
-        btn.textContent = "+";
-    });
+    const empresa =
+        document.getElementById("filtroEmpresa")
+            ?.value || "";
 
-    document.querySelectorAll(".linha-produto").forEach(linha => {
+    const localSelect =
+        document.getElementById("filtroLocal")
+            ?.value || "";
 
-        const codigo = Number(linha.dataset.codigo);
-        const textoLinha = linha.dataset.texto;
-        const familiaLinha = linha.dataset.familia;
+    const localGrafico =
+        window.localSelecionado || "";
 
-        const passaTexto = textoLinha.includes(texto);
-        const passaFamilia = !familia || familiaLinha === familia;
-        const passaEmpresaLocal = validarEmpresaLocal(codigo, empresa, local);
+    const local =
+        localGrafico || localSelect;
 
-        linha.style.display =
-            passaTexto && passaFamilia && passaEmpresaLocal
-            ? "table-row"
-            : "none";
+    const familia =
+        window.familiaSelecionada || "";
 
-    });
+    document
+        .querySelectorAll(".linha-produto")
+        .forEach(linha => {
 
-    const dadosAtuais = obterDadosFiltradosAtuais();
+            const codigo =
+                Number(linha.dataset.codigo);
 
-    const produtosAgrupados = agruparProdutos(dadosAtuais);
+            const textoLinha =
+                linha.dataset.texto || "";
+
+            const familiaLinha =
+                linha.dataset.familia || "";
+
+            const passaTexto =
+                textoLinha.includes(texto);
+
+            const passaFamilia =
+                !familia ||
+                familiaLinha === familia;
+
+            const passaEmpresaLocal =
+                validarEmpresaLocal(
+                    codigo,
+                    empresa,
+                    local
+                );
+
+            linha.style.display =
+                passaTexto &&
+                passaFamilia &&
+                passaEmpresaLocal
+                    ? "table-row"
+                    : "none";
+        });
+
+    const dadosAtuais =
+        obterDadosFiltradosAtuais();
+
+    const produtosAgrupados =
+        agruparProdutos(dadosAtuais);
 
     atualizarCards(produtosAgrupados);
     atualizarGraficoFamilia(produtosAgrupados);
     atualizarGraficoLocal(dadosAtuais);
-
 }
 
-function validarEmpresaLocal(codigo, empresa, local){
+//-----------------------------------------------------
+// VALIDAR EMPRESA E LOCAL
+//-----------------------------------------------------
 
-    if(!empresa && !local) return true;
+function validarEmpresaLocal(codigo, empresa, local) {
 
-    const locais = indiceLocaisPorProduto.get(Number(codigo)) || [];
+    if (!empresa && !local) {
+        return true;
+    }
+
+    const locais =
+        indiceLocaisPorProduto.get(Number(codigo)) || [];
 
     return locais.some(item => {
 
-        const okEmpresa = !empresa || item["Sig.emp"] === empresa;
-        const okLocal = !local || item["Nome do Local de Estoque"] === local;
+        const okEmpresa =
+            !empresa ||
+            item["Sig.emp"] === empresa;
+
+        const okLocal =
+            !local ||
+            item["Nome do Local de Estoque"] === local;
 
         return okEmpresa && okLocal;
-
     });
-
 }
 
-function expandirProduto(botao, codigo){
+//-----------------------------------------------------
+// OBTER DADOS FILTRADOS
+//-----------------------------------------------------
 
-    const linhaProduto = botao.closest("tr");
-    const proximaLinha = linhaProduto.nextElementSibling;
+function obterDadosFiltradosAtuais() {
 
-    if(proximaLinha && proximaLinha.classList.contains("linha-detalhes")){
+    const empresa =
+        document.getElementById("filtroEmpresa")
+            ?.value || "";
 
-        proximaLinha.remove();
-        botao.textContent = "+";
-        return;
+    const localSelect =
+        document.getElementById("filtroLocal")
+            ?.value || "";
 
-    }
+    const localGrafico =
+        window.localSelecionado || "";
 
-    document.querySelectorAll(".linha-detalhes").forEach(linha => linha.remove());
+    const local =
+        localGrafico || localSelect;
 
-    document.querySelectorAll(".btnExpandir").forEach(btn => {
-        btn.textContent = "+";
-    });
-
-    const detalhe = document.createElement("tr");
-    detalhe.className = "linha-detalhes";
-    detalhe.innerHTML = montarLinhaDetalhesConteudo(codigo);
-
-    linhaProduto.insertAdjacentElement("afterend", detalhe);
-
-    botao.textContent = "−";
-
-}
-
-function montarLinhaDetalhesConteudo(codigo){
-
-    const locais = indiceLocaisPorProduto.get(Number(codigo)) || [];
-
-    let htmlLocais = "";
-
-    locais.forEach(item => {
-
-        htmlLocais += `
-            <div class="linha-local">
-                <span>${item["Nome do Local de Estoque"]}</span>
-                <strong>${formatarNumero(item["Qtd.fisica"])} ${item.UN}</strong>
-            </div>
-        `;
-
-    });
-
-    return `
-        <td></td>
-        <td colspan="3">
-            <div class="box-detalhes">
-                <h4>📍 Estoque por Local</h4>
-                ${htmlLocais}
-            </div>
-        </td>
-    `;
-
-}
-
-function obterDadosFiltradosAtuais(){
-
-    const empresa = document.getElementById("filtroEmpresa")?.value || "";
-    const localSelect = document.getElementById("filtroLocal")?.value || "";
-    const localGrafico = window.localSelecionado || "";
-    const local = localGrafico || localSelect;
-    const familia = window.familiaSelecionada || "";
+    const familia =
+        window.familiaSelecionada || "";
 
     return dadosProdutos.filter(item => {
 
-        const okEmpresa = !empresa || item["Sig.emp"] === empresa;
-        const okLocal = !local || item["Nome do Local de Estoque"] === local;
-        const okFamilia = !familia || item.Familia === familia;
+        const okEmpresa =
+            !empresa ||
+            item["Sig.emp"] === empresa;
 
-        return okEmpresa && okLocal && okFamilia;
+        const okLocal =
+            !local ||
+            item["Nome do Local de Estoque"] === local;
 
+        const okFamilia =
+            !familia ||
+            item.Familia === familia;
+
+        return (
+            okEmpresa &&
+            okLocal &&
+            okFamilia
+        );
     });
-
 }
