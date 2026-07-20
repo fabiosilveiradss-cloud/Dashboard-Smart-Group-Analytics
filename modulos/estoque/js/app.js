@@ -325,6 +325,9 @@ function atualizarStatusRelatorio(
     const dataAtualizacao =
         new Date(dataISO);
 
+    const dataExibicao =
+    dataAtualizacao.toLocaleDateString("pt-BR");
+
     if (
         Number.isNaN(
             dataAtualizacao.getTime()
@@ -354,12 +357,17 @@ function atualizarStatusRelatorio(
 
     if (diferencaMinutos < 60) {
 
-        elemento.textContent =
-            diferencaMinutos <= 1
-                ? "🟢 Dados atualizados agora"
-                : "🟢 Dados atualizados há " +
-                  diferencaMinutos +
-                  " minutos";
+        const dataExibicao =
+    dataAtualizacao.toLocaleDateString("pt-BR");
+
+elemento.textContent =
+    diferencaMinutos <= 1
+        ? "📅 " + dataExibicao +
+          " — 🟢 Dados atualizados agora"
+        : "📅 " + dataExibicao +
+          " — 🟢 Dados atualizados há " +
+          diferencaMinutos +
+          " minutos";
 
         return;
     }
@@ -372,9 +380,13 @@ function atualizarStatusRelatorio(
     const minutosRestantes =
         diferencaMinutos % 60;
 
-    elemento.textContent =
-        "🔴 Relatório desatualizado há " +
-        diferencaHoras +
+  const dataExibicao =
+    dataAtualizacao.toLocaleDateString("pt-BR");
+
+elemento.textContent =
+    "📅 " + dataExibicao +
+    " — 🔴 Relatório desatualizado há " +
+    diferencaHoras +
         (
             diferencaHoras === 1
                 ? " hora"
