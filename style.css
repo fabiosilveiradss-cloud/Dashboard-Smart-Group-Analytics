@@ -369,3 +369,76 @@ body {
 .modo-fullscreen #btnFullscreen {
   display: flex !important;
 }
+
+/* =====================================
+   RESULTADOS DA BUSCA DE DASHBOARDS
+===================================== */
+
+.search-box{
+    position:relative;
+}
+
+.resultado-busca{
+    position:absolute;
+    top:calc(100% + 10px);
+    left:0;
+    right:0;
+    z-index:9999;
+
+    display:none;
+    overflow:hidden;
+
+    background:#0b234d;
+    border:1px solid #234c87;
+    border-radius:12px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.35);
+}
+
+.resultado-busca.aberto{
+    display:block;
+}
+
+.resultado-item{
+    width:100%;
+    padding:14px 16px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:4px;
+
+    border:none;
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    background:transparent;
+    color:#ffffff;
+
+    cursor:pointer;
+    text-align:left;
+}
+
+.resultado-item:last-child{
+    border-bottom:none;
+}
+
+.resultado-item:hover{
+    background:#154284;
+}
+
+.resultado-item strong{
+    font-size:14px;
+    color:#ffffff;
+}
+
+.resultado-item small{
+    font-size:12px;
+    color:#b8caef;
+}
+
+.resultado-vazio{
+    padding:16px;
+    color:#b8caef;
+    font-size:13px;
+    text-align:center;
+}
