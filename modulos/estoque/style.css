@@ -1400,3 +1400,8 @@ body {
 .ranking-top-produtos::-webkit-scrollbar-thumb:hover {
     background: #4b82ef;
 }
+
+/* Esconde o filtro de Local */
+#filtroLocal{
+    display: none !important;
+}
