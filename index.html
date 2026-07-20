@@ -82,16 +82,19 @@
       </div>
 
       <div class="top-actions">
-        <div class="search-box">
-          <input type="text" placeholder="Buscar por módulo, relatório, cliente...">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
+     <div class="search-box">
+  <input
+    type="text"
+    id="buscaModulo"
+    placeholder="Buscar dashboard..."
+    autocomplete="off"
+  >
 
-        <button class="icon-btn">
-          <i class="fa-regular fa-bell"></i>
-          <span>3</span>
-        </button>
+  <i class="fa-solid fa-magnifying-glass"></i>
 
+  <div id="resultadoBusca" class="resultado-busca"></div>
+</div>
+        
        <button id="btnFullscreen" class="icon-btn" onclick="alternarTelaCheia()">
     <i id="iconeFullscreen" class="fa-solid fa-expand"></i>
 </button>
