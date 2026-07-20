@@ -1,208 +1,518 @@
+//-----------------------------------------------------
+// CONFIGURAÇÃO DA API DE ESTOQUE
+//-----------------------------------------------------
+
+const URL_API_ESTOQUE =
+"https://script.google.com/macros/s/AKfycbwYonNQTMjuZSmtN3c7oaweWCMIDPDu3nCxg9cEL4KzCqpJCUwPYUoee61ctLtDwzyiDQ/exec";
+
+
+//-----------------------------------------------------
+// VARIÁVEIS GLOBAIS
+//-----------------------------------------------------
+
 let dadosProdutos = [];
 let dadosFiltrados = [];
 let indiceLocaisPorProduto = new Map();
 
-console.log("APP INICIOU");
-// alert("APP INICIOU");  // pode comentar ou apagar depois
+window.dadosProdutos = dadosProdutos;
+window.dadosFiltrados = dadosFiltrados;
 
-let detalheAberto = null;
+console.log("APP ESTOQUE INICIOU");
 
-function toggleDetalhes(id, botao){
 
-    const detalhe = document.getElementById(id);
+//-----------------------------------------------------
+// CARREGAMENTO AUTOMÁTICO VIA JSONP
+//-----------------------------------------------------
 
-    if(detalheAberto && detalheAberto !== detalhe){
+function carregarEstoqueAutomaticamente() {
 
-        detalheAberto.style.display = "none";
+    atualizarTextoCarregamento(
+        "⏳ Carregando dados do estoque..."
+    );
 
-        document.querySelectorAll('.btn-expandir').forEach(btn=>{
-            btn.innerHTML = "+";
-        });
-    }
+    const nomeCallback =
+        "receberDadosEstoque_" + Date.now();
 
-    if(detalhe.style.display === "table-row"){
+    const script =
+        document.createElement("script");
 
-        detalhe.style.display = "none";
-        botao.innerHTML = "+";
-        detalheAberto = null;
+    const timeout = setTimeout(function () {
 
-    }else{
+        removerScriptJsonp(script, nomeCallback);
 
-        detalhe.style.display = "table-row";
-        botao.innerHTML = "−";
-        detalheAberto = detalhe;
-    }
-}
+        mostrarErroCarregamento(
+            "Tempo limite excedido ao carregar o estoque."
+        );
 
-document.addEventListener('click', function(e){
+    }, 30000);
 
-    if(
-        !e.target.closest('.linha-produto') &&
-        !e.target.closest('.detalhes') &&
-        !e.target.closest('.btn-expandir')
-    ){
 
-        document.querySelectorAll('.detalhes').forEach(item=>{
-            item.style.display = "none";
-        });
+    window[nomeCallback] = function (resultado) {
 
-        document.querySelectorAll('.btn-expandir').forEach(btn=>{
-            btn.innerHTML = "+";
-        });
+        clearTimeout(timeout);
 
-        detalheAberto = null;
-    }
+        removerScriptJsonp(
+            script,
+            nomeCallback
+        );
 
-});
+        try {
 
-function preencherFiltros(dados){
+            if (
+                !resultado ||
+                !Array.isArray(resultado.dados)
+            ) {
 
-    const empresas =
-    [...new Set(dados.map(item => item["Sig.emp"]))].sort();
+                throw new Error(
+                    "A API não retornou dados válidos."
+                );
+            }
 
-   const locais =
-    [...new Set(dados.map(item => item["Nome do Local de Estoque"]))].sort();
+            prepararDadosEstoque(
+                resultado.dados
+            );
 
-    const filtroEmpresa =
-        document.getElementById("filtroEmpresa");
+            atualizarStatusRelatorio(
+                resultado.atualizadoEmISO,
+                resultado.atualizadoEm
+            );
 
-    const filtroLocal =
-        document.getElementById("filtroLocal");
+            console.log(
+                "Dados do estoque carregados:",
+                resultado.dados.length
+            );
 
-    filtroEmpresa.innerHTML =
-        '<option value="">Todas Empresas</option>';
+            console.log(
+                "Arquivo de origem:",
+                resultado.arquivoOrigem
+            );
 
-    empresas.forEach(emp=>{
+        } catch (erro) {
 
-        filtroEmpresa.innerHTML +=
-        `<option value="${emp}">${emp}</option>`;
+            console.error(
+                "Erro ao preparar o estoque:",
+                erro
+            );
 
-    });
-
-    filtroLocal.innerHTML =
-        '<option value="">Todos Locais</option>';
-
-    locais.forEach(local=>{
-
-        filtroLocal.innerHTML +=
-        `<option value="${local}">${local}</option>`;
-
-    });
-
-}
-
-document.getElementById("arquivoExcel").addEventListener("change", function(event){
-
-    const arquivo = event.target.files[0];
-
-    if(!arquivo){
-        alert("Nenhum arquivo selecionado");
-        return;
-    }
-
-    console.log("Arquivo selecionado:", arquivo.name);
-
-    const reader = new FileReader();
-
-    reader.onload = function(e){
-        console.log("ENTROU NO READER");
-        const data = new Uint8Array(e.target.result);
-
-        const workbook = XLSX.read(data, {
-            type: "array"
-        });
-
-        console.log("Planilhas:", workbook.SheetNames);
-
-        const worksheet =
-            workbook.Sheets[workbook.SheetNames[0]];
-
-     const json = XLSX.utils.sheet_to_json(worksheet);
-
-     json.forEach(item => {
-    item.Familia = obterFamilia(item["Desc.completa"]);
-});
-
-dadosProdutos = json;
-
-indiceLocaisPorProduto = criarIndiceLocais(dadosProdutos);
-
-dadosFiltrados = [...json];
-
-const produtosAgrupados = agruparProdutos(dadosProdutos);
-
-dadosFiltrados = produtosAgrupados;
-
-carregarDashboard(produtosAgrupados);
-
+            mostrarErroCarregamento(
+                erro.message
+            );
+        }
     };
 
-    reader.readAsArrayBuffer(arquivo);
 
-});
+    script.onerror = function () {
 
-console.log(document.getElementById("pesquisaProduto"));
-document.getElementById("pesquisaProduto").addEventListener("input", function() {
-  
-console.log("DIGITOU:", this.value);
+        clearTimeout(timeout);
 
-  
-aplicarFiltrosTabela();
+        removerScriptJsonp(
+            script,
+            nomeCallback
+        );
 
-});
+        mostrarErroCarregamento(
+            "Não foi possível acessar a API de estoque."
+        );
+    };
 
-document.getElementById("filtroEmpresa").addEventListener("change", function(){
 
-    aplicarFiltrosTabela();
+    script.src =
+        URL_API_ESTOQUE +
+        "?callback=" +
+        encodeURIComponent(nomeCallback) +
+        "&t=" +
+        Date.now();
 
-});
+    document.body.appendChild(script);
+}
 
-document.getElementById("filtroLocal").addEventListener("change", function(){
 
-    aplicarFiltrosTabela();
+//-----------------------------------------------------
+// PREPARAR OS DADOS RECEBIDOS
+//-----------------------------------------------------
 
-});
+function prepararDadosEstoque(dadosRecebidos) {
+
+    dadosProdutos =
+        dadosRecebidos.map(function (item) {
+
+            const produto = {
+                ...item
+            };
+
+            produto["Qtd.fisica"] =
+                converterNumeroBrasileiro(
+                    produto["Qtd.fisica"]
+                );
+
+            produto.Familia =
+                obterFamilia(
+                    produto["Desc.completa"]
+                );
+
+            return produto;
+        });
+
+    window.dadosProdutos =
+        dadosProdutos;
+
+    indiceLocaisPorProduto =
+        criarIndiceLocais(
+            dadosProdutos
+        );
+
+    window.indiceLocaisPorProduto =
+        indiceLocaisPorProduto;
+
+    const produtosAgrupados =
+        agruparProdutos(
+            dadosProdutos
+        );
+
+    dadosFiltrados =
+        produtosAgrupados;
+
+    window.dadosFiltrados =
+        dadosFiltrados;
+
+    carregarDashboard(
+        produtosAgrupados
+    );
+}
+
+
+//-----------------------------------------------------
+// CONVERTER NÚMERO DO RELATÓRIO
+//-----------------------------------------------------
+
+function converterNumeroBrasileiro(valor) {
+
+    if (
+        typeof valor === "number"
+    ) {
+        return valor;
+    }
+
+    const texto =
+        String(valor || "")
+            .trim();
+
+    if (!texto) {
+        return 0;
+    }
+
+    const normalizado =
+        texto
+            .replace(/\./g, "")
+            .replace(",", ".");
+
+    const numero =
+        Number(normalizado);
+
+    return Number.isFinite(numero)
+        ? numero
+        : 0;
+}
+
 
 //-----------------------------------------------------
 // CENTRAL DO DASHBOARD
 //-----------------------------------------------------
 
-function carregarDashboard(dados){
+function carregarDashboard(dadosAgrupados) {
 
-    console.log("CHEGOU NA CENTRAL");
+    console.log(
+        "CHEGOU NA CENTRAL DO ESTOQUE"
+    );
 
-    dadosFiltrados = dados;
+    dadosFiltrados =
+        dadosAgrupados;
 
-    preencherFiltros(dados);
+    window.dadosFiltrados =
+        dadosFiltrados;
 
-    atualizarCards(dados);
+    /*
+    Os filtros Empresa e Local precisam ser
+    preenchidos com os dados originais, pois os
+    produtos agrupados podem não possuir todos
+    os locais e empresas.
+    */
 
-    atualizarGraficoLocal(dados);
+    preencherFiltros(
+        dadosProdutos
+    );
 
-    atualizarGraficoFamilia(dados);
+    atualizarCards(
+        dadosAgrupados
+    );
 
-    atualizarTabela(dados);
+    atualizarGraficoLocal(
+        dadosAgrupados
+    );
 
+    atualizarGraficoFamilia(
+        dadosAgrupados
+    );
+
+    atualizarTabela(
+        dadosAgrupados
+    );
 }
 
-console.log("APP.JS CARREGOU");
 
-function criarIndiceLocais(dados){
+//-----------------------------------------------------
+// ÍNDICE DE LOCAIS POR PRODUTO
+//-----------------------------------------------------
 
-    const indice = new Map();
+function criarIndiceLocais(dados) {
 
-    dados.forEach(item => {
+    const indice =
+        new Map();
 
-        const codigo = Number(item.Produto);
+    dados.forEach(function (item) {
 
-        if(!indice.has(codigo)){
-            indice.set(codigo, []);
+        const codigo =
+            String(
+                item.Produto || ""
+            ).trim();
+
+        if (!indice.has(codigo)) {
+
+            indice.set(
+                codigo,
+                []
+            );
         }
 
-        indice.get(codigo).push(item);
-
+        indice
+            .get(codigo)
+            .push(item);
     });
 
     return indice;
-
 }
+
+
+//-----------------------------------------------------
+// STATUS DE ATUALIZAÇÃO
+//-----------------------------------------------------
+
+function atualizarStatusRelatorio(
+    dataISO,
+    dataFormatada
+) {
+
+    const elemento =
+        document.getElementById(
+            "ultimaAtualizacao"
+        );
+
+    if (!elemento) {
+        return;
+    }
+
+    if (!dataISO) {
+
+        elemento.textContent =
+            dataFormatada
+                ? "🟢 Dados atualizados em " +
+                  dataFormatada
+                : "⚠️ Data de atualização indisponível";
+
+        return;
+    }
+
+    const dataAtualizacao =
+        new Date(dataISO);
+
+    if (
+        Number.isNaN(
+            dataAtualizacao.getTime()
+        )
+    ) {
+
+        elemento.textContent =
+            "🟢 Dados atualizados em " +
+            (dataFormatada || "--");
+
+        return;
+    }
+
+    const agora =
+        new Date();
+
+    const diferencaMinutos =
+        Math.max(
+            0,
+            Math.floor(
+                (
+                    agora.getTime() -
+                    dataAtualizacao.getTime()
+                ) / 60000
+            )
+        );
+
+    if (diferencaMinutos < 60) {
+
+        elemento.textContent =
+            diferencaMinutos <= 1
+                ? "🟢 Dados atualizados agora"
+                : "🟢 Dados atualizados há " +
+                  diferencaMinutos +
+                  " minutos";
+
+        return;
+    }
+
+    const diferencaHoras =
+        Math.floor(
+            diferencaMinutos / 60
+        );
+
+    const minutosRestantes =
+        diferencaMinutos % 60;
+
+    elemento.textContent =
+        "🔴 Relatório desatualizado há " +
+        diferencaHoras +
+        (
+            diferencaHoras === 1
+                ? " hora"
+                : " horas"
+        ) +
+        (
+            minutosRestantes > 0
+                ? " e " +
+                  minutosRestantes +
+                  " minutos"
+                : ""
+        );
+}
+
+
+//-----------------------------------------------------
+// MENSAGENS DE CARREGAMENTO
+//-----------------------------------------------------
+
+function atualizarTextoCarregamento(
+    mensagem
+) {
+
+    const elemento =
+        document.getElementById(
+            "ultimaAtualizacao"
+        );
+
+    if (elemento) {
+
+        elemento.textContent =
+            mensagem;
+    }
+}
+
+
+function mostrarErroCarregamento(
+    mensagem
+) {
+
+    console.error(
+        "Erro ao carregar estoque:",
+        mensagem
+    );
+
+    atualizarTextoCarregamento(
+        "🔴 Erro ao carregar os dados"
+    );
+
+    const ranking =
+        document.getElementById(
+            "rankingTopProdutos"
+        );
+
+    if (ranking) {
+
+        ranking.innerHTML =
+            '<div class="sem-dados">' +
+            mensagem +
+            "</div>";
+    }
+}
+
+
+//-----------------------------------------------------
+// LIMPEZA DO JSONP
+//-----------------------------------------------------
+
+function removerScriptJsonp(
+    script,
+    nomeCallback
+) {
+
+    if (
+        script &&
+        script.parentNode
+    ) {
+
+        script.parentNode.removeChild(
+            script
+        );
+    }
+
+    try {
+
+        delete window[nomeCallback];
+
+    } catch (erro) {
+
+        window[nomeCallback] =
+            undefined;
+    }
+}
+
+
+//-----------------------------------------------------
+// EVENTOS DOS FILTROS
+//-----------------------------------------------------
+
+document
+    .getElementById(
+        "pesquisaProduto"
+    )
+    .addEventListener(
+        "input",
+        aplicarFiltrosTabela
+    );
+
+
+document
+    .getElementById(
+        "filtroEmpresa"
+    )
+    .addEventListener(
+        "change",
+        aplicarFiltrosTabela
+    );
+
+
+document
+    .getElementById(
+        "filtroLocal"
+    )
+    .addEventListener(
+        "change",
+        aplicarFiltrosTabela
+    );
+
+
+//-----------------------------------------------------
+// INICIAR AUTOMATICAMENTE
+//-----------------------------------------------------
+
+document.addEventListener(
+    "DOMContentLoaded",
+    carregarEstoqueAutomaticamente
+);
+
+console.log(
+    "APP.JS DO ESTOQUE CARREGADO"
+);
