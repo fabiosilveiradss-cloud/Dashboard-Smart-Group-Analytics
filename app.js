@@ -43,7 +43,7 @@ case "estoque":
 
     conteudo.innerHTML = `
         <iframe 
-            src="modulos/estoque/index.html?v=6"
+            src="modulos/estoque/index.html?v=8"
             class="iframe-modulo">
         </iframe>
     `;
