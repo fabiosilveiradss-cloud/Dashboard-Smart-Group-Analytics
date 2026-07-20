@@ -106,10 +106,3 @@ document.getElementById("limparFamilia").addEventListener("click", function(){
   
 });
 
-const dadosAtuais = obterDadosFiltradosAtuais();
-
-const dadosAgrupadosAtuais = agruparProdutos(dadosAtuais);
-
-atualizarCards(dadosAgrupadosAtuais);
-
-atualizarGraficoFamilia(dadosAgrupadosAtuais);
