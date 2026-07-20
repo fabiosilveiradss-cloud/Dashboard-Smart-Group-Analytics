@@ -53,97 +53,59 @@ function aplicarFiltrosTabela() {
     const texto =
         document.getElementById("pesquisaProduto")
             ?.value
-            .toLowerCase() || "";
-
-    const empresa =
-        document.getElementById("filtroEmpresa")
-            ?.value || "";
-
-    const localSelect =
-        document.getElementById("filtroLocal")
-            ?.value || "";
-
-    const localGrafico =
-        window.localSelecionado || "";
-
-    const local =
-        localGrafico || localSelect;
-
-    const familia =
-        window.familiaSelecionada || "";
-
-    document
-        .querySelectorAll(".linha-produto")
-        .forEach(linha => {
-
-            const codigo =
-                Number(linha.dataset.codigo);
-
-            const textoLinha =
-                linha.dataset.texto || "";
-
-            const familiaLinha =
-                linha.dataset.familia || "";
-
-            const passaTexto =
-                textoLinha.includes(texto);
-
-            const passaFamilia =
-                !familia ||
-                familiaLinha === familia;
-
-            const passaEmpresaLocal =
-                validarEmpresaLocal(
-                    codigo,
-                    empresa,
-                    local
-                );
-
-            linha.style.display =
-                passaTexto &&
-                passaFamilia &&
-                passaEmpresaLocal
-                    ? "table-row"
-                    : "none";
-        });
+            .toLowerCase()
+            .trim() || "";
 
     const dadosAtuais =
         obterDadosFiltradosAtuais();
 
-    const produtosAgrupados =
+    let produtosAgrupados =
         agruparProdutos(dadosAtuais);
 
-    atualizarCards(produtosAgrupados);
-    atualizarGraficoFamilia(produtosAgrupados);
-    atualizarGraficoLocal(dadosAtuais);
-}
+    if (texto) {
 
-//-----------------------------------------------------
-// VALIDAR EMPRESA E LOCAL
-//-----------------------------------------------------
+        produtosAgrupados =
+            produtosAgrupados.filter(item => {
 
-function validarEmpresaLocal(codigo, empresa, local) {
+                const codigo =
+                    String(item.Produto || "")
+                        .toLowerCase();
 
-    if (!empresa && !local) {
-        return true;
+                const descricao =
+                    String(
+                        item["Desc.completa"] || ""
+                    ).toLowerCase();
+
+                return (
+                    codigo.includes(texto) ||
+                    descricao.includes(texto)
+                );
+            });
     }
 
-    const locais =
-        indiceLocaisPorProduto.get(Number(codigo)) || [];
+    dadosFiltrados =
+        produtosAgrupados;
 
-    return locais.some(item => {
+    window.dadosFiltrados =
+        produtosAgrupados;
 
-        const okEmpresa =
-            !empresa ||
-            item["Sig.emp"] === empresa;
+    atualizarCards(
+        produtosAgrupados
+    );
 
-        const okLocal =
-            !local ||
-            item["Nome do Local de Estoque"] === local;
+    atualizarGraficoFamilia(
+        produtosAgrupados
+    );
 
-        return okEmpresa && okLocal;
-    });
+    atualizarGraficoLocal(
+        dadosAtuais
+    );
+
+    atualizarTabela(
+        produtosAgrupados
+    );
 }
+
 
 //-----------------------------------------------------
 // OBTER DADOS FILTRADOS
