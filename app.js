@@ -34,7 +34,7 @@ function abrirModulo(modulo, elemento){
 
         break;
 
-      case "estoque":
+case "estoque":
 
     titulo.innerText = "Estoque Comercial";
 
@@ -43,7 +43,7 @@ function abrirModulo(modulo, elemento){
 
     conteudo.innerHTML = `
         <iframe 
-            src="modulos/estoque/index.html"
+            src="modulos/estoque/index.html?v=6"
             class="iframe-modulo">
         </iframe>
     `;
