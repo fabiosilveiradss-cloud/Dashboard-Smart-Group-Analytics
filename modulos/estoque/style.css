@@ -325,7 +325,7 @@ section{
 
 .graficos{
     display:grid;
-    grid-template-columns:350px 1fr;
+    grid-template-columns:1fr 1fr;
     gap:25px;
     align-items:stretch;
 }
@@ -969,9 +969,7 @@ select:hover{
 @media (max-width:1400px){
 
     .graficos{
-
-        grid-template-columns:320px 1fr;
-
+        grid-template-columns:1fr 1fr;
     }
 
 }
