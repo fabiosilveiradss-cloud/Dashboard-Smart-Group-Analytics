@@ -133,10 +133,9 @@
     <div
         id="rankingTopProdutos"
         class="ranking-top-produtos">
-
-        <div class="sem-dados">
-            Carregue a planilha para visualizar o ranking.
-        </div>
+<div class="sem-dados">
+    Carregando dados do estoque...
+</div>
 
     </div>
 
@@ -220,8 +219,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <script src="./js/util.js"></script>
 <script src="./js/processamento.js"></script>
 <script src="./js/cards.js"></script>
@@ -234,24 +231,6 @@
 <script src="./js/filtros.js"></script>
 <script src="./js/excel.js"></script>
 <script src="./js/app.js?v=4"></script>
-
-<script>
-function atualizarUltimaAtualizacao() {
-    const agora = new Date();
-
-    const data = agora.toLocaleDateString("pt-BR");
-    const hora = agora.toLocaleTimeString("pt-BR");
-
-    document.getElementById("ultimaAtualizacao").textContent =
-        `Última atualização ${data} às ${hora}`;
-}
-
-document.addEventListener("DOMContentLoaded", atualizarUltimaAtualizacao);
-
-document.getElementById("arquivoExcel").addEventListener("change", function () {
-    atualizarUltimaAtualizacao();
-});
-</script>
 
 
 </body>
