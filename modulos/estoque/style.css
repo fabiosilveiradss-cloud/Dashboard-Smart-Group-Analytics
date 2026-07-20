@@ -1319,11 +1319,12 @@ body {
     background: #b45309;
 }
 
-.top-produto-textos {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+.top-produto-textos{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
 }
 
 .top-produto-codigo {
@@ -1332,14 +1333,15 @@ body {
     line-height: 1.2;
 }
 
-.top-produto-descricao {
-    display: block;
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: #bdd0f5;
-    font-size: 12px;
+.top-produto-descricao{
+    display:block;
+    width:100%;
+    max-width:none;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:#bdd0f5;
+    font-size:12px;
 }
 
 .top-produto-quantidade {
