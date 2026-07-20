@@ -297,52 +297,38 @@ function criarIndiceLocais(dados) {
 // STATUS DE ATUALIZAÇÃO
 //-----------------------------------------------------
 
-function atualizarStatusRelatorio(
-    dataISO,
-    dataFormatada
-) {
+function atualizarStatusRelatorio(dataISO, dataFormatada) {
 
     const elemento =
-        document.getElementById(
-            "ultimaAtualizacao"
-        );
+        document.getElementById("ultimaAtualizacao");
 
     if (!elemento) {
         return;
     }
 
     if (!dataISO) {
-
         elemento.textContent =
             dataFormatada
-                ? "🟢 Dados atualizados em " +
-                  dataFormatada
+                ? "📅 " + dataFormatada + " — 🟢 Dados atualizados"
                 : "⚠️ Data de atualização indisponível";
 
         return;
     }
 
-    const dataAtualizacao =
-        new Date(dataISO);
+    const dataAtualizacao = new Date(dataISO);
 
-    const dataExibicao =
-    dataAtualizacao.toLocaleDateString("pt-BR");
-
-    if (
-        Number.isNaN(
-            dataAtualizacao.getTime()
-        )
-    ) {
-
+    if (Number.isNaN(dataAtualizacao.getTime())) {
         elemento.textContent =
-            "🟢 Dados atualizados em " +
-            (dataFormatada || "--");
+            "📅 " + (dataFormatada || "--") +
+            " — 🟢 Dados atualizados";
 
         return;
     }
 
-    const agora =
-        new Date();
+    const dataExibicao =
+        dataAtualizacao.toLocaleDateString("pt-BR");
+
+    const agora = new Date();
 
     const diferencaMinutos =
         Math.max(
@@ -357,50 +343,35 @@ function atualizarStatusRelatorio(
 
     if (diferencaMinutos < 60) {
 
-        const dataExibicao =
-    dataAtualizacao.toLocaleDateString("pt-BR");
-
-elemento.textContent =
-    diferencaMinutos <= 1
-        ? "📅 " + dataExibicao +
-          " — 🟢 Dados atualizados agora"
-        : "📅 " + dataExibicao +
-          " — 🟢 Dados atualizados há " +
-          diferencaMinutos +
-          " minutos";
+        elemento.textContent =
+            diferencaMinutos <= 1
+                ? "📅 " + dataExibicao +
+                  " — 🟢 Dados atualizados agora"
+                : "📅 " + dataExibicao +
+                  " — 🟢 Dados atualizados há " +
+                  diferencaMinutos +
+                  " minutos";
 
         return;
     }
 
     const diferencaHoras =
-        Math.floor(
-            diferencaMinutos / 60
-        );
+        Math.floor(diferencaMinutos / 60);
 
     const minutosRestantes =
         diferencaMinutos % 60;
 
-  const dataExibicao =
-    dataAtualizacao.toLocaleDateString("pt-BR");
-
-elemento.textContent =
-    "📅 " + dataExibicao +
-    " — 🔴 Relatório desatualizado há " +
-    diferencaHoras +
-        (
-            diferencaHoras === 1
-                ? " hora"
-                : " horas"
-        ) +
+    elemento.textContent =
+        "📅 " + dataExibicao +
+        " — 🔴 Relatório desatualizado há " +
+        diferencaHoras +
+        (diferencaHoras === 1 ? " hora" : " horas") +
         (
             minutosRestantes > 0
-                ? " e " +
-                  minutosRestantes +
-                  " minutos"
+                ? " e " + minutosRestantes + " minutos"
                 : ""
         );
 }
-
 
 //-----------------------------------------------------
 // MENSAGENS DE CARREGAMENTO
