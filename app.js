@@ -226,3 +226,172 @@ document.querySelector(".menu-btn")?.addEventListener("click", () => {
     document.querySelector(".sidebar").classList.toggle("aberto");
     document.body.classList.toggle("menu-aberto-mobile");
 });
+
+// =====================================
+// BUSCA DE DASHBOARDS
+// =====================================
+
+const modulosBusca = [
+    {
+        nome: "Dashboard",
+        descricao: "Visão geral do Smart Group Analytics",
+        modulo: "dashboard"
+    },
+    {
+        nome: "Estoque Comercial",
+        descricao: "Saldos, produtos, locais e famílias",
+        modulo: "estoque"
+    },
+    {
+        nome: "Vendas",
+        descricao: "Faturamento, clientes e produtos vendidos",
+        modulo: "vendas"
+    }
+];
+
+const campoBusca =
+    document.getElementById("buscaModulo");
+
+const resultadoBusca =
+    document.getElementById("resultadoBusca");
+
+function normalizarTexto(texto) {
+    return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function fecharResultadoBusca() {
+    if (!resultadoBusca) return;
+
+    resultadoBusca.innerHTML = "";
+    resultadoBusca.classList.remove("aberto");
+}
+
+function selecionarModuloBusca(modulo) {
+
+    const linksMenu =
+        document.querySelectorAll(".menu a");
+
+    let elementoMenu = null;
+
+    if (modulo === "dashboard") {
+        elementoMenu = linksMenu[0];
+    }
+
+    if (modulo === "estoque") {
+        elementoMenu = linksMenu[1];
+    }
+
+    if (modulo === "vendas") {
+        elementoMenu = linksMenu[2];
+    }
+
+    if (elementoMenu) {
+        abrirModulo(modulo, elementoMenu);
+    }
+
+    if (campoBusca) {
+        campoBusca.value = "";
+    }
+
+    fecharResultadoBusca();
+}
+
+function mostrarResultadosBusca(textoDigitado) {
+
+    if (!resultadoBusca) return;
+
+    const busca =
+        normalizarTexto(textoDigitado);
+
+    if (!busca) {
+        fecharResultadoBusca();
+        return;
+    }
+
+    const resultados =
+        modulosBusca.filter(item => {
+
+            const conteudo =
+                normalizarTexto(
+                    item.nome + " " + item.descricao
+                );
+
+            return conteudo.includes(busca);
+        });
+
+    if (resultados.length === 0) {
+
+        resultadoBusca.innerHTML = `
+            <div class="resultado-vazio">
+                Nenhum dashboard encontrado
+            </div>
+        `;
+
+        resultadoBusca.classList.add("aberto");
+        return;
+    }
+
+    resultadoBusca.innerHTML =
+        resultados.map(item => `
+            <button
+                type="button"
+                class="resultado-item"
+                data-modulo="${item.modulo}"
+            >
+                <strong>${item.nome}</strong>
+                <small>${item.descricao}</small>
+            </button>
+        `).join("");
+
+    resultadoBusca.classList.add("aberto");
+
+    resultadoBusca
+        .querySelectorAll(".resultado-item")
+        .forEach(botao => {
+
+            botao.addEventListener("click", function () {
+
+                selecionarModuloBusca(
+                    this.dataset.modulo
+                );
+            });
+        });
+}
+
+campoBusca?.addEventListener("input", function () {
+    mostrarResultadosBusca(this.value);
+});
+
+campoBusca?.addEventListener("keydown", function (evento) {
+
+    if (evento.key === "Enter") {
+
+        const primeiroResultado =
+            resultadoBusca?.querySelector(
+                ".resultado-item"
+            );
+
+        primeiroResultado?.click();
+    }
+
+    if (evento.key === "Escape") {
+        fecharResultadoBusca();
+    }
+});
+
+document.addEventListener("click", function (evento) {
+
+    const caixaBusca =
+        document.querySelector(".search-box");
+
+    if (
+        caixaBusca &&
+        !caixaBusca.contains(evento.target)
+    ) {
+        fecharResultadoBusca();
+    }
+});
