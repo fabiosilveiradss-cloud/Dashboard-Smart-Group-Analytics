@@ -34,7 +34,7 @@ input {
     width: 100%;
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 38% 62%;
+    grid-template-columns: 35% 65%;
     overflow: hidden;
 }
 
@@ -46,16 +46,19 @@ input {
 .painel-marca {
     position: relative;
     z-index: 3;
+    width: calc(100% + 160px);
     min-height: 100vh;
     padding: 52px 46px;
     color: #ffffff;
-    overflow: visible;
+    overflow: hidden;
+
+    clip-path: ellipse(100% 78% at 0% 50%);
 
     background:
         radial-gradient(
-            circle at 78% 48%,
+            circle at 72% 48%,
             rgba(29, 115, 255, 0.20),
-            transparent 36%
+            transparent 38%
         ),
         linear-gradient(
             145deg,
@@ -65,40 +68,22 @@ input {
         );
 }
 
-/*
-  Curva real do painel azul:
-  a elipse avança sobre o painel branco sem cortar o conteúdo.
-*/
 .painel-marca::before {
     content: "";
     position: absolute;
-    z-index: -1;
-    width: 420px;
-    height: 126%;
-    right: -210px;
-    top: -13%;
+    width: 560px;
+    height: 560px;
+    top: 50%;
+    right: -300px;
+    border: 1px solid rgba(75, 145, 255, 0.20);
     border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle at 30% 48%,
-            rgba(29, 115, 255, 0.18),
-            transparent 44%
-        ),
-        linear-gradient(
-            145deg,
-            #062655 0%,
-            #041a3d 100%
-        );
-
+    transform: translateY(-50%);
     pointer-events: none;
 }
 
-/* Círculo decorativo inferior */
 .painel-marca::after {
     content: "";
     position: absolute;
-    z-index: 0;
     width: 430px;
     height: 430px;
     left: -340px;
@@ -111,7 +96,7 @@ input {
 .marca-conteudo {
     position: relative;
     z-index: 2;
-    width: 100%;
+    width: calc(100% - 160px);
     min-height: calc(100vh - 104px);
     display: flex;
     flex-direction: column;
@@ -211,7 +196,7 @@ input {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 70px 6% 100px 210px;
+    padding: 70px 5% 100px 230px;
     overflow: hidden;
 
     background:
@@ -227,7 +212,6 @@ input {
         );
 }
 
-/* Desativa qualquer curva antiga no painel branco */
 .painel-formulario::before {
     display: none;
 }
@@ -240,17 +224,17 @@ input {
 .marca-dagua {
     position: absolute;
     z-index: 1;
-    width: 74%;
-    height: 88%;
-    left: 2%;
-    top: 5%;
+    width: 76%;
+    height: 86%;
+    left: -5%;
+    top: 7%;
 
     background-image: url("SMART.jpg");
     background-repeat: no-repeat;
     background-position: left center;
     background-size: contain;
 
-    opacity: 0.065;
+    opacity: 0.06;
     filter: grayscale(100%);
     pointer-events: none;
     transform: none;
@@ -269,7 +253,7 @@ input {
     padding: 42px;
     border: 1px solid rgba(191, 205, 224, 0.75);
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.96);
     color: #07162f;
 
     box-shadow:
@@ -448,7 +432,7 @@ input {
 .rodape-login {
     position: absolute;
     z-index: 3;
-    left: 16%;
+    left: 18%;
     right: 5%;
     bottom: 22px;
     display: flex;
@@ -468,16 +452,16 @@ input {
 @media (max-width: 1180px) {
 
     .pagina-login {
-        grid-template-columns: 41% 59%;
+        grid-template-columns: 40% 60%;
     }
 
     .painel-marca {
+        width: calc(100% + 135px);
         padding: 42px 34px;
     }
 
-    .painel-marca::before {
-        width: 320px;
-        right: -160px;
+    .marca-conteudo {
+        width: calc(100% - 135px);
     }
 
     .texto-principal h2 {
@@ -485,7 +469,7 @@ input {
     }
 
     .painel-formulario {
-        padding: 60px 35px 100px 130px;
+        padding: 60px 35px 100px 160px;
     }
 
     .card-login {
@@ -509,16 +493,15 @@ input {
     }
 
     .painel-marca {
+        width: 100%;
         min-height: auto;
         padding: 28px 22px 90px;
         overflow: hidden;
-    }
-
-    .painel-marca::before {
-        display: none;
+        clip-path: none;
     }
 
     .marca-conteudo {
+        width: 100%;
         min-height: auto;
     }
 
