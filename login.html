@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Login - Smart Group Analytics
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="login.css?v=1"
+    >
+
+</head>
+
+<body>
+
+    <main class="pagina-login">
+
+        <section class="painel-marca">
+
+            <div class="marca-conteudo">
+
+                <div class="logo-area">
+
+                    <div class="logo-simbolo">
+                        SG
+                    </div>
+
+                    <div>
+
+                        <h1>
+                            SMART GROUP
+                        </h1>
+
+                        <span>
+                            ANALYTICS
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <h2>
+                    Transformando dados em decisões inteligentes.
+                </h2>
+
+                <p>
+                    Informação integrada para apoiar decisões,
+                    acompanhar resultados e impulsionar o crescimento.
+                </p>
+
+                <div class="mensagem-institucional">
+
+                    <span>
+                        SMART GROUP BI
+                    </span>
+
+                    <small>
+                        Inteligência para decisões
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="painel-formulario">
+
+            <div class="card-login">
+
+                <div class="cabecalho-login">
+
+                    <p
+                        id="saudacaoLogin"
+                        class="saudacao"
+                    >
+                        Olá!
+                    </p>
+
+                    <h2>
+                        Bem-vindo
+                    </h2>
+
+                    <p>
+                        Entre com suas credenciais para acessar
+                        o Smart Group Analytics.
+                    </p>
+
+                </div>
+
+                <form id="formLogin">
+
+                    <div class="campo">
+
+                        <label for="email">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            autocomplete="username"
+                            placeholder="seuemail@smartgroup.net.br"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label for="senha">
+                            Senha
+                        </label>
+
+                        <div class="campo-senha">
+
+                            <input
+                                type="password"
+                                id="senha"
+                                autocomplete="current-password"
+                                placeholder="Digite sua senha"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                id="btnMostrarSenha"
+                                class="mostrar-senha"
+                                aria-label="Mostrar senha"
+                            >
+                                👁
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <label class="lembrar-acesso">
+
+                        <input
+                            type="checkbox"
+                            id="permanecerConectado"
+                            checked
+                        >
+
+                        <span>
+                            Permanecer conectado
+                        </span>
+
+                    </label>
+
+                    <div
+                        id="mensagemLogin"
+                        class="mensagem-login"
+                        aria-live="polite"
+                    ></div>
+
+                    <button
+                        type="submit"
+                        id="btnEntrar"
+                        class="btn-entrar"
+                    >
+                        Entrar
+                    </button>
+
+                </form>
+
+                <div class="rodape-login">
+
+                    <span>
+                        Acesso restrito aos colaboradores autorizados.
+                    </span>
+
+                    <small>
+                        Smart Group Analytics • Versão 1.0
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script
+        type="module"
+        src="login.js?v=1"
+    ></script>
+
+</body>
+
+</html>
