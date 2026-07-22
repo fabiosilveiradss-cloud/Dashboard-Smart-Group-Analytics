@@ -66,8 +66,7 @@ input {
 }
 
 /*
-  CURVA AZUL REAL
-  Esta elipse avança sobre o painel branco.
+  CURVA AZUL
 */
 .painel-marca::after {
     content: "";
@@ -261,7 +260,6 @@ input {
         );
 }
 
-/* Desativa qualquer curva antiga no painel branco */
 .painel-formulario::before {
     display: none;
 }
@@ -275,15 +273,20 @@ input {
     position: absolute;
     z-index: 1;
 
-    width: 82%;
-    height: 88%;
+    /*
+      Ajuste principal:
+      a marca fica totalmente dentro da área branca,
+      sem ser cortada pela curva azul.
+    */
+    width: 68%;
+    height: 82%;
 
-    left: -12%;
-    top: 6%;
+    left: 6%;
+    top: 9%;
 
     background-image: url("SMART.jpg");
     background-repeat: no-repeat;
-    background-position: left center;
+    background-position: center;
     background-size: contain;
 
     opacity: 0.06;
@@ -569,6 +572,11 @@ input {
             155px;
     }
 
+    .marca-dagua {
+        width: 72%;
+        left: 4%;
+    }
+
     .card-login {
         width: min(430px, 100%);
     }
@@ -659,11 +667,11 @@ input {
     }
 
     .marca-dagua {
-        width: 115%;
-        height: 75%;
+        width: 105%;
+        height: 70%;
 
-        left: -8%;
-        top: 10%;
+        left: -2%;
+        top: 12%;
 
         background-position: center;
         background-size: contain;
