@@ -105,16 +105,24 @@ input {
 }
 
 .logo-simbolo {
-    width: 62px;
-    height: 62px;
+    width: 70px;
+    height: 70px;
     display: grid;
     place-items: center;
-    border-radius: 14px;
+    padding: 5px;
+    border-radius: 12px;
     background: #ffffff;
-    color: #06152f;
-    font-size: 20px;
-    font-weight: 900;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.20);
+    overflow: hidden;
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.20);
+}
+
+.logo-simbolo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
 }
 
 .logo-textos h1 {
@@ -223,20 +231,23 @@ input {
 .marca-dagua {
     position: absolute;
     z-index: 1;
-    width: 82%;
-    height: 82%;
-    left: 6%;
-    top: 8%;
+
+    width: 100%;
+    height: 92%;
+
+    left: -5%;
+    top: 2%;
 
     background-image: url("SMART.jpg");
     background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+    background-position: 34% center;
+    background-size: 78% auto;
 
-    opacity: 0.055;
+    opacity: 0.075;
     filter: grayscale(100%);
+
     pointer-events: none;
-    transform: rotate(7deg);
+    transform: none;
 }
 
 
