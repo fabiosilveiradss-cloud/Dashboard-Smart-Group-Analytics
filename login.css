@@ -1,7 +1,8 @@
 /*-----------------------------------------------------
   CONFIGURAÇÃO GERAL
 -----------------------------------------------------*/
- {
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -14,9 +15,9 @@ body {
 }
 
 body {
+    overflow-x: hidden;
     font-family: Arial, Helvetica, sans-serif;
     background: #06152f;
-    color: #ffffff;
 }
 
 button,
@@ -24,211 +25,309 @@ input {
     font: inherit;
 }
 
-//-----------------------------------------------------
-// ESTRUTURA
-//-----------------------------------------------------
+
+/*-----------------------------------------------------
+  ESTRUTURA PRINCIPAL
+-----------------------------------------------------*/
 
 .pagina-login {
+    width: 100%;
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-columns: 38% 62%;
 }
+
+
+/*-----------------------------------------------------
+  PAINEL AZUL
+-----------------------------------------------------*/
 
 .painel-marca {
     position: relative;
+    z-index: 3;
+    min-height: 100vh;
     display: flex;
-    align-items: center;
-    padding: 70px;
+    align-items: stretch;
+    padding: 55px 50px;
+    color: #ffffff;
     overflow: hidden;
+
     background:
         radial-gradient(
-            circle at 20% 20%,
-            rgba(52, 132, 255, 0.30),
-            transparent 34%
-        ),
-        radial-gradient(
-            circle at 80% 80%,
-            rgba(0, 101, 255, 0.17),
-            transparent 38%
+            circle at 80% 48%,
+            rgba(29, 115, 255, 0.20),
+            transparent 35%
         ),
         linear-gradient(
             145deg,
-            #031126 0%,
-            #062a5a 100%
+            #020f25 0%,
+            #062655 55%,
+            #041a3d 100%
         );
 }
 
-.painel-marca::before,
+.painel-marca::before {
+    content: "";
+    position: absolute;
+    width: 560px;
+    height: 560px;
+    top: 50%;
+    right: -420px;
+    border: 1px solid rgba(75, 145, 255, 0.22);
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
 .painel-marca::after {
     content: "";
     position: absolute;
+    width: 430px;
+    height: 430px;
+    left: -340px;
+    bottom: -170px;
+    border: 1px solid rgba(75, 145, 255, 0.20);
     border-radius: 50%;
-    border: 1px solid rgba(99, 161, 255, 0.18);
-}
-
-.painel-marca::before {
-    width: 420px;
-    height: 420px;
-    left: -150px;
-    bottom: -160px;
-}
-
-.painel-marca::after {
-    width: 580px;
-    height: 580px;
-    right: -300px;
-    top: -260px;
 }
 
 .marca-conteudo {
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 660px;
+    min-height: calc(100vh - 110px);
+    display: flex;
+    flex-direction: column;
 }
 
 .logo-area {
     display: flex;
     align-items: center;
-    gap: 18px;
-    margin-bottom: 70px;
+    gap: 15px;
 }
 
 .logo-simbolo {
-    width: 78px;
-    height: 78px;
-    border-radius: 18px;
+    width: 62px;
+    height: 62px;
     display: grid;
     place-items: center;
+    border-radius: 14px;
     background: #ffffff;
     color: #06152f;
+    font-size: 20px;
     font-weight: 900;
-    font-size: 25px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.20);
 }
 
-.logo-area h1 {
-    font-size: 28px;
-    letter-spacing: 0.7px;
+.logo-textos h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
 }
 
-.logo-area span {
-    display: inline-block;
-    margin-top: 5px;
-    color: #43a0ff;
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: 2px;
+.logo-textos span {
+    display: block;
+    margin-top: 8px;
+    color: #318cff;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
 }
 
-.marca-conteudo > h2 {
-    max-width: 620px;
-    font-size: clamp(40px, 5vw, 68px);
-    line-height: 1.05;
+.texto-principal {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.texto-principal h2 {
+    max-width: 550px;
+    font-size: clamp(42px, 4vw, 64px);
+    line-height: 1.12;
     letter-spacing: -2px;
 }
 
-.marca-conteudo > p {
-    max-width: 570px;
-    margin-top: 28px;
-    color: #b8c9e8;
-    font-size: 18px;
+.texto-principal p {
+    max-width: 470px;
+    margin-top: 32px;
+    color: #d1dcf0;
+    font-size: 17px;
     line-height: 1.7;
 }
 
 .mensagem-institucional {
-    margin-top: 70px;
-    padding-left: 18px;
-    border-left: 3px solid #318cff;
+    padding-left: 19px;
+    border-left: 3px solid #1685ff;
 }
 
-.mensagem-institucional span,
-.mensagem-institucional small {
+.mensagem-institucional strong,
+.mensagem-institucional span {
     display: block;
 }
 
-.mensagem-institucional span {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1.4px;
+.mensagem-institucional strong {
+    font-size: 14px;
+    letter-spacing: 0.8px;
 }
 
-.mensagem-institucional small {
-    margin-top: 6px;
-    color: #8fa9d1;
+.mensagem-institucional span {
+    margin-top: 8px;
+    color: #b6c8e5;
+    font-size: 13px;
 }
+
+
+/*-----------------------------------------------------
+  PAINEL BRANCO
+-----------------------------------------------------*/
 
 .painel-formulario {
+    position: relative;
+    min-height: 100vh;
     display: grid;
     place-items: center;
-    padding: 50px;
-    background: #f5f8fd;
+    padding: 70px 70px 100px;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 70% 18%,
+            rgba(255, 255, 255, 0.95),
+            transparent 34%
+        ),
+        linear-gradient(
+            145deg,
+            #f8faff 0%,
+            #eef3fa 100%
+        );
 }
 
+/*
+  Cria a curva branca entre os dois painéis.
+*/
+
+.painel-formulario::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    width: 260px;
+    height: 125%;
+    left: -130px;
+    top: -12%;
+    border-radius: 50%;
+    background: #f6f9fd;
+}
+
+
+/*-----------------------------------------------------
+  MARCA-D'ÁGUA
+-----------------------------------------------------*/
+
+.marca-dagua {
+    position: absolute;
+    z-index: 1;
+    width: 82%;
+    height: 82%;
+    left: 6%;
+    top: 8%;
+
+    background-image: url("SMART.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    opacity: 0.055;
+    filter: grayscale(100%);
+    pointer-events: none;
+    transform: rotate(7deg);
+}
+
+
+/*-----------------------------------------------------
+  CARD DE LOGIN
+-----------------------------------------------------*/
+
 .card-login {
+    position: relative;
+    z-index: 3;
     width: 100%;
-    max-width: 470px;
-    padding: 44px;
-    border: 1px solid #dce5f2;
-    border-radius: 22px;
-    background: #ffffff;
-    color: #06152f;
-    box-shadow: 0 24px 60px rgba(10, 39, 86, 0.13);
+    max-width: 460px;
+    padding: 42px;
+    border: 1px solid rgba(191, 205, 224, 0.75);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.94);
+    color: #07162f;
+
+    box-shadow:
+        0 28px 80px rgba(22, 55, 100, 0.15),
+        0 8px 25px rgba(22, 55, 100, 0.08);
+
+    backdrop-filter: blur(8px);
 }
 
 .cabecalho-login {
-    margin-bottom: 35px;
+    margin-bottom: 32px;
 }
 
 .saudacao {
-    margin-bottom: 8px;
-    color: #1877e8;
-    font-size: 17px;
-    font-weight: 700;
+    margin-bottom: 18px;
+    color: #096beb;
+    font-size: 15px;
+    font-weight: 800;
 }
 
 .cabecalho-login h2 {
     font-size: 34px;
-    letter-spacing: -0.7px;
+    line-height: 1.1;
+    letter-spacing: -0.8px;
 }
 
 .cabecalho-login > p:last-child {
-    margin-top: 12px;
-    color: #6c7e9c;
-    line-height: 1.5;
+    max-width: 340px;
+    margin-top: 18px;
+    color: #61738f;
+    font-size: 14px;
+    line-height: 1.65;
 }
 
+
+/*-----------------------------------------------------
+  CAMPOS
+-----------------------------------------------------*/
+
 .campo {
-    margin-bottom: 22px;
+    margin-bottom: 21px;
 }
 
 .campo label {
     display: block;
     margin-bottom: 9px;
-    color: #263a5d;
-    font-size: 14px;
-    font-weight: 700;
+    color: #233a5c;
+    font-size: 13px;
+    font-weight: 800;
 }
 
 .campo input {
     width: 100%;
     height: 52px;
     padding: 0 16px;
-    border: 1px solid #cdd9e8;
-    border-radius: 11px;
+    border: 1px solid #c7d4e5;
+    border-radius: 10px;
     outline: none;
-    background: #f9fbfe;
-    color: #06152f;
+    background: #fbfcfe;
+    color: #07162f;
+
     transition:
         border-color 0.2s,
         box-shadow 0.2s,
         background 0.2s;
 }
 
+.campo input::placeholder {
+    color: #7788a0;
+}
+
 .campo input:focus {
-    border-color: #1877e8;
+    border-color: #1577ed;
     background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(24, 119, 232, 0.12);
+    box-shadow: 0 0 0 4px rgba(21, 119, 237, 0.12);
 }
 
 .campo-senha {
@@ -242,11 +341,11 @@ input {
 .mostrar-senha {
     position: absolute;
     top: 50%;
-    right: 10px;
+    right: 9px;
     width: 38px;
     height: 38px;
     border: 0;
-    border-radius: 9px;
+    border-radius: 8px;
     background: transparent;
     cursor: pointer;
     transform: translateY(-50%);
@@ -260,8 +359,7 @@ input {
     display: flex;
     align-items: center;
     gap: 9px;
-    margin-top: 4px;
-    color: #566b8b;
+    color: #526783;
     font-size: 14px;
     cursor: pointer;
 }
@@ -269,14 +367,19 @@ input {
 .lembrar-acesso input {
     width: 17px;
     height: 17px;
-    accent-color: #1877e8;
+    accent-color: #086ee7;
 }
+
+
+/*-----------------------------------------------------
+  MENSAGENS E BOTÃO
+-----------------------------------------------------*/
 
 .mensagem-login {
     min-height: 22px;
-    margin-top: 18px;
-    color: #ce2e2e;
-    font-size: 14px;
+    margin-top: 16px;
+    color: #cc3030;
+    font-size: 13px;
     line-height: 1.4;
 }
 
@@ -287,26 +390,34 @@ input {
 .btn-entrar {
     width: 100%;
     min-height: 54px;
-    margin-top: 6px;
+    margin-top: 4px;
     border: 0;
-    border-radius: 11px;
-    background: linear-gradient(
-        90deg,
-        #086ada,
-        #318cff
-    );
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0865dc,
+            #176eff,
+            #1688ff
+        );
+
     color: #ffffff;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 12px 26px rgba(20, 112, 224, 0.24);
+
+    box-shadow:
+        0 12px 28px rgba(14, 105, 225, 0.28);
+
     transition:
         transform 0.2s,
         box-shadow 0.2s;
 }
 
 .btn-entrar:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 16px 30px rgba(20, 112, 224, 0.30);
+    transform: translateY(-2px);
+    box-shadow:
+        0 17px 34px rgba(14, 105, 225, 0.34);
 }
 
 .btn-entrar:disabled {
@@ -315,107 +426,171 @@ input {
     transform: none;
 }
 
+
+/*-----------------------------------------------------
+  RODAPÉ
+-----------------------------------------------------*/
+
 .rodape-login {
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid #e3eaf4;
-    color: #7a8ba5;
-    text-align: center;
-}
-
-.rodape-login span,
-.rodape-login small {
-    display: block;
-}
-
-.rodape-login span {
+    position: absolute;
+    z-index: 3;
+    left: 13%;
+    right: 5%;
+    bottom: 22px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding-top: 19px;
+    border-top: 1px solid #d7e0ec;
+    color: #71839c;
     font-size: 12px;
 }
 
-.rodape-login small {
-    margin-top: 8px;
-    font-size: 11px;
-}
 
 /*-----------------------------------------------------
-  RESPONSIVO
+  RESPONSIVO - TABLET
 -----------------------------------------------------*/
-@media (max-width: 960px) {
+
+@media (max-width: 1050px) {
 
     .pagina-login {
-        grid-template-columns: 1fr;
+        grid-template-columns: 42% 58%;
     }
 
     .painel-marca {
-        min-height: 320px;
         padding: 45px 35px;
     }
 
-    .logo-area {
-        margin-bottom: 35px;
-    }
-
-    .marca-conteudo > h2 {
-        max-width: 700px;
+    .texto-principal h2 {
         font-size: 43px;
     }
 
-    .mensagem-institucional {
-        display: none;
-    }
-
     .painel-formulario {
-        padding: 35px 20px 55px;
-    }
-}
-
-@media (max-width: 560px) {
-
-    .painel-marca {
-        min-height: 250px;
-        padding: 30px 22px;
-    }
-
-    .logo-simbolo {
-        width: 58px;
-        height: 58px;
-        border-radius: 14px;
-        font-size: 19px;
-    }
-
-    .logo-area {
-        gap: 12px;
-        margin-bottom: 24px;
-    }
-
-    .logo-area h1 {
-        font-size: 20px;
-    }
-
-    .logo-area span {
-        font-size: 13px;
-    }
-
-    .marca-conteudo > h2 {
-        font-size: 34px;
-        letter-spacing: -1px;
-    }
-
-    .marca-conteudo > p {
-        margin-top: 17px;
-        font-size: 15px;
-    }
-
-    .painel-formulario {
-        padding: 24px 14px 40px;
+        padding: 60px 35px 100px;
     }
 
     .card-login {
-        padding: 30px 22px;
+        max-width: 430px;
+    }
+}
+
+
+/*-----------------------------------------------------
+  RESPONSIVO - CELULAR
+-----------------------------------------------------*/
+
+@media (max-width: 760px) {
+
+    body {
+        background: #06152f;
+    }
+
+    .pagina-login {
+        display: block;
+    }
+
+    .painel-marca {
+        min-height: auto;
+        padding: 28px 22px 90px;
+    }
+
+    .marca-conteudo {
+        min-height: auto;
+    }
+
+    .logo-simbolo {
+        width: 54px;
+        height: 54px;
+        font-size: 17px;
+    }
+
+    .logo-textos h1 {
+        font-size: 19px;
+    }
+
+    .logo-textos span {
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
+    .texto-principal {
+        margin-top: 60px;
+    }
+
+    .texto-principal h2 {
+        font-size: 38px;
+        letter-spacing: -1.2px;
+    }
+
+    .texto-principal p {
+        margin-top: 22px;
+        font-size: 15px;
+    }
+
+    .mensagem-institucional {
+        margin-top: 40px;
+    }
+
+    .painel-formulario {
+        min-height: 620px;
+        margin-top: -42px;
+        padding: 70px 15px 90px;
+        border-radius: 35px 35px 0 0;
+    }
+
+    .painel-formulario::before {
+        display: none;
+    }
+
+    .marca-dagua {
+        width: 115%;
+        height: 75%;
+        left: -8%;
+        top: 10%;
+        opacity: 0.04;
+    }
+
+    .card-login {
+        max-width: 470px;
+        padding: 32px 23px;
         border-radius: 17px;
     }
 
     .cabecalho-login h2 {
-        font-size: 29px;
+        font-size: 30px;
+    }
+
+    .rodape-login {
+        left: 20px;
+        right: 20px;
+        bottom: 18px;
+        font-size: 10px;
+    }
+}
+
+
+/*-----------------------------------------------------
+  CELULARES MENORES
+-----------------------------------------------------*/
+
+@media (max-width: 430px) {
+
+    .texto-principal h2 {
+        font-size: 32px;
+    }
+
+    .texto-principal p {
+        font-size: 14px;
+    }
+
+    .card-login {
+        padding: 28px 19px;
+    }
+
+    .rodape-login {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        text-align: center;
     }
 }
