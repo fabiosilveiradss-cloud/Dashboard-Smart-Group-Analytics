@@ -34,7 +34,13 @@ input {
     width: 100%;
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 35% 65%;
+
+    /*
+      O painel azul termina perto de 30% da tela.
+      A curva avança suavemente sobre o painel branco.
+    */
+    grid-template-columns: 30% 70%;
+
     overflow: hidden;
 }
 
@@ -46,14 +52,22 @@ input {
 .painel-marca {
     position: relative;
     z-index: 3;
+
     min-height: 100vh;
-    padding: 52px 46px;
+
+    padding: 52px 42px;
+
     color: #ffffff;
+
+    /*
+      Precisa ficar visível para a curva avançar
+      sobre o painel branco.
+    */
     overflow: visible;
 
     background:
         radial-gradient(
-            circle at 80% 48%,
+            circle at 78% 48%,
             rgba(29, 115, 255, 0.20),
             transparent 36%
         ),
@@ -65,19 +79,26 @@ input {
         );
 }
 
-/*
+
+/*-----------------------------------------------------
   CURVA AZUL
-*/
+-----------------------------------------------------*/
+
 .painel-marca::after {
     content: "";
+
     position: absolute;
     z-index: -1;
 
-    width: 360px;
-    height: 128%;
+    /*
+      Curva menor e mais próxima do ponto marcado
+      na imagem enviada.
+    */
+    width: 290px;
+    height: 126%;
 
-    right: -180px;
-    top: -14%;
+    right: -145px;
+    top: -13%;
 
     border-radius: 50%;
 
@@ -96,24 +117,35 @@ input {
     pointer-events: none;
 }
 
-/* Círculo decorativo interno */
+
+/*-----------------------------------------------------
+  CÍRCULO DECORATIVO
+-----------------------------------------------------*/
+
 .painel-marca::before {
     content: "";
+
     position: absolute;
     z-index: 0;
 
-    width: 520px;
-    height: 520px;
+    width: 470px;
+    height: 470px;
 
     top: 50%;
-    right: -330px;
+    right: -300px;
 
     border: 1px solid rgba(75, 145, 255, 0.20);
     border-radius: 50%;
 
     transform: translateY(-50%);
+
     pointer-events: none;
 }
+
+
+/*-----------------------------------------------------
+  CONTEÚDO DO PAINEL AZUL
+-----------------------------------------------------*/
 
 .marca-conteudo {
     position: relative;
@@ -140,9 +172,11 @@ input {
     place-items: center;
 
     padding: 5px;
+
     border-radius: 12px;
 
     background: #ffffff;
+
     overflow: hidden;
 
     box-shadow:
@@ -152,7 +186,9 @@ input {
 .logo-simbolo img {
     width: 100%;
     height: 100%;
+
     object-fit: contain;
+
     display: block;
 }
 
@@ -168,6 +204,7 @@ input {
 
 .logo-textos span {
     display: block;
+
     margin-top: 8px;
 
     color: #318cff;
@@ -180,19 +217,21 @@ input {
 .texto-principal {
     margin-top: auto;
     margin-bottom: auto;
+
     padding: 20px 0 30px;
 }
 
 .texto-principal h2 {
-    max-width: 540px;
+    max-width: 500px;
 
-    font-size: clamp(40px, 3.4vw, 58px);
+    font-size: clamp(38px, 3.2vw, 56px);
     line-height: 1.12;
     letter-spacing: -2px;
 }
 
 .texto-principal p {
-    max-width: 470px;
+    max-width: 430px;
+
     margin-top: 30px;
 
     color: #d1dcf0;
@@ -203,6 +242,7 @@ input {
 
 .mensagem-institucional {
     padding-left: 19px;
+
     border-left: 3px solid #1685ff;
 }
 
@@ -239,11 +279,14 @@ input {
     align-items: center;
     justify-content: flex-end;
 
+    /*
+      Mais espaço à esquerda para a marca-d'água.
+    */
     padding:
         70px
         5%
         100px
-        230px;
+        260px;
 
     overflow: hidden;
 
@@ -274,19 +317,18 @@ input {
     z-index: 1;
 
     /*
-      Ajuste principal:
-      a marca fica totalmente dentro da área branca,
-      sem ser cortada pela curva azul.
+      Agora a marca fica inteira e mais para a esquerda,
+      usando o espaço liberado pelo painel azul menor.
     */
-    width: 68%;
+    width: 62%;
     height: 82%;
 
-    left: 6%;
+    left: 1%;
     top: 9%;
 
     background-image: url("SMART.jpg");
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: left center;
     background-size: contain;
 
     opacity: 0.06;
@@ -344,6 +386,7 @@ input {
 
 .cabecalho-login > p:last-child {
     max-width: 340px;
+
     margin-top: 18px;
 
     color: #61738f;
@@ -363,6 +406,7 @@ input {
 
 .campo label {
     display: block;
+
     margin-bottom: 9px;
 
     color: #233a5c;
@@ -397,6 +441,7 @@ input {
 
 .campo input:focus {
     border-color: #1577ed;
+
     background: #ffffff;
 
     box-shadow:
@@ -442,6 +487,7 @@ input {
     color: #526783;
 
     font-size: 14px;
+
     cursor: pointer;
 }
 
@@ -459,6 +505,7 @@ input {
 
 .mensagem-login {
     min-height: 22px;
+
     margin-top: 16px;
 
     color: #cc3030;
@@ -491,6 +538,7 @@ input {
     color: #ffffff;
 
     font-weight: 800;
+
     cursor: pointer;
 
     box-shadow:
@@ -510,7 +558,9 @@ input {
 
 .btn-entrar:disabled {
     opacity: 0.65;
+
     cursor: wait;
+
     transform: none;
 }
 
@@ -523,7 +573,7 @@ input {
     position: absolute;
     z-index: 3;
 
-    left: 10%;
+    left: 9%;
     right: 5%;
     bottom: 22px;
 
@@ -548,7 +598,7 @@ input {
 @media (max-width: 1180px) {
 
     .pagina-login {
-        grid-template-columns: 40% 60%;
+        grid-template-columns: 36% 64%;
     }
 
     .painel-marca {
@@ -556,12 +606,13 @@ input {
     }
 
     .painel-marca::after {
-        width: 300px;
-        right: -150px;
+        width: 250px;
+
+        right: -125px;
     }
 
     .texto-principal h2 {
-        font-size: 43px;
+        font-size: 42px;
     }
 
     .painel-formulario {
@@ -569,12 +620,13 @@ input {
             60px
             35px
             100px
-            155px;
+            180px;
     }
 
     .marca-dagua {
-        width: 72%;
-        left: 4%;
+        width: 67%;
+
+        left: 0;
     }
 
     .card-login {
@@ -626,6 +678,7 @@ input {
 
     .logo-textos span {
         margin-top: 5px;
+
         font-size: 12px;
     }
 
@@ -640,6 +693,7 @@ input {
 
     .texto-principal p {
         margin-top: 22px;
+
         font-size: 15px;
     }
 
