@@ -34,13 +34,7 @@ input {
     width: 100%;
     min-height: 100vh;
     display: grid;
-
-    /*
-      O painel azul termina perto de 30% da tela.
-      A curva avança suavemente sobre o painel branco.
-    */
     grid-template-columns: 30% 70%;
-
     overflow: hidden;
 }
 
@@ -52,17 +46,9 @@ input {
 .painel-marca {
     position: relative;
     z-index: 3;
-
     min-height: 100vh;
-
     padding: 52px 42px;
-
     color: #ffffff;
-
-    /*
-      Precisa ficar visível para a curva avançar
-      sobre o painel branco.
-    */
     overflow: visible;
 
     background:
@@ -86,14 +72,9 @@ input {
 
 .painel-marca::after {
     content: "";
-
     position: absolute;
     z-index: -1;
 
-    /*
-      Curva menor e mais próxima do ponto marcado
-      na imagem enviada.
-    */
     width: 290px;
     height: 126%;
 
@@ -119,27 +100,11 @@ input {
 
 
 /*-----------------------------------------------------
-  CÍRCULO DECORATIVO
+  REMOVER CÍRCULO DECORATIVO
 -----------------------------------------------------*/
 
 .painel-marca::before {
-    content: "";
-
-    position: absolute;
-    z-index: 0;
-
-    width: 470px;
-    height: 470px;
-
-    top: 50%;
-    right: -300px;
-
-    border: 1px solid rgba(75, 145, 255, 0.20);
-    border-radius: 50%;
-
-    transform: translateY(-50%);
-
-    pointer-events: none;
+    display: none;
 }
 
 
@@ -279,9 +244,6 @@ input {
     align-items: center;
     justify-content: flex-end;
 
-    /*
-      Mais espaço à esquerda para a marca-d'água.
-    */
     padding:
         70px
         5%
@@ -316,19 +278,15 @@ input {
     position: absolute;
     z-index: 1;
 
-    /*
-      Agora a marca fica inteira e mais para a esquerda,
-      usando o espaço liberado pelo painel azul menor.
-    */
-    width: 62%;
-    height: 82%;
+    width: 56%;
+    height: 80%;
 
-    left: 1%;
-    top: 9%;
+    left: 8%;
+    top: 10%;
 
     background-image: url("SMART.jpg");
     background-repeat: no-repeat;
-    background-position: left center;
+    background-position: center;
     background-size: contain;
 
     opacity: 0.06;
@@ -624,9 +582,8 @@ input {
     }
 
     .marca-dagua {
-        width: 67%;
-
-        left: 0;
+        width: 60%;
+        left: 7%;
     }
 
     .card-login {
