@@ -51,9 +51,6 @@ input {
     padding: 55px 50px;
     color: #ffffff;
     overflow: hidden;
-
-    border-radius: 0 48% 48% 0;
-    clip-path: ellipse(100% 92% at 0% 50%);
   
     background:
         radial-gradient(
