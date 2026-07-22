@@ -34,7 +34,7 @@ input {
     width: 100%;
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 34% 66%;
+    grid-template-columns: 41% 59%;
 }
 
 
@@ -52,6 +52,9 @@ input {
     color: #ffffff;
     overflow: hidden;
 
+    border-radius: 0 48% 48% 0;
+    clip-path: ellipse(100% 92% at 0% 50%);
+  
     background:
         radial-gradient(
             circle at 80% 48%,
@@ -597,6 +600,12 @@ input {
     background-size: contain;
     opacity: 0.045;
 }
+
+  .painel-marca {
+    clip-path: none;
+    border-radius: 0;
+}
+
   
 }
 
