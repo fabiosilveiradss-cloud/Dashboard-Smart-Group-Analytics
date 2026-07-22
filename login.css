@@ -46,19 +46,16 @@ input {
 .painel-marca {
     position: relative;
     z-index: 3;
-    width: calc(100% + 160px);
     min-height: 100vh;
     padding: 52px 46px;
     color: #ffffff;
-    overflow: hidden;
-
-    clip-path: ellipse(100% 78% at 0% 50%);
+    overflow: visible;
 
     background:
         radial-gradient(
-            circle at 72% 48%,
+            circle at 80% 48%,
             rgba(29, 115, 255, 0.20),
-            transparent 38%
+            transparent 36%
         ),
         linear-gradient(
             145deg,
@@ -68,36 +65,64 @@ input {
         );
 }
 
-.painel-marca::before {
-    content: "";
-    position: absolute;
-    width: 560px;
-    height: 560px;
-    top: 50%;
-    right: -300px;
-    border: 1px solid rgba(75, 145, 255, 0.20);
-    border-radius: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-}
-
+/*
+  CURVA AZUL REAL
+  Esta elipse avança sobre o painel branco.
+*/
 .painel-marca::after {
     content: "";
     position: absolute;
-    width: 430px;
-    height: 430px;
-    left: -340px;
-    bottom: -170px;
+    z-index: -1;
+
+    width: 360px;
+    height: 128%;
+
+    right: -180px;
+    top: -14%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 48%,
+            rgba(29, 115, 255, 0.18),
+            transparent 44%
+        ),
+        linear-gradient(
+            145deg,
+            #062655 0%,
+            #041a3d 100%
+        );
+
+    pointer-events: none;
+}
+
+/* Círculo decorativo interno */
+.painel-marca::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+
+    width: 520px;
+    height: 520px;
+
+    top: 50%;
+    right: -330px;
+
     border: 1px solid rgba(75, 145, 255, 0.20);
     border-radius: 50%;
+
+    transform: translateY(-50%);
     pointer-events: none;
 }
 
 .marca-conteudo {
     position: relative;
     z-index: 2;
-    width: calc(100% - 160px);
+
+    width: 100%;
     min-height: calc(100vh - 104px);
+
     display: flex;
     flex-direction: column;
 }
@@ -105,19 +130,24 @@ input {
 .logo-area {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 18px;
 }
 
 .logo-simbolo {
     width: 70px;
     height: 70px;
+
     display: grid;
     place-items: center;
+
     padding: 5px;
     border-radius: 12px;
+
     background: #ffffff;
     overflow: hidden;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.20);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.20);
 }
 
 .logo-simbolo img {
@@ -125,6 +155,10 @@ input {
     height: 100%;
     object-fit: contain;
     display: block;
+}
+
+.logo-textos {
+    margin-left: 2px;
 }
 
 .logo-textos h1 {
@@ -136,7 +170,9 @@ input {
 .logo-textos span {
     display: block;
     margin-top: 8px;
+
     color: #318cff;
+
     font-size: 14px;
     font-weight: 800;
     letter-spacing: 1.5px;
@@ -150,6 +186,7 @@ input {
 
 .texto-principal h2 {
     max-width: 540px;
+
     font-size: clamp(40px, 3.4vw, 58px);
     line-height: 1.12;
     letter-spacing: -2px;
@@ -158,7 +195,9 @@ input {
 .texto-principal p {
     max-width: 470px;
     margin-top: 30px;
+
     color: #d1dcf0;
+
     font-size: 16px;
     line-height: 1.7;
 }
@@ -180,7 +219,9 @@ input {
 
 .mensagem-institucional span {
     margin-top: 8px;
+
     color: #b6c8e5;
+
     font-size: 13px;
 }
 
@@ -192,11 +233,19 @@ input {
 .painel-formulario {
     position: relative;
     z-index: 1;
+
     min-height: 100vh;
+
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 70px 5% 100px 230px;
+
+    padding:
+        70px
+        5%
+        100px
+        230px;
+
     overflow: hidden;
 
     background:
@@ -212,6 +261,7 @@ input {
         );
 }
 
+/* Desativa qualquer curva antiga no painel branco */
 .painel-formulario::before {
     display: none;
 }
@@ -224,10 +274,12 @@ input {
 .marca-dagua {
     position: absolute;
     z-index: 1;
-    width: 76%;
-    height: 86%;
-    left: -5%;
-    top: 7%;
+
+    width: 82%;
+    height: 88%;
+
+    left: -12%;
+    top: 6%;
 
     background-image: url("SMART.jpg");
     background-repeat: no-repeat;
@@ -236,6 +288,7 @@ input {
 
     opacity: 0.06;
     filter: grayscale(100%);
+
     pointer-events: none;
     transform: none;
 }
@@ -248,11 +301,15 @@ input {
 .card-login {
     position: relative;
     z-index: 3;
+
     width: min(460px, 100%);
+
     margin: 0;
     padding: 42px;
+
     border: 1px solid rgba(191, 205, 224, 0.75);
     border-radius: 20px;
+
     background: rgba(255, 255, 255, 0.96);
     color: #07162f;
 
@@ -269,7 +326,9 @@ input {
 
 .saudacao {
     margin-bottom: 18px;
+
     color: #096beb;
+
     font-size: 15px;
     font-weight: 800;
 }
@@ -283,7 +342,9 @@ input {
 .cabecalho-login > p:last-child {
     max-width: 340px;
     margin-top: 18px;
+
     color: #61738f;
+
     font-size: 14px;
     line-height: 1.65;
 }
@@ -300,7 +361,9 @@ input {
 .campo label {
     display: block;
     margin-bottom: 9px;
+
     color: #233a5c;
+
     font-size: 13px;
     font-weight: 800;
 }
@@ -308,10 +371,14 @@ input {
 .campo input {
     width: 100%;
     height: 52px;
+
     padding: 0 16px;
+
     border: 1px solid #c7d4e5;
     border-radius: 10px;
+
     outline: none;
+
     background: #fbfcfe;
     color: #07162f;
 
@@ -328,7 +395,9 @@ input {
 .campo input:focus {
     border-color: #1577ed;
     background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(21, 119, 237, 0.12);
+
+    box-shadow:
+        0 0 0 4px rgba(21, 119, 237, 0.12);
 }
 
 .campo-senha {
@@ -341,14 +410,20 @@ input {
 
 .mostrar-senha {
     position: absolute;
+
     top: 50%;
     right: 9px;
+
     width: 38px;
     height: 38px;
+
     border: 0;
     border-radius: 8px;
+
     background: transparent;
+
     cursor: pointer;
+
     transform: translateY(-50%);
 }
 
@@ -360,7 +435,9 @@ input {
     display: flex;
     align-items: center;
     gap: 9px;
+
     color: #526783;
+
     font-size: 14px;
     cursor: pointer;
 }
@@ -368,6 +445,7 @@ input {
 .lembrar-acesso input {
     width: 17px;
     height: 17px;
+
     accent-color: #086ee7;
 }
 
@@ -379,7 +457,9 @@ input {
 .mensagem-login {
     min-height: 22px;
     margin-top: 16px;
+
     color: #cc3030;
+
     font-size: 13px;
     line-height: 1.4;
 }
@@ -391,7 +471,9 @@ input {
 .btn-entrar {
     width: 100%;
     min-height: 54px;
+
     margin-top: 4px;
+
     border: 0;
     border-radius: 10px;
 
@@ -404,9 +486,12 @@ input {
         );
 
     color: #ffffff;
+
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 12px 28px rgba(14, 105, 225, 0.28);
+
+    box-shadow:
+        0 12px 28px rgba(14, 105, 225, 0.28);
 
     transition:
         transform 0.2s,
@@ -415,7 +500,9 @@ input {
 
 .btn-entrar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 17px 34px rgba(14, 105, 225, 0.34);
+
+    box-shadow:
+        0 17px 34px rgba(14, 105, 225, 0.34);
 }
 
 .btn-entrar:disabled {
@@ -432,15 +519,21 @@ input {
 .rodape-login {
     position: absolute;
     z-index: 3;
-    left: 18%;
+
+    left: 10%;
     right: 5%;
     bottom: 22px;
+
     display: flex;
     justify-content: space-between;
     gap: 20px;
+
     padding-top: 19px;
+
     border-top: 1px solid #d7e0ec;
+
     color: #71839c;
+
     font-size: 12px;
 }
 
@@ -456,12 +549,12 @@ input {
     }
 
     .painel-marca {
-        width: calc(100% + 135px);
         padding: 42px 34px;
     }
 
-    .marca-conteudo {
-        width: calc(100% - 135px);
+    .painel-marca::after {
+        width: 300px;
+        right: -150px;
     }
 
     .texto-principal h2 {
@@ -469,7 +562,11 @@ input {
     }
 
     .painel-formulario {
-        padding: 60px 35px 100px 160px;
+        padding:
+            60px
+            35px
+            100px
+            155px;
     }
 
     .card-login {
@@ -495,9 +592,14 @@ input {
     .painel-marca {
         width: 100%;
         min-height: auto;
+
         padding: 28px 22px 90px;
+
         overflow: hidden;
-        clip-path: none;
+    }
+
+    .painel-marca::after {
+        display: none;
     }
 
     .marca-conteudo {
@@ -539,25 +641,41 @@ input {
 
     .painel-formulario {
         min-height: 620px;
+
         margin-top: -42px;
-        padding: 70px 15px 90px;
-        border-radius: 35px 35px 0 0;
+
+        padding:
+            70px
+            15px
+            90px;
+
+        border-radius:
+            35px
+            35px
+            0
+            0;
+
         justify-content: center;
     }
 
     .marca-dagua {
         width: 115%;
         height: 75%;
+
         left: -8%;
         top: 10%;
+
         background-position: center;
         background-size: contain;
+
         opacity: 0.04;
     }
 
     .card-login {
         width: min(470px, 100%);
+
         padding: 32px 23px;
+
         border-radius: 17px;
     }
 
@@ -569,6 +687,7 @@ input {
         left: 20px;
         right: 20px;
         bottom: 18px;
+
         font-size: 10px;
     }
 }
@@ -596,6 +715,7 @@ input {
         flex-direction: column;
         align-items: center;
         gap: 5px;
+
         text-align: center;
     }
 }
