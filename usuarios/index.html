@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários - Smart Group Analytics</title>
+  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="carregando">
+  <main class="pagina-usuarios">
+    <header class="cabecalho">
+      <div>
+        <span class="rotulo">ADMINISTRAÇÃO</span>
+        <h1>Gerenciamento de Usuários</h1>
+        <p>Consulte usuários, perfis, setores e permissões do Analytics.</p>
+      </div>
+      <button class="btn-novo" id="btnNovoUsuario" type="button">
+        <i class="fa-solid fa-user-plus"></i>
+        Novo usuário
+      </button>
+    </header>
+
+    <section class="cards-resumo">
+      <article class="card-resumo">
+        <div class="icone azul"><i class="fa-solid fa-users"></i></div>
+        <div><span>Total de usuários</span><strong id="totalUsuarios">0</strong></div>
+      </article>
+      <article class="card-resumo">
+        <div class="icone verde"><i class="fa-solid fa-circle-check"></i></div>
+        <div><span>Usuários ativos</span><strong id="usuariosAtivos">0</strong></div>
+      </article>
+      <article class="card-resumo">
+        <div class="icone roxo"><i class="fa-solid fa-user-shield"></i></div>
+        <div><span>Administradores</span><strong id="totalAdministradores">0</strong></div>
+      </article>
+    </section>
+
+    <section class="painel-lista">
+      <div class="barra-ferramentas">
+        <div class="campo-pesquisa">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="pesquisaUsuario" type="search"
+                 placeholder="Pesquisar nome, e-mail, cargo ou setor..."
+                 autocomplete="off">
+        </div>
+        <button class="btn-atualizar" id="btnAtualizar" type="button">
+          <i class="fa-solid fa-rotate"></i>
+          Atualizar
+        </button>
+      </div>
+
+      <div class="mensagem" id="mensagem">Carregando usuários...</div>
+
+      <div class="tabela-container" id="tabelaContainer" hidden>
+        <table>
+          <thead>
+            <tr>
+              <th>Usuário</th>
+              <th>Cargo / Setor</th>
+              <th>Perfil</th>
+              <th>Empresa</th>
+              <th>Status</th>
+              <th class="coluna-acoes">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaUsuarios"></tbody>
+        </table>
+      </div>
+
+      <div class="estado-vazio" id="estadoVazio" hidden>
+        <i class="fa-solid fa-user-slash"></i>
+        <h2>Nenhum usuário encontrado</h2>
+        <p>Altere a pesquisa ou cadastre um novo usuário.</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" aria-live="polite"></div>
+  <script type="module" src="app.js?v=1"></script>
+</body>
+</html>
