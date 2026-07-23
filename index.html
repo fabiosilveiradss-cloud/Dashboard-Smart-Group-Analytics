@@ -103,21 +103,23 @@
        <button id="btnFullscreen" class="icon-btn" onclick="alternarTelaCheia()">
     <i id="iconeFullscreen" class="fa-solid fa-expand"></i>
 </button>
+<div class="user-box">
+  <div class="avatar" id="avatarUsuario">U</div>
 
-        <div class="user-box">
-          <div class="avatar">F</div>
-          <div>
-            <strong>Fabio Silveira</strong>
-            <small>Administrador</small>
-          </div>
-        </div>
+  <div>
+    <strong id="nomeUsuarioTopo">Usuário</strong>
+    <small id="perfilUsuarioTopo">Carregando...</small>
+  </div>
+</div>
       </div>
     </header>
 
     <section id="conteudo" class="conteudo">
       <div class="home">
         <div class="boas-vindas">
-          <h2>Olá, Fabio! 👋</h2>
+          <h2>
+  Olá, <span id="nomeSaudacao">Usuário</span>! 👋
+</h2>
           <p>Bem-vindo ao Smart Group Analytics.</p>
         </div>
 
