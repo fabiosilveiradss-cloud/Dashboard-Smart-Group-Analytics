@@ -66,26 +66,22 @@ break;
 
 break;
 
-        case "usuarios":
+ case "usuarios":
 
-            titulo.innerText="Usuários";
+    titulo.innerText = "Usuários";
 
-            subtitulo.innerText=
-            "Gerenciamento de usuários.";
+    subtitulo.innerText =
+    "Gerenciamento de usuários.";
 
-            conteudo.innerHTML=`
-            
-            <div class="loading-dashboard">
+    conteudo.innerHTML = `
+        <iframe
+            src="modulos/usuarios/index.html?v=1"
+            class="iframe-modulo"
+            title="Gerenciamento de Usuários">
+        </iframe>
+    `;
 
-                <i class="fa-solid fa-users"></i>
-
-                <h2>Cadastro de Usuários</h2>
-
-            </div>
-
-            `;
-
-        break;
+break;
 
         case "permissoes":
 
