@@ -28,122 +28,134 @@ export function protegerModulo(moduloNecessario) {
 
   return new Promise((resolve, reject) => {
 
-    onAuthStateChanged(auth, async usuarioFirebase => {
+    const cancelarObservador = onAuthStateChanged(
+      auth,
+      async usuarioFirebase => {
 
-      if (!usuarioFirebase) {
+        cancelarObservador();
+
+        if (!usuarioFirebase) {
+
+          enviarParaLogin();
+
+          reject(
+            new Error("Usuário não autenticado.")
+          );
+
+          return;
+        }
+
+        try {
+
+          const referenciaUsuario = doc(
+            db,
+            "usuarios",
+            usuarioFirebase.uid
+          );
+
+          const documentoUsuario =
+            await getDoc(referenciaUsuario);
+
+          if (!documentoUsuario.exists()) {
+
+            bloquearAcesso(
+              "Seu usuário não possui perfil cadastrado no Analytics."
+            );
+
+            reject(
+              new Error("Perfil não encontrado.")
+            );
+
+            return;
+          }
+
+          const dadosUsuario =
+            normalizarCampos(
+              documentoUsuario.data()
+            );
+
+          if (dadosUsuario.ativo !== true) {
+
+            bloquearAcesso(
+              "Seu usuário está inativo. Entre em contato com o administrador."
+            );
+
+            reject(
+              new Error("Usuário inativo.")
+            );
+
+            return;
+          }
+
+          const perfil =
+            String(dadosUsuario.perfil || "")
+              .trim()
+              .toLowerCase();
+
+          const administrador =
+            perfil === "administrador";
+
+          const modulos =
+            dadosUsuario.modulos || {};
+
+          const possuiPermissao =
+            administrador ||
+            modulos[moduloNecessario] === true;
+
+          if (!possuiPermissao) {
+
+            bloquearAcesso(
+              "Você não possui permissão para acessar este módulo."
+            );
+
+            reject(
+              new Error(
+                `Acesso negado ao módulo: ${moduloNecessario}`
+              )
+            );
+
+            return;
+          }
+
+          window.usuarioAnalytics = {
+            uid: usuarioFirebase.uid,
+            emailFirebase: usuarioFirebase.email,
+            ...dadosUsuario
+          };
+
+          window.moduloAtualAnalytics =
+            moduloNecessario;
+
+          mostrarPagina();
+
+          resolve(window.usuarioAnalytics);
+
+        } catch (erro) {
+
+          console.error(
+            "Erro ao verificar permissão do módulo:",
+            erro
+          );
+
+          bloquearAcesso(
+            "Não foi possível validar sua permissão."
+          );
+
+          reject(erro);
+        }
+      },
+      erroAutenticacao => {
+
+        console.error(
+          "Erro ao verificar autenticação:",
+          erroAutenticacao
+        );
 
         enviarParaLogin();
 
-        reject(
-          new Error("Usuário não autenticado.")
-        );
-
-        return;
+        reject(erroAutenticacao);
       }
-
-      try {
-
-        const referenciaUsuario = doc(
-          db,
-          "usuarios",
-          usuarioFirebase.uid
-        );
-
-        const documentoUsuario =
-          await getDoc(referenciaUsuario);
-
-        if (!documentoUsuario.exists()) {
-
-          bloquearAcesso(
-            "Seu usuário não possui perfil cadastrado no Analytics."
-          );
-
-          reject(
-            new Error("Perfil não encontrado.")
-          );
-
-          return;
-        }
-
-        const dadosUsuario =
-          normalizarCampos(
-            documentoUsuario.data()
-          );
-
-        if (dadosUsuario.ativo !== true) {
-
-          bloquearAcesso(
-            "Seu usuário está inativo. Entre em contato com o administrador."
-          );
-
-          reject(
-            new Error("Usuário inativo.")
-          );
-
-          return;
-        }
-
-        const perfil =
-          String(
-            dadosUsuario.perfil || ""
-          )
-            .trim()
-            .toLowerCase();
-
-        const administrador =
-          perfil === "administrador";
-
-        const modulos =
-          dadosUsuario.modulos || {};
-
-        const possuiPermissao =
-          administrador ||
-          modulos[moduloNecessario] === true;
-
-        if (!possuiPermissao) {
-
-          bloquearAcesso(
-            "Você não possui permissão para acessar este módulo."
-          );
-
-          reject(
-            new Error(
-              `Acesso negado ao módulo: ${moduloNecessario}`
-            )
-          );
-
-          return;
-        }
-
-        window.usuarioAnalytics = {
-          uid: usuarioFirebase.uid,
-          emailFirebase: usuarioFirebase.email,
-          ...dadosUsuario
-        };
-
-        window.moduloAtualAnalytics =
-          moduloNecessario;
-
-        mostrarPagina();
-
-        resolve(window.usuarioAnalytics);
-
-      } catch (erro) {
-
-        console.error(
-          "Erro ao verificar permissão do módulo:",
-          erro
-        );
-
-        bloquearAcesso(
-          "Não foi possível validar sua permissão."
-        );
-
-        reject(erro);
-      }
-
-    });
-
+    );
   });
 }
 
