@@ -1,4 +1,4 @@
-import { auth, db } from "../../firebase-config.js";
+import { auth, db } from "../firebase-config.js";
 
 import {
   onAuthStateChanged
@@ -27,7 +27,7 @@ let usuarios = [];
 
 onAuthStateChanged(auth, async usuario => {
   if (!usuario) {
-    window.top.location.replace("../../login.html");
+    window.top.location.replace("../login.html");
     return;
   }
 
