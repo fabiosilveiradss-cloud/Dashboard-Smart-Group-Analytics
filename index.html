@@ -26,46 +26,72 @@
       </div>
     </div>
 
-    <nav class="menu">
-      <a class="active" onclick="abrirModulo('dashboard', this)">
-        <i class="fa-solid fa-house"></i>
-        Dashboard
-      </a>
+<nav class="menu">
+  <a
+    class="active"
+    data-modulo="dashboard"
+    onclick="abrirModulo('dashboard', this)"
+  >
+    <i class="fa-solid fa-house"></i>
+    Dashboard
+  </a>
 
-      <a onclick="abrirModulo('estoque', this)">
-        <i class="fa-solid fa-cube"></i>
-        Estoque Comercial
-      </a>
+  <a
+    data-modulo="estoque"
+    onclick="abrirModulo('estoque', this)"
+  >
+    <i class="fa-solid fa-cube"></i>
+    Estoque Comercial
+  </a>
 
-      <a onclick="abrirModulo('vendas', this)">
-        <i class="fa-solid fa-chart-line"></i>
-        Vendas
-      </a>
-    </nav>
+  <a
+    data-modulo="vendas"
+    onclick="abrirModulo('vendas', this)"
+  >
+    <i class="fa-solid fa-chart-line"></i>
+    Vendas
+  </a>
+</nav>
 
-    <div class="admin-title">ADMINISTRAÇÃO</div>
+  <div class="admin-title" id="tituloAdministracao">
+  ADMINISTRAÇÃO
+</div>
 
-    <nav class="menu">
-      <a onclick="abrirModulo('usuarios', this)">
-        <i class="fa-solid fa-user"></i>
-        Usuários
-      </a>
+<nav class="menu" id="menuAdministracao">
 
-      <a onclick="abrirModulo('permissoes', this)">
-        <i class="fa-solid fa-shield-halved"></i>
-        Perfis e Permissões
-      </a>
+  <a
+    data-modulo="usuarios"
+    onclick="abrirModulo('usuarios', this)"
+  >
+    <i class="fa-solid fa-user"></i>
+    Usuários
+  </a>
 
-      <a onclick="abrirModulo('logs', this)">
-        <i class="fa-solid fa-file-lines"></i>
-        Logs de Acesso
-      </a>
+  <a
+    data-modulo="usuarios"
+    onclick="abrirModulo('permissoes', this)"
+  >
+    <i class="fa-solid fa-shield-halved"></i>
+    Perfis e Permissões
+  </a>
 
-      <a onclick="abrirModulo('configuracoes', this)">
-        <i class="fa-solid fa-gear"></i>
-        Configurações
-      </a>
-    </nav>
+  <a
+    data-modulo="usuarios"
+    onclick="abrirModulo('logs', this)"
+  >
+    <i class="fa-solid fa-file-lines"></i>
+    Logs de Acesso
+  </a>
+
+  <a
+    data-modulo="configuracoes"
+    onclick="abrirModulo('configuracoes', this)"
+  >
+    <i class="fa-solid fa-gear"></i>
+    Configurações
+  </a>
+
+</nav>
 
     <div class="versao">
       SMART GROUP BI<br>
