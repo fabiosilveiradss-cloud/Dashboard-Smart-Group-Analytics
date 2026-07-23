@@ -247,15 +247,18 @@ function verificarMenuAdministracao(
     modulos.usuarios === true ||
     modulos.configuracoes === true;
 
-
   if (tituloAdministracao) {
-    tituloAdministracao.hidden =
-      !podeVerAdministracao;
+    tituloAdministracao.style.display =
+      podeVerAdministracao
+        ? ""
+        : "none";
   }
 
   if (menuAdministracao) {
-    menuAdministracao.hidden =
-      !podeVerAdministracao;
+    menuAdministracao.style.display =
+      podeVerAdministracao
+        ? ""
+        : "none";
   }
 }
 
