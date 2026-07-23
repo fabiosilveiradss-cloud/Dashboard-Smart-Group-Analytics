@@ -5,6 +5,28 @@
 
 function abrirModulo(modulo, elemento){
 
+        const mapaPermissoes = {
+        dashboard: "dashboard",
+        estoque: "estoque",
+        vendas: "vendas",
+        usuarios: "usuarios",
+        permissoes: "usuarios",
+        logs: "usuarios",
+        configuracoes: "configuracoes"
+    };
+
+    const permissaoNecessaria =
+        mapaPermissoes[modulo];
+
+    if (
+        permissaoNecessaria &&
+        typeof window.usuarioPodeAcessar === "function" &&
+        !window.usuarioPodeAcessar(permissaoNecessaria)
+    ) {
+        alert("Você não possui permissão para acessar este módulo.");
+        return;
+    }
+
     // Remove o menu ativo
     document.querySelectorAll(".menu a").forEach(item=>{
         item.classList.remove("active");
