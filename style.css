@@ -442,3 +442,214 @@ body {
     font-size:13px;
     text-align:center;
 }
+
+/* ==========================================================
+   MENU DO USUÁRIO
+========================================================== */
+
+.user-menu-container{
+    position:relative;
+}
+
+.user-box{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    background:transparent;
+    border:none;
+    color:#fff;
+
+    cursor:pointer;
+
+    padding:8px 14px;
+
+    border-radius:12px;
+
+    transition:.25s;
+
+    font-family:inherit;
+}
+
+.user-box:hover{
+    background:rgba(255,255,255,.08);
+}
+
+.user-info{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.user-info strong{
+    font-size:14px;
+    color:#fff;
+}
+
+.user-info small{
+    font-size:12px;
+    color:#b7c6df;
+}
+
+.seta-usuario{
+    font-size:12px;
+    color:#9eb5d8;
+    transition:.25s;
+}
+
+.user-box.aberto .seta-usuario{
+    transform:rotate(180deg);
+}
+
+/* ============================= */
+
+.menu-usuario{
+
+    position:absolute;
+
+    top:calc(100% + 12px);
+
+    right:0;
+
+    width:280px;
+
+    background:#071d44;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.35);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transform:translateY(-10px);
+
+    transition:.25s;
+
+    z-index:99999;
+
+}
+
+.menu-usuario.aberto{
+
+    opacity:1;
+
+    visibility:visible;
+
+    transform:translateY(0);
+
+}
+
+/* ============================= */
+
+.menu-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:18px;
+
+}
+
+.avatar-menu{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:50%;
+
+    background:#1b4fa8;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#fff;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+}
+
+.menu-header strong{
+
+    display:block;
+
+    color:#fff;
+
+}
+
+.menu-header small{
+
+    color:#9fb2cf;
+
+}
+
+/* ============================= */
+
+.menu-usuario hr{
+
+    border:none;
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+}
+
+/* ============================= */
+
+.menu-item{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:14px 18px;
+
+    background:none;
+
+    border:none;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:.20s;
+
+    font-size:14px;
+
+}
+
+.menu-item:hover{
+
+    background:#10306c;
+
+}
+
+.menu-item.logout{
+
+    color:#ffb4b4;
+
+}
+
+.menu-item.logout:hover{
+
+    background:#5c1d1d;
+
+}
