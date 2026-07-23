@@ -47,7 +47,14 @@ async function carregarUsuarios() {
       ...documento.data()
     }));
 
-    console.log("DADOS DOS USUÁRIOS:", usuarios);
+
+    alert(
+  JSON.stringify(
+    usuarios[0],
+    null,
+    2
+  )
+);
     
     
     usuarios.sort((a, b) =>
