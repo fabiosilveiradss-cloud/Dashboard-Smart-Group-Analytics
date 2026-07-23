@@ -47,6 +47,9 @@ async function carregarUsuarios() {
       ...documento.data()
     }));
 
+    console.log("DADOS DOS USUÁRIOS:", usuarios);
+    
+    
     usuarios.sort((a, b) =>
       String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR")
     );
