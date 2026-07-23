@@ -196,7 +196,6 @@ function aplicarPermissoes(dadosUsuario) {
   const modulos =
     dadosUsuario.modulos || {};
 
-
   document
     .querySelectorAll("[data-modulo]")
     .forEach(elemento => {
@@ -208,21 +207,21 @@ function aplicarPermissoes(dadosUsuario) {
         administrador ||
         modulos[nomeModulo] === true;
 
-      elemento.hidden = !permitido;
+      if (permitido) {
+        elemento.style.display = "";
+        elemento.setAttribute("aria-hidden", "false");
+      } else {
+        elemento.style.display = "none";
+        elemento.setAttribute("aria-hidden", "true");
+      }
 
-      elemento.setAttribute(
-        "aria-hidden",
-        String(!permitido)
-      );
     });
-
 
   verificarMenuAdministracao(
     administrador,
     modulos
   );
 }
-
 
 // ============================================
 // ESCONDER TÍTULO ADMINISTRAÇÃO
