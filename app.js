@@ -75,7 +75,7 @@ break;
 
     conteudo.innerHTML = `
         <iframe
-            src="usuarios/index.html?v=1"
+            src="usuarios/index.html?v=3"
             class="iframe-modulo"
             title="Gerenciamento de Usuários">
         </iframe>
