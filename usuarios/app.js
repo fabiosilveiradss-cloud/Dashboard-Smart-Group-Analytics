@@ -42,20 +42,22 @@ async function carregarUsuarios() {
     const referencia = collection(db, "usuarios");
     const resultado = await getDocs(referencia);
 
-    usuarios = resultado.docs.map(documento => ({
-      id: documento.id,
-      ...documento.data()
-    }));
+ usuarios = resultado.docs.map(documento => {
 
+  const dadosOriginais = documento.data();
+  const dadosCorrigidos = {};
 
-    alert(
-  JSON.stringify(
-    usuarios[0],
-    null,
-    2
-  )
-);
-    
+  // Remove espaços antes ou depois dos nomes dos campos
+  Object.entries(dadosOriginais).forEach(([campo, valor]) => {
+    dadosCorrigidos[campo.trim()] = valor;
+  });
+
+  return {
+    id: documento.id,
+    ...dadosCorrigidos
+  };
+});
+  
     
     usuarios.sort((a, b) =>
       String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR")
