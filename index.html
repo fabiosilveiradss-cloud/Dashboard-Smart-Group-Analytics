@@ -129,13 +129,98 @@
        <button id="btnFullscreen" class="icon-btn" onclick="alternarTelaCheia()">
     <i id="iconeFullscreen" class="fa-solid fa-expand"></i>
 </button>
-<div class="user-box">
-  <div class="avatar" id="avatarUsuario">U</div>
+<div class="user-menu-container">
 
-  <div>
-    <strong id="nomeUsuarioTopo">Usuário</strong>
-    <small id="perfilUsuarioTopo">Carregando...</small>
-  </div>
+    <button
+        id="btnUsuario"
+        class="user-box"
+        type="button">
+
+        <div class="avatar" id="avatarUsuario">
+            U
+        </div>
+
+        <div class="user-info">
+
+            <strong id="nomeUsuarioTopo">
+                Usuário
+            </strong>
+
+            <small id="perfilUsuarioTopo">
+                Carregando...
+            </small>
+
+        </div>
+
+        <i class="fa-solid fa-chevron-down seta-usuario"></i>
+
+    </button>
+
+    <div
+        id="menuUsuario"
+        class="menu-usuario">
+
+        <div class="menu-header">
+
+            <div class="avatar-menu"
+                 id="avatarUsuarioMenu">
+                U
+            </div>
+
+            <div>
+
+                <strong id="nomeUsuarioMenu">
+                    Usuário
+                </strong>
+
+                <small id="perfilUsuarioMenu">
+                    Carregando...
+                </small>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <button class="menu-item">
+
+            <i class="fa-solid fa-user"></i>
+
+            Minha Conta
+
+        </button>
+
+        <button class="menu-item">
+
+            <i class="fa-solid fa-key"></i>
+
+            Alterar Senha
+
+        </button>
+
+        <button class="menu-item">
+
+            <i class="fa-solid fa-gear"></i>
+
+            Configurações
+
+        </button>
+
+        <hr>
+
+        <button
+            id="btnLogout"
+            class="menu-item logout">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Sair
+
+        </button>
+
+    </div>
+
 </div>
       </div>
     </header>
