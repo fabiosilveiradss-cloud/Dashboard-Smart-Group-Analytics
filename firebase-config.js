@@ -30,7 +30,7 @@ const firebaseConfig = {
 
 
 //-----------------------------------------------------
-// INICIALIZAÇÃO
+// INICIALIZAR FIREBASE
 //-----------------------------------------------------
 
 const app = initializeApp(firebaseConfig);
@@ -41,7 +41,7 @@ const db = getFirestore(app);
 
 
 //-----------------------------------------------------
-// EXPORTAÇÕES
+// EXPORTAR PARA OS OUTROS ARQUIVOS
 //-----------------------------------------------------
 
 export {
