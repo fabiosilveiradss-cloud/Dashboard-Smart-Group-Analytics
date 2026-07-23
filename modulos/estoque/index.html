@@ -14,6 +14,16 @@
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!--
+        Mantém a página escondida enquanto o Firebase
+        verifica o login e a permissão do usuário.
+    -->
+    <style>
+        html {
+            visibility: hidden;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -51,7 +61,7 @@
     <!-- FILTROS -->
 
     <section class="barra-filtros">
-   
+
         <select id="filtroEmpresa">
 
             <option value="">Todas Empresas</option>
@@ -88,19 +98,19 @@
 
         <div class="card">
 
-    <h3>🏢 Empresas</h3>
+            <h3>🏢 Empresas</h3>
 
-    <span id="totalEmpresas">0</span>
+            <span id="totalEmpresas">0</span>
 
-</div>
+        </div>
 
-<div class="card">
+        <div class="card">
 
-    <h3>📍 Locais</h3>
+            <h3>📍 Locais</h3>
 
-    <span id="totalLocais">0</span>
+            <span id="totalLocais">0</span>
 
-</div>
+        </div>
 
     </section>
 
@@ -108,63 +118,63 @@
 
     <section class="graficos">
 
-        
         <!-- TOP PRODUTOS -->
 
-<div class="card-grafico card-top-produtos">
+        <div class="card-grafico card-top-produtos">
 
-    <div class="cabecalho-top-produtos">
+            <div class="cabecalho-top-produtos">
 
-        <div class="titulo-card titulo-top-produtos">
-            🏆 Produtos com Maior Estoque
-        </div>
+                <div class="titulo-card titulo-top-produtos">
+                    🏆 Produtos com Maior Estoque
+                </div>
 
-        <select id="quantidadeTopProdutos" class="seletor-top-produtos">
+                <select id="quantidadeTopProdutos" class="seletor-top-produtos">
 
-            <option value="5">Top 5</option>
-            <option value="10" selected>Top 10</option>
-            <option value="15">Top 15</option>
-            <option value="20">Top 20</option>
+                    <option value="5">Top 5</option>
+                    <option value="10" selected>Top 10</option>
+                    <option value="15">Top 15</option>
+                    <option value="20">Top 20</option>
 
-        </select>
+                </select>
 
-    </div>
-
-    <div
-        id="rankingTopProdutos"
-        class="ranking-top-produtos">
-<div class="sem-dados">
-    Carregando dados do estoque...
-</div>
-
-    </div>
-
-</div>
-
-<!-- FAMÍLIA -->
-
-    <div class="card-grafico">
-
-        <div class="titulo-card">
-            📊 Estoque por Família de Material
-        </div>
-
-        <button id="limparFamilia" class="btn-limpar">
-            Limpar filtro
-        </button>
-
-        <div class="grafico-familia-container">
+            </div>
 
             <div
-                id="rankingFamilias"
-                class="ranking-familias">
+                id="rankingTopProdutos"
+                class="ranking-top-produtos">
+
+                <div class="sem-dados">
+                    Carregando dados do estoque...
+                </div>
+
             </div>
 
         </div>
 
-    </div>
+        <!-- FAMÍLIA -->
 
-</section>
+        <div class="card-grafico">
+
+            <div class="titulo-card">
+                📊 Estoque por Família de Material
+            </div>
+
+            <button id="limparFamilia" class="btn-limpar">
+                Limpar filtro
+            </button>
+
+            <div class="grafico-familia-container">
+
+                <div
+                    id="rankingFamilias"
+                    class="ranking-familias">
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
     <!-- TABELA -->
 
@@ -174,64 +184,93 @@
 
             <h2>📦 Produtos</h2>
 
-<div class="barra-pesquisa-tabela">
+            <div class="barra-pesquisa-tabela">
 
-    <input
-        type="text"
-        id="pesquisaProduto"
-        placeholder="Pesquisar código ou descrição...">
+                <input
+                    type="text"
+                    id="pesquisaProduto"
+                    placeholder="Pesquisar código ou descrição...">
 
-</div>
-
+            </div>
 
             <span id="familiaSelecionada"></span>
 
         </div>
 
-   <div class="tabela-scroll">
+        <div class="tabela-scroll">
 
-    <table>
+            <table>
 
-        <thead>
+                <thead>
 
-            <tr>
+                    <tr>
 
-    <th>Código</th>
+                        <th>Código</th>
 
-    <th>Produto</th>
+                        <th>Produto</th>
 
-    <th>Saldo Total</th>
+                        <th>Saldo Total</th>
 
-</tr>
+                    </tr>
 
-        </thead>
+                </thead>
 
-        <tbody id="tabelaProdutos">
+                <tbody id="tabelaProdutos">
+                </tbody>
 
-            </tbody>
-    </table>
+            </table>
 
-</div>
+        </div>
 
     </section>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!--
+    INICIALIZAÇÃO SEGURA DO MÓDULO
 
-<script src="./js/util.js"></script>
-<script src="./js/processamento.js"></script>
-<script src="./js/cards.js"></script>
+    Primeiro verifica:
+    1. Login
+    2. Usuário ativo
+    3. Permissão de estoque
 
-<script src="./js/graficoLocal.js?v=8"></script>
+    Somente depois carrega os scripts do dashboard,
+    preservando exatamente a ordem anterior.
+-->
 
-<script src="./js/agruparProdutos.js"></script>
-<script src="./js/graficoFamilia.js?v=8"></script>
-<script src="./js/tabela.js?v=16"></script>
-<script src="./js/filtros.js"></script>
-<script src="./js/excel.js"></script>
-<script src="./js/app.js?v=8"></script>
+<script type="module">
 
+    import {
+        iniciarModulo
+    } from "../../bootstrap.js?v=1";
+
+    await iniciarModulo({
+
+        modulo: "estoque",
+
+        scripts: [
+
+            "https://cdn.jsdelivr.net/npm/chart.js",
+
+            "./js/util.js",
+            "./js/processamento.js",
+            "./js/cards.js",
+
+            "./js/graficoLocal.js?v=8",
+
+            "./js/agruparProdutos.js",
+            "./js/graficoFamilia.js?v=8",
+            "./js/tabela.js?v=16",
+            "./js/filtros.js",
+            "./js/excel.js",
+
+            "./js/app.js?v=8"
+
+        ]
+
+    });
+
+</script>
 
 </body>
 
