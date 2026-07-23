@@ -6,7 +6,11 @@ import {
 
 import {
   collection,
-  getDocs
+  getDocs,
+  doc,
+  setDoc,
+  updateDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 const tabela = document.getElementById("tabelaUsuarios");
@@ -14,16 +18,30 @@ const tabelaContainer = document.getElementById("tabelaContainer");
 const mensagem = document.getElementById("mensagem");
 const estadoVazio = document.getElementById("estadoVazio");
 const pesquisa = document.getElementById("pesquisaUsuario");
-
 const totalUsuarios = document.getElementById("totalUsuarios");
 const usuariosAtivos = document.getElementById("usuariosAtivos");
 const totalAdministradores = document.getElementById("totalAdministradores");
-
 const btnAtualizar = document.getElementById("btnAtualizar");
 const btnNovoUsuario = document.getElementById("btnNovoUsuario");
 const toast = document.getElementById("toast");
 
+const modalUsuario = document.getElementById("modalUsuario");
+const tituloModal = document.getElementById("tituloModal");
+const formUsuario = document.getElementById("formUsuario");
+const btnFecharModal = document.getElementById("btnFecharModal");
+const btnCancelar = document.getElementById("btnCancelar");
+const btnSalvar = document.getElementById("btnSalvar");
+const campoUid = document.getElementById("campoUid");
+const campoNome = document.getElementById("campoNome");
+const campoEmail = document.getElementById("campoEmail");
+const campoCargo = document.getElementById("campoCargo");
+const campoSetor = document.getElementById("campoSetor");
+const campoEmpresa = document.getElementById("campoEmpresa");
+const campoPerfil = document.getElementById("campoPerfil");
+const campoAtivo = document.getElementById("campoAtivo");
+
 let usuarios = [];
+let usuarioEmEdicao = null;
 
 onAuthStateChanged(auth, async usuario => {
   if (!usuario) {
@@ -42,23 +60,17 @@ async function carregarUsuarios() {
     const referencia = collection(db, "usuarios");
     const resultado = await getDocs(referencia);
 
- usuarios = resultado.docs.map(documento => {
+    usuarios = resultado.docs.map(documento => {
+      const dadosOriginais = documento.data();
+      const dadosCorrigidos = {};
 
-  const dadosOriginais = documento.data();
-  const dadosCorrigidos = {};
+      Object.entries(dadosOriginais).forEach(([campo, valor]) => {
+        dadosCorrigidos[campo.trim()] = valor;
+      });
 
-  // Remove espaços antes ou depois dos nomes dos campos
-  Object.entries(dadosOriginais).forEach(([campo, valor]) => {
-    dadosCorrigidos[campo.trim()] = valor;
-  });
+      return { id: documento.id, ...dadosCorrigidos };
+    });
 
-  return {
-    id: documento.id,
-    ...dadosCorrigidos
-  };
-});
-  
-    
     usuarios.sort((a, b) =>
       String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR")
     );
@@ -68,14 +80,11 @@ async function carregarUsuarios() {
 
   } catch (erro) {
     console.error("Erro ao carregar usuários:", erro);
-
     mensagem.hidden = false;
     mensagem.textContent =
       "Não foi possível carregar os usuários. Verifique as permissões do Firestore.";
-
     tabelaContainer.hidden = true;
     estadoVazio.hidden = true;
-
     mostrarToast("Erro ao consultar os usuários.", true);
   }
 }
@@ -108,47 +117,29 @@ function renderizarUsuarios(lista) {
         <td>
           <div class="usuario-cell">
             <div class="avatar">${iniciais}</div>
-            <div>
-              <strong>${nome}</strong>
-              <span>${email}</span>
-            </div>
+            <div><strong>${nome}</strong><span>${email}</span></div>
           </div>
         </td>
-
-        <td>
-          ${cargo}
-          <span class="texto-secundario">${setor}</span>
-        </td>
-
+        <td>${cargo}<span class="texto-secundario">${setor}</span></td>
         <td>
           <span class="badge perfil">
-            <i class="fa-solid fa-shield-halved"></i>
-            ${perfil}
+            <i class="fa-solid fa-shield-halved"></i>${perfil}
           </span>
         </td>
-
         <td>${empresa}</td>
-
         <td>
           <span class="badge ${ativo ? "ativo" : "inativo"}">
-            <i class="fa-solid fa-circle"></i>
-            ${ativo ? "Ativo" : "Inativo"}
+            <i class="fa-solid fa-circle"></i>${ativo ? "Ativo" : "Inativo"}
           </span>
         </td>
-
         <td>
           <div class="acoes">
-            <button class="btn-acao" type="button"
-                    title="Editar usuário"
-                    data-acao="editar"
-                    data-id="${usuario.id}">
+            <button class="btn-acao" type="button" title="Editar usuário"
+                    data-acao="editar" data-id="${usuario.id}">
               <i class="fa-solid fa-pen"></i>
             </button>
-
-            <button class="btn-acao" type="button"
-                    title="Ver permissões"
-                    data-acao="permissoes"
-                    data-id="${usuario.id}">
+            <button class="btn-acao" type="button" title="Ver permissões"
+                    data-acao="permissoes" data-id="${usuario.id}">
               <i class="fa-solid fa-key"></i>
             </button>
           </div>
@@ -162,7 +153,6 @@ function atualizarResumo() {
   totalUsuarios.textContent = usuarios.length;
   usuariosAtivos.textContent =
     usuarios.filter(usuario => usuario.ativo === true).length;
-
   totalAdministradores.textContent =
     usuarios.filter(usuario =>
       String(usuario.perfil || "").toLowerCase() === "administrador"
@@ -194,38 +184,126 @@ pesquisa.addEventListener("input", () => {
 });
 
 btnAtualizar.addEventListener("click", carregarUsuarios);
+btnNovoUsuario.addEventListener("click", abrirNovoUsuario);
+btnFecharModal.addEventListener("click", fecharModal);
+btnCancelar.addEventListener("click", fecharModal);
 
-btnNovoUsuario.addEventListener("click", () => {
-  mostrarToast(
-    "A listagem está pronta. O cadastro será habilitado na próxima etapa."
-  );
+modalUsuario.addEventListener("click", evento => {
+  if (evento.target === modalUsuario) fecharModal();
 });
 
 tabela.addEventListener("click", evento => {
   const botao = evento.target.closest("[data-acao]");
-
-  if (!botao) {
-    return;
-  }
+  if (!botao) return;
 
   const usuario = usuarios.find(item => item.id === botao.dataset.id);
+  if (!usuario) return;
 
-  if (!usuario) {
+  abrirEdicao(usuario);
+});
+
+formUsuario.addEventListener("submit", salvarUsuario);
+
+function abrirNovoUsuario() {
+  usuarioEmEdicao = null;
+  tituloModal.textContent = "Novo usuário";
+  formUsuario.reset();
+  campoUid.disabled = false;
+  campoEmpresa.value = "Smart Group";
+  campoPerfil.value = "usuario";
+  campoAtivo.checked = true;
+
+  document.querySelectorAll("[data-modulo]").forEach(campo => {
+    campo.checked = campo.dataset.modulo === "dashboard";
+  });
+
+  modalUsuario.hidden = false;
+  campoUid.focus();
+}
+
+function abrirEdicao(usuario) {
+  usuarioEmEdicao = usuario;
+  tituloModal.textContent = "Editar usuário";
+  campoUid.value = usuario.id;
+  campoUid.disabled = true;
+  campoNome.value = usuario.nome || "";
+  campoEmail.value = usuario.email || "";
+  campoCargo.value = usuario.cargo || "";
+  campoSetor.value = usuario.setor || "";
+  campoEmpresa.value = usuario.empresa || "Smart Group";
+  campoPerfil.value = usuario.perfil || "usuario";
+  campoAtivo.checked = usuario.ativo === true;
+
+  document.querySelectorAll("[data-modulo]").forEach(campo => {
+    campo.checked = usuario.modulos?.[campo.dataset.modulo] === true;
+  });
+
+  modalUsuario.hidden = false;
+}
+
+function fecharModal() {
+  modalUsuario.hidden = true;
+  usuarioEmEdicao = null;
+}
+
+async function salvarUsuario(evento) {
+  evento.preventDefault();
+
+  const uid = String(campoUid.value || "").trim();
+
+  if (!uid) {
+    mostrarToast("Informe o UID do Authentication.", true);
     return;
   }
 
-  if (botao.dataset.acao === "editar") {
-    mostrarToast(
-      `Edição de ${usuario.nome} será habilitada na próxima etapa.`
-    );
-  }
+  const modulos = {};
+  document.querySelectorAll("[data-modulo]").forEach(campo => {
+    modulos[campo.dataset.modulo] = campo.checked;
+  });
 
-  if (botao.dataset.acao === "permissoes") {
-    mostrarToast(
-      `Permissões de ${usuario.nome} serão habilitadas na próxima etapa.`
-    );
+  const dados = {
+    nome: String(campoNome.value || "").trim(),
+    email: String(campoEmail.value || "").trim().toLowerCase(),
+    cargo: String(campoCargo.value || "").trim(),
+    setor: String(campoSetor.value || "").trim(),
+    empresa: String(campoEmpresa.value || "").trim() || "Smart Group",
+    perfil: campoPerfil.value,
+    ativo: campoAtivo.checked,
+    modulos,
+    atualizadoEm: serverTimestamp()
+  };
+
+  btnSalvar.disabled = true;
+  btnSalvar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando';
+
+  try {
+    const referencia = doc(db, "usuarios", uid);
+
+    if (usuarioEmEdicao) {
+      await updateDoc(referencia, dados);
+      mostrarToast("Usuário atualizado com sucesso.");
+    } else {
+      await setDoc(referencia, {
+        ...dados,
+        foto: "",
+        criadoEm: serverTimestamp()
+      });
+
+      mostrarToast("Perfil criado com sucesso.");
+    }
+
+    fecharModal();
+    await carregarUsuarios();
+
+  } catch (erro) {
+    console.error("Erro ao salvar usuário:", erro);
+    mostrarToast("Não foi possível salvar o usuário.", true);
+
+  } finally {
+    btnSalvar.disabled = false;
+    btnSalvar.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar';
   }
-});
+}
 
 function mostrarCarregando() {
   mensagem.hidden = false;
@@ -240,15 +318,8 @@ function formatarPerfil(perfil) {
 }
 
 function obterIniciais(nome) {
-  const partes = String(nome || "U")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-
-  return partes
-    .slice(0, 2)
-    .map(parte => parte.charAt(0).toUpperCase())
-    .join("");
+  const partes = String(nome || "U").trim().split(/\s+/).filter(Boolean);
+  return partes.slice(0, 2).map(parte => parte.charAt(0).toUpperCase()).join("");
 }
 
 function escaparHtml(valor) {
@@ -264,9 +335,7 @@ function mostrarToast(texto, erro = false) {
   toast.textContent = texto;
   toast.classList.toggle("erro", erro);
   toast.classList.add("visivel");
-
   window.clearTimeout(mostrarToast.tempo);
-
   mostrarToast.tempo = window.setTimeout(() => {
     toast.classList.remove("visivel");
   }, 3500);
