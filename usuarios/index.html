@@ -175,13 +175,22 @@
   </div>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-<script type="module" src="app.js?v=8"></script>
 
 <script type="module">
 
-import { protegerModulo } from "../module-guard.js?v=1";
+import { protegerModulo } from "../module-guard.js?v=2";
 
-protegerModulo("usuarios");
+try {
+
+    await protegerModulo("usuarios");
+
+    await import("./app.js?v=8");
+
+} catch (erro) {
+
+    console.warn("Acesso ao módulo interrompido:", erro.message);
+
+}
 
 </script>
 
