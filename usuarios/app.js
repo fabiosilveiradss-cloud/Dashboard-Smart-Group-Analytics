@@ -331,7 +331,7 @@ function abrirNovoUsuario() {
 function abrirEdicao(usuario) {
   usuarioEmEdicao = usuario;
   tituloModal.textContent = "Editar usuário";
-  campoUid.value = usuario.id;
+  campoUid.value = usuario.uid || usuario.id || "";
   campoUid.disabled = true;
   campoNome.value = usuario.nome || "";
   campoEmail.value = usuario.email || "";
@@ -386,6 +386,9 @@ if(
   });
 
   const dados = {
+
+    uid: campoUid.value.trim(),
+    
     nome: String(campoNome.value || "").trim(),
     email: String(campoEmail.value || "").trim().toLowerCase(),
     cargo: String(campoCargo.value || "").trim(),
