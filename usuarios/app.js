@@ -249,6 +249,23 @@ function fecharModal() {
 async function salvarUsuario(evento) {
   evento.preventDefault();
 
+  // =====================================
+// PROTEÇÃO DE ADMINISTRADORES
+// =====================================
+
+if(
+    campoPerfil.value === "administrador" &&
+    window.usuarioAnalytics?.perfil !== "administrador"
+){
+
+    mostrarToast(
+        "Somente administradores podem criar administradores.",
+        true
+    );
+
+    return;
+}
+
   const uid = String(campoUid.value || "").trim();
 
   if (!uid) {
