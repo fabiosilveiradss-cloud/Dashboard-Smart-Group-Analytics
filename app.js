@@ -5,15 +5,16 @@
 
 function abrirModulo(modulo, elemento){
 
-        const mapaPermissoes = {
-        dashboard: "dashboard",
-        estoque: "estoque",
-        vendas: "vendas",
-        usuarios: "usuarios",
-        permissoes: "usuarios",
-        logs: "usuarios",
-        configuracoes: "configuracoes"
-    };
+   const mapaPermissoes = {
+    dashboard: "dashboard",
+    estoque: "estoque",
+    vendas: "vendas",
+    usuarios: "usuarios",
+    permissoes: "usuarios",
+    logs: "usuarios",
+    configuracoes: "configuracoes",
+    "minha-conta": "usuarios"
+};
 
     const permissaoNecessaria =
         mapaPermissoes[modulo];
@@ -104,6 +105,29 @@ break;
     `;
 
 break;
+
+// =====================================================
+// MINHA CONTA
+// =====================================================
+
+case "minha-conta":
+
+    titulo.innerText = "Minha Conta";
+
+    subtitulo.innerText =
+    "Dados e informações do usuário conectado.";
+
+    conteudo.innerHTML = `
+        <iframe
+            src="minha-conta/index.html?v=1"
+            class="iframe-modulo"
+            title="Minha Conta">
+        </iframe>
+    `;
+
+break;
+                    
+                    
 
         case "permissoes":
 
@@ -412,4 +436,12 @@ document.addEventListener("click", function (evento) {
     ) {
         fecharResultadoBusca();
     }
+
 });
+
+
+// =====================================
+// DISPONIBILIZAR FUNÇÃO PARA OUTROS MÓDULOS
+// =====================================
+
+window.abrirModulo = abrirModulo;
