@@ -208,15 +208,43 @@ modalUsuario.addEventListener("click", evento => {
 });
 
 tabela.addEventListener("click", evento => {
-  const botao = evento.target.closest("[data-acao]");
-  if (!botao) return;
 
-  const usuario = usuarios.find(item => item.id === botao.dataset.id);
-  if (!usuario) return;
+    const botao =
+        evento.target.closest("[data-acao]");
 
-  abrirEdicao(usuario);
+    if (!botao) return;
+
+
+    const usuario =
+        usuarios.find(
+            item => item.id === botao.dataset.id
+        );
+
+
+    if (!usuario) return;
+
+
+
+    if(botao.dataset.acao === "editar"){
+
+        abrirEdicao(usuario);
+
+        return;
+
+    }
+
+
+
+    if(botao.dataset.acao === "desativar"){
+
+        desativarUsuario(usuario);
+
+        return;
+
+    }
+
+
 });
-
 
 // =====================================
 // DESATIVAR USUÁRIO
