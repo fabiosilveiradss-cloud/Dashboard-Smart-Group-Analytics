@@ -11,6 +11,23 @@ import {
 
 
 //-----------------------------------------------------
+// CONFIGURAÇÃO DO FIREBASE
+//-----------------------------------------------------
+
+auth.languageCode =
+    "pt-BR";
+
+const configuracaoRecuperacao = {
+
+    url:
+        "https://fabiosilveiradss-cloud.github.io/Dashboard-Smart-Group-Analytics/login.html",
+
+    handleCodeInApp:
+        false
+};
+
+
+//-----------------------------------------------------
 // ELEMENTOS
 //-----------------------------------------------------
 
@@ -59,8 +76,11 @@ function abrirModalRecuperacao() {
             .trim()
             .toLowerCase() || "";
 
-    emailRecuperacao.value =
-        emailDigitado;
+    if (emailRecuperacao) {
+
+        emailRecuperacao.value =
+            emailDigitado;
+    }
 
     modalRecuperarSenha.classList.add(
         "aberto"
@@ -137,6 +157,10 @@ function limparMensagemRecuperacao() {
 
 function mostrarErroRecuperacao(mensagem) {
 
+    if (!mensagemRecuperacao) {
+        return;
+    }
+
     mensagemRecuperacao.textContent =
         mensagem;
 
@@ -151,6 +175,10 @@ function mostrarErroRecuperacao(mensagem) {
 //-----------------------------------------------------
 
 function mostrarSucessoRecuperacao(mensagem) {
+
+    if (!mensagemRecuperacao) {
+        return;
+    }
 
     mensagemRecuperacao.textContent =
         mensagem;
@@ -178,6 +206,12 @@ function traduzirErroRecuperacao(codigo) {
         "auth/user-disabled":
             "Este usuário está bloqueado.",
 
+        "auth/unauthorized-continue-uri":
+            "O endereço de retorno ainda não está autorizado no Firebase.",
+
+        "auth/invalid-continue-uri":
+            "O endereço de retorno configurado é inválido.",
+
         "auth/too-many-requests":
             "Muitas solicitações foram realizadas. Aguarde alguns minutos.",
 
@@ -201,9 +235,9 @@ formRecuperarSenha?.addEventListener(
         evento.preventDefault();
 
         const email =
-            emailRecuperacao.value
+            emailRecuperacao?.value
                 .trim()
-                .toLowerCase();
+                .toLowerCase() || "";
 
         limparMensagemRecuperacao();
 
@@ -213,7 +247,7 @@ formRecuperarSenha?.addEventListener(
                 "Informe seu endereço de e-mail."
             );
 
-            emailRecuperacao.focus();
+            emailRecuperacao?.focus();
 
             return;
         }
@@ -228,7 +262,8 @@ formRecuperarSenha?.addEventListener(
 
             await sendPasswordResetEmail(
                 auth,
-                email
+                email,
+                configuracaoRecuperacao
             );
 
             mostrarSucessoRecuperacao(
