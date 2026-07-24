@@ -38,6 +38,9 @@ const menuUsuario =
 const btnLogout =
     document.getElementById("btnLogout");
 
+const btnMinhaConta =
+    document.getElementById("btnMinhaConta");
+
 const btnAlterarSenha =
     document.getElementById("btnAlterarSenha");
 
@@ -1111,6 +1114,36 @@ const observadorUsuario =
 // =====================================================
 
 sincronizarDadosUsuario();
+
+
+// =====================================================
+// MINHA CONTA
+// =====================================================
+
+btnMinhaConta?.addEventListener(
+    "click",
+    function(){
+
+        if(
+            typeof window.abrirModulo === "function"
+        ){
+
+            const menuUsuarios =
+                document.querySelector(
+                    '.menu a[data-modulo="usuarios"]'
+                );
+
+            window.abrirModulo(
+                "minha-conta",
+                menuUsuarios
+            );
+
+        }
+
+    }
+);
+
+
 
 
 // =====================================================
