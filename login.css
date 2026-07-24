@@ -738,3 +738,354 @@ input {
         text-align: center;
     }
 }
+
+/*-----------------------------------------------------
+  OPÇÕES DO LOGIN
+-----------------------------------------------------*/
+
+.opcoes-login {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+}
+
+.btn-esqueci-senha {
+    padding: 4px 0;
+
+    border: 0;
+
+    background: transparent;
+    color: #096beb;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.btn-esqueci-senha:hover {
+    text-decoration: underline;
+}
+
+
+/*-----------------------------------------------------
+  MODAL ABERTO
+-----------------------------------------------------*/
+
+body.modal-aberto {
+    overflow: hidden;
+}
+
+
+/*-----------------------------------------------------
+  FUNDO DO MODAL
+-----------------------------------------------------*/
+
+.modal-recuperacao {
+    position: fixed;
+    z-index: 99999;
+
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(2, 15, 37, 0.72);
+
+    backdrop-filter: blur(5px);
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.modal-recuperacao.aberto {
+    opacity: 1;
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+
+/*-----------------------------------------------------
+  CONTEÚDO DO MODAL
+-----------------------------------------------------*/
+
+.modal-recuperacao-conteudo {
+    position: relative;
+
+    width: min(440px, 100%);
+
+    padding: 36px;
+
+    border: 1px solid #d3deec;
+    border-radius: 18px;
+
+    background: #ffffff;
+    color: #07162f;
+
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.28);
+
+    transform:
+        translateY(-16px)
+        scale(0.98);
+
+    transition:
+        transform 0.25s ease;
+}
+
+.modal-recuperacao.aberto
+.modal-recuperacao-conteudo {
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+/*-----------------------------------------------------
+  BOTÃO FECHAR
+-----------------------------------------------------*/
+
+.btn-fechar-modal {
+    position: absolute;
+
+    top: 14px;
+    right: 16px;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: #eef4fc;
+    color: #49617f;
+
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.btn-fechar-modal:hover {
+    background: #dfeafb;
+}
+
+
+/*-----------------------------------------------------
+  ÍCONE E TEXTOS
+-----------------------------------------------------*/
+
+.icone-recuperacao {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 18px;
+
+    border-radius: 15px;
+
+    background: #e8f2ff;
+
+    font-size: 25px;
+}
+
+.modal-recuperacao-conteudo h2 {
+    font-size: 27px;
+    letter-spacing: -0.5px;
+}
+
+.modal-recuperacao-conteudo > p {
+    margin-top: 12px;
+    margin-bottom: 25px;
+
+    color: #61738f;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/*-----------------------------------------------------
+  CAMPO DO MODAL
+-----------------------------------------------------*/
+
+.modal-recuperacao-conteudo .campo {
+    margin-bottom: 15px;
+}
+
+.modal-recuperacao-conteudo .campo label {
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #233a5c;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.modal-recuperacao-conteudo .campo input {
+    width: 100%;
+    height: 52px;
+
+    padding: 0 16px;
+
+    border: 1px solid #c7d4e5;
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #fbfcfe;
+    color: #07162f;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s,
+        background 0.2s;
+}
+
+.modal-recuperacao-conteudo .campo input:focus {
+    border-color: #1577ed;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(21, 119, 237, 0.12);
+}
+
+
+/*-----------------------------------------------------
+  MENSAGEM DO MODAL
+-----------------------------------------------------*/
+
+.mensagem-recuperacao {
+    min-height: 22px;
+
+    margin-bottom: 13px;
+
+    color: #cc3030;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.mensagem-recuperacao.sucesso {
+    color: #168346;
+}
+
+
+/*-----------------------------------------------------
+  BOTÕES DO MODAL
+-----------------------------------------------------*/
+
+.acoes-recuperacao {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 12px;
+}
+
+.btn-cancelar-recuperacao,
+.btn-enviar-recuperacao {
+    min-height: 44px;
+
+    padding: 0 20px;
+
+    border-radius: 9px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.btn-cancelar-recuperacao {
+    border: 1px solid #c7d4e5;
+
+    background: #ffffff;
+    color: #49617f;
+}
+
+.btn-cancelar-recuperacao:hover {
+    background: #f2f6fb;
+}
+
+.btn-enviar-recuperacao {
+    border: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0865dc,
+            #176eff,
+            #1688ff
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 9px 22px
+        rgba(9, 107, 235, 0.25);
+}
+
+.btn-enviar-recuperacao:hover {
+    transform: translateY(-1px);
+}
+
+.btn-enviar-recuperacao:disabled {
+    opacity: 0.65;
+
+    cursor: wait;
+
+    transform: none;
+}
+
+
+/*-----------------------------------------------------
+  RESPONSIVO DO MODAL
+-----------------------------------------------------*/
+
+@media (max-width: 520px) {
+
+    .opcoes-login {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 13px;
+    }
+
+    .modal-recuperacao-conteudo {
+        padding:
+            31px
+            22px
+            24px;
+    }
+
+    .acoes-recuperacao {
+        flex-direction: column-reverse;
+    }
+
+    .btn-cancelar-recuperacao,
+    .btn-enviar-recuperacao {
+        width: 100%;
+    }
+}
