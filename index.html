@@ -1,279 +1,548 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Group Analytics</title>
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="responsive.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    body.auth-pendente {
-      visibility: hidden;
-    }
-  </style>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Smart Group Analytics</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css?v=10"
+    >
+
+    <link
+        rel="stylesheet"
+        href="responsive.css?v=10"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    >
+
+    <style>
+
+        body.auth-pendente {
+            visibility: hidden;
+        }
+
+    </style>
+
 </head>
 
 <body class="auth-pendente">
 
-  <aside class="sidebar">
-    <div class="logo-box">
-     <img src="./logo.png" alt="Smart Group">
-      <div>
-        <h2>SMART GROUP</h2>
-        <span>ANALYTICS</span>
-      </div>
-    </div>
+    <!-- =================================================
+         MENU LATERAL
+    ================================================== -->
 
-<nav class="menu">
-  <a
-    class="active"
-    data-modulo="dashboard"
-    onclick="abrirModulo('dashboard', this)"
-  >
-    <i class="fa-solid fa-house"></i>
-    Dashboard
-  </a>
+    <aside class="sidebar">
 
-  <a
-    data-modulo="estoque"
-    onclick="abrirModulo('estoque', this)"
-  >
-    <i class="fa-solid fa-cube"></i>
-    Estoque Comercial
-  </a>
+        <div class="logo-box">
 
-  <a
-    data-modulo="vendas"
-    onclick="abrirModulo('vendas', this)"
-  >
-    <i class="fa-solid fa-chart-line"></i>
-    Vendas
-  </a>
-</nav>
+            <img
+                src="./logo.png"
+                alt="Smart Group"
+            >
 
-  <div class="admin-title" id="tituloAdministracao">
-  ADMINISTRAÇÃO
-</div>
+            <div>
 
-<nav class="menu" id="menuAdministracao">
+                <h2>
+                    SMART GROUP
+                </h2>
 
-  <a
-    data-modulo="usuarios"
-    onclick="abrirModulo('usuarios', this)"
-  >
-    <i class="fa-solid fa-user"></i>
-    Usuários
-  </a>
+                <span>
+                    ANALYTICS
+                </span>
 
-  <a
-    data-modulo="usuarios"
-    onclick="abrirModulo('permissoes', this)"
-  >
-    <i class="fa-solid fa-shield-halved"></i>
-    Perfis e Permissões
-  </a>
+            </div>
 
-  <a
-    data-modulo="usuarios"
-    onclick="abrirModulo('logs', this)"
-  >
-    <i class="fa-solid fa-file-lines"></i>
-    Logs de Acesso
-  </a>
-
-  <a
-    data-modulo="configuracoes"
-    onclick="abrirModulo('configuracoes', this)"
-  >
-    <i class="fa-solid fa-gear"></i>
-    Configurações
-  </a>
-
-</nav>
-
-    <div class="versao">
-      SMART GROUP BI<br>
-      <small>Versão 1.0.0</small>
-    </div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar">
-      <div class="titulo-area">
-        <button class="menu-btn">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-
-        <div>
-          <h1 id="tituloPagina">Dashboard</h1>
-          <p id="subtituloPagina">Visão geral do seu negócio em tempo real</p>
-        </div>
-      </div>
-
-      <div class="top-actions">
-     <div class="search-box">
-  <input
-    type="text"
-    id="buscaModulo"
-    placeholder="Buscar dashboard..."
-    autocomplete="off"
-  >
-
-  <i class="fa-solid fa-magnifying-glass"></i>
-
-  <div id="resultadoBusca" class="resultado-busca"></div>
-</div>
-        
-       <button id="btnFullscreen" class="icon-btn" onclick="alternarTelaCheia()">
-    <i id="iconeFullscreen" class="fa-solid fa-expand"></i>
-</button>
-<div class="user-menu-container">
-
-    <button
- <button
-    id="btnUsuario"
-    class="user-box"
-    type="button"
-    aria-haspopup="true"
-    aria-expanded="false"
->
-
-        <div class="avatar" id="avatarUsuario">
-            U
         </div>
 
-        <div class="user-info">
 
-            <strong id="nomeUsuarioTopo">
-                Usuário
-            </strong>
+        <!-- MENU PRINCIPAL -->
 
-            <small id="perfilUsuarioTopo">
-                Carregando...
+        <nav class="menu">
+
+            <a
+                class="active"
+                data-modulo="dashboard"
+                onclick="abrirModulo('dashboard', this)"
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                Dashboard
+
+            </a>
+
+            <a
+                data-modulo="estoque"
+                onclick="abrirModulo('estoque', this)"
+            >
+
+                <i class="fa-solid fa-cube"></i>
+
+                Estoque Comercial
+
+            </a>
+
+            <a
+                data-modulo="vendas"
+                onclick="abrirModulo('vendas', this)"
+            >
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                Vendas
+
+            </a>
+
+        </nav>
+
+
+        <!-- ADMINISTRAÇÃO -->
+
+        <div
+            class="admin-title"
+            id="tituloAdministracao"
+        >
+            ADMINISTRAÇÃO
+        </div>
+
+        <nav
+            class="menu"
+            id="menuAdministracao"
+        >
+
+            <a
+                data-modulo="usuarios"
+                onclick="abrirModulo('usuarios', this)"
+            >
+
+                <i class="fa-solid fa-user"></i>
+
+                Usuários
+
+            </a>
+
+            <a
+                data-modulo="permissoes"
+                onclick="abrirModulo('permissoes', this)"
+            >
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Perfis e Permissões
+
+            </a>
+
+            <a
+                data-modulo="logs"
+                onclick="abrirModulo('logs', this)"
+            >
+
+                <i class="fa-solid fa-file-lines"></i>
+
+                Logs de Acesso
+
+            </a>
+
+            <a
+                data-modulo="configuracoes"
+                onclick="abrirModulo('configuracoes', this)"
+            >
+
+                <i class="fa-solid fa-gear"></i>
+
+                Configurações
+
+            </a>
+
+        </nav>
+
+
+        <!-- VERSÃO -->
+
+        <div class="versao">
+
+            SMART GROUP BI
+
+            <br>
+
+            <small>
+                Versão 1.0.0
             </small>
 
         </div>
 
-        <i class="fa-solid fa-chevron-down seta-usuario"></i>
+    </aside>
 
-    </button>
 
-    <div
-        id="menuUsuario"
-        class="menu-usuario">
+    <!-- =================================================
+         ÁREA PRINCIPAL
+    ================================================== -->
 
-        <div class="menu-header">
+    <main class="main">
 
-            <div class="avatar-menu"
-                 id="avatarUsuarioMenu">
-                U
+        <!-- TOPO -->
+
+        <header class="topbar">
+
+            <div class="titulo-area">
+
+                <button
+                    type="button"
+                    class="menu-btn"
+                    aria-label="Abrir menu lateral"
+                >
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+                <div>
+
+                    <h1 id="tituloPagina">
+                        Dashboard
+                    </h1>
+
+                    <p id="subtituloPagina">
+                        Visão geral do seu negócio em tempo real
+                    </p>
+
+                </div>
+
             </div>
 
-            <div>
 
-                <strong id="nomeUsuarioMenu">
-                    Usuário
-                </strong>
+            <!-- AÇÕES DO TOPO -->
 
-                <small id="perfilUsuarioMenu">
-                    Carregando...
-                </small>
+            <div class="top-actions">
+
+                <!-- BUSCA -->
+
+                <div class="search-box">
+
+                    <input
+                        type="text"
+                        id="buscaModulo"
+                        placeholder="Buscar dashboard..."
+                        autocomplete="off"
+                    >
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <div
+                        id="resultadoBusca"
+                        class="resultado-busca"
+                    ></div>
+
+                </div>
+
+
+                <!-- TELA CHEIA -->
+
+                <button
+                    type="button"
+                    id="btnFullscreen"
+                    class="icon-btn"
+                    onclick="alternarTelaCheia()"
+                    aria-label="Alternar tela cheia"
+                >
+
+                    <i
+                        id="iconeFullscreen"
+                        class="fa-solid fa-expand"
+                    ></i>
+
+                </button>
+
+
+                <!-- MENU DO USUÁRIO -->
+
+                <div class="user-menu-container">
+
+                    <button
+                        id="btnUsuario"
+                        class="user-box"
+                        type="button"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                    >
+
+                        <div
+                            class="avatar"
+                            id="avatarUsuario"
+                        >
+                            U
+                        </div>
+
+                        <div class="user-info">
+
+                            <strong id="nomeUsuarioTopo">
+                                Usuário
+                            </strong>
+
+                            <small id="perfilUsuarioTopo">
+                                Carregando...
+                            </small>
+
+                        </div>
+
+                        <i class="fa-solid fa-chevron-down seta-usuario"></i>
+
+                    </button>
+
+
+                    <!-- DROPDOWN DO USUÁRIO -->
+
+                    <div
+                        id="menuUsuario"
+                        class="menu-usuario"
+                    >
+
+                        <div class="menu-header">
+
+                            <div
+                                class="avatar-menu"
+                                id="avatarUsuarioMenu"
+                            >
+                                U
+                            </div>
+
+                            <div>
+
+                                <strong id="nomeUsuarioMenu">
+                                    Usuário
+                                </strong>
+
+                                <small id="perfilUsuarioMenu">
+                                    Carregando...
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+
+                        <!-- MINHA CONTA -->
+
+                        <button
+                            type="button"
+                            id="btnMinhaConta"
+                            class="menu-item"
+                        >
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <span>
+                                Minha Conta
+                            </span>
+
+                        </button>
+
+
+                        <!-- ALTERAR SENHA -->
+
+                        <button
+                            type="button"
+                            id="btnAlterarSenha"
+                            class="menu-item"
+                        >
+
+                            <i class="fa-solid fa-key"></i>
+
+                            <span>
+                                Alterar Senha
+                            </span>
+
+                        </button>
+
+
+                        <!-- CONFIGURAÇÕES -->
+
+                        <button
+                            type="button"
+                            id="btnConfiguracoesUsuario"
+                            class="menu-item"
+                        >
+
+                            <i class="fa-solid fa-gear"></i>
+
+                            <span>
+                                Configurações
+                            </span>
+
+                        </button>
+
+                        <hr>
+
+
+                        <!-- LOGOUT -->
+
+                        <button
+                            type="button"
+                            id="btnLogout"
+                            class="menu-item logout"
+                        >
+
+                            <i class="fa-solid fa-right-from-bracket"></i>
+
+                            <span>
+                                Sair
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </div>
+        </header>
 
-        <hr>
 
-        <button class="menu-item">
+        <!-- =================================================
+             CONTEÚDO
+        ================================================== -->
 
-            <i class="fa-solid fa-user"></i>
+        <section
+            id="conteudo"
+            class="conteudo"
+        >
 
-            Minha Conta
+            <div class="home">
 
-        </button>
+                <div class="boas-vindas">
 
-        <button class="menu-item">
+                    <h2>
 
-            <i class="fa-solid fa-key"></i>
+                        Olá,
 
-            Alterar Senha
+                        <span id="nomeSaudacao">
+                            Usuário
+                        </span>!
 
-        </button>
+                        👋
 
-        <button class="menu-item">
+                    </h2>
 
-            <i class="fa-solid fa-gear"></i>
+                    <p>
+                        Bem-vindo ao Smart Group Analytics.
+                    </p>
 
-            Configurações
+                </div>
 
-        </button>
 
-        <hr>
+                <!-- CARDS -->
 
-        <button
-            id="btnLogout"
-            class="menu-item logout">
+                <div class="cards-home">
 
-            <i class="fa-solid fa-right-from-bracket"></i>
+                    <div
+                        class="card-home"
+                        onclick="abrirModulo(
+                            'estoque',
+                            document.querySelector(
+                                '.menu a[data-modulo=&quot;estoque&quot;]'
+                            )
+                        )"
+                    >
 
-            Sair
+                        <i class="fa-solid fa-cube"></i>
 
-        </button>
+                        <h3>
+                            Estoque Comercial
+                        </h3>
 
-    </div>
+                        <p>
+                            Acompanhe saldos, locais e famílias de materiais.
+                        </p>
 
-</div>
-      </div>
-    </header>
+                    </div>
 
-    <section id="conteudo" class="conteudo">
-      <div class="home">
-        <div class="boas-vindas">
-          <h2>
-  Olá, <span id="nomeSaudacao">Usuário</span>! 👋
-</h2>
-          <p>Bem-vindo ao Smart Group Analytics.</p>
-        </div>
 
-        <div class="cards-home">
-         <div class="card-home" onclick="abrirModulo('estoque', document.querySelectorAll('.menu a')[1])">
-  <i class="fa-solid fa-cube"></i>
-  <h3>Estoque Comercial</h3>
-  <p>Acompanhe saldos, locais e famílias de materiais.</p>
-</div>
+                    <div
+                        class="card-home"
+                        onclick="abrirModulo(
+                            'vendas',
+                            document.querySelector(
+                                '.menu a[data-modulo=&quot;vendas&quot;]'
+                            )
+                        )"
+                    >
 
-<div class="card-home" onclick="abrirModulo('vendas', document.querySelectorAll('.menu a')[2])">
-  <i class="fa-solid fa-chart-line"></i>
-  <h3>Vendas</h3>
-  <p>Visualize faturamento, clientes e produtos vendidos.</p>
-</div>
+                        <i class="fa-solid fa-chart-line"></i>
 
-          <div class="card-home">
-            <i class="fa-solid fa-shield-halved"></i>
-            <h3>Controle de Acesso</h3>
-            <p>Portal preparado para permissões por usuário.</p>
-          </div>
-        </div>
+                        <h3>
+                            Vendas
+                        </h3>
 
-        <img class="marca-dagua" src="logo.png" alt="Smart Group">
-      </div>
-    </section>
-  </main>
+                        <p>
+                            Visualize faturamento, clientes e produtos vendidos.
+                        </p>
 
-<script src="app.js?v=9"></script>
+                    </div>
 
-<script
-  type="module"
-  src="auth-guard.js?v=4"
-></script>
 
-<script
-  type="module"
-  src="user-menu.js?v=2"
-></script>
+                    <div class="card-home">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <h3>
+                            Controle de Acesso
+                        </h3>
+
+                        <p>
+                            Portal preparado para permissões por usuário.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MARCA-D'ÁGUA -->
+
+                <img
+                    class="marca-dagua"
+                    src="logo.png"
+                    alt="Smart Group"
+                >
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =================================================
+         SCRIPTS
+    ================================================== -->
+
+    <script src="app.js?v=9"></script>
+
+    <script
+        type="module"
+        src="auth-guard.js?v=4"
+    ></script>
+
+    <script
+        type="module"
+        src="user-menu.js?v=3"
+    ></script>
 
 </body>
+
 </html>
