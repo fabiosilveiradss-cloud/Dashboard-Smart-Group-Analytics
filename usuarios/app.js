@@ -333,6 +333,7 @@ function abrirEdicao(usuario) {
   tituloModal.textContent = "Editar usuário";
   campoUid.value = usuario.uid || usuario.id || "";
   campoUid.disabled = true;
+  campoUid.value = usuario.uid || usuario.id || "";
   campoNome.value = usuario.nome || "";
   campoEmail.value = usuario.email || "";
   campoCargo.value = usuario.cargo || "";
