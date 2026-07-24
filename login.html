@@ -14,7 +14,7 @@
 
     <link
         rel="stylesheet"
-        href="login.css?v=14"
+        href="login.css?v=15"
     >
 
 </head>
@@ -32,11 +32,13 @@
                 <div class="logo-area">
 
                     <div class="logo-simbolo">
-    <img
-        src="logo.png"
-        alt="Smart Group"
-    >
-</div>
+
+                        <img
+                            src="logo.png"
+                            alt="Smart Group"
+                        >
+
+                    </div>
 
                     <div class="logo-textos">
 
@@ -77,8 +79,7 @@
 
         </section>
 
-
-        <!-- PAINEL DO LOGIN -->
+        <!-- PAINEL LOGIN -->
 
         <section class="painel-formulario">
 
@@ -100,8 +101,7 @@
                     </h2>
 
                     <p>
-                        Entre com suas credenciais para acessar o
-                        Smart Group Analytics.
+                        Entre com suas credenciais para acessar o Smart Group Analytics.
                     </p>
 
                 </div>
@@ -153,19 +153,31 @@
 
                     </div>
 
-                    <label class="lembrar-acesso">
+                    <div class="opcoes-login">
 
-                        <input
-                            type="checkbox"
-                            id="permanecerConectado"
-                            checked
+                        <label class="lembrar-acesso">
+
+                            <input
+                                type="checkbox"
+                                id="permanecerConectado"
+                                checked
+                            >
+
+                            <span>
+                                Permanecer conectado
+                            </span>
+
+                        </label>
+
+                        <button
+                            type="button"
+                            id="btnEsqueciSenha"
+                            class="btn-esqueci-senha"
                         >
+                            Esqueci minha senha
+                        </button>
 
-                        <span>
-                            Permanecer conectado
-                        </span>
-
-                    </label>
+                    </div>
 
                     <div
                         id="mensagemLogin"
@@ -199,11 +211,98 @@
 
         </section>
 
+        <!-- MODAL RECUPERAR SENHA -->
+
+        <div
+            id="modalRecuperarSenha"
+            class="modal-recuperacao"
+            aria-hidden="true"
+        >
+
+            <div
+                class="modal-recuperacao-conteudo"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="tituloRecuperacao"
+            >
+
+                <button
+                    type="button"
+                    id="btnFecharRecuperacao"
+                    class="btn-fechar-modal"
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+                <div class="icone-recuperacao">
+                    🔑
+                </div>
+
+                <h2 id="tituloRecuperacao">
+                    Recuperar senha
+                </h2>
+
+                <p>
+                    Informe seu e-mail corporativo.
+                    Você receberá um link para criar uma nova senha.
+                </p>
+
+                <form id="formRecuperarSenha">
+
+                    <div class="campo">
+
+                        <label for="emailRecuperacao">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="emailRecuperacao"
+                            autocomplete="email"
+                            placeholder="seuemail@smartgroup.net.br"
+                            required
+                        >
+
+                    </div>
+
+                    <div
+                        id="mensagemRecuperacao"
+                        class="mensagem-recuperacao"
+                        aria-live="polite"
+                    ></div>
+
+                    <div class="acoes-recuperacao">
+
+                        <button
+                            type="button"
+                            id="btnCancelarRecuperacao"
+                            class="btn-cancelar-recuperacao"
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            type="submit"
+                            id="btnEnviarRecuperacao"
+                            class="btn-enviar-recuperacao"
+                        >
+                            Enviar e-mail
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
     </main>
 
     <script
         type="module"
-        src="login.js?v=2"
+        src="login.js?v=3"
     ></script>
 
 </body>
