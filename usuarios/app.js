@@ -133,16 +133,31 @@ function renderizarUsuarios(lista) {
           </span>
         </td>
         <td>
-          <div class="acoes">
-            <button class="btn-acao" type="button" title="Editar usuário"
-                    data-acao="editar" data-id="${usuario.id}">
-              <i class="fa-solid fa-pen"></i>
-            </button>
-            <button class="btn-acao" type="button" title="Ver permissões"
-                    data-acao="permissoes" data-id="${usuario.id}">
-              <i class="fa-solid fa-key"></i>
-            </button>
-          </div>
+        <div class="acoes">
+
+<button class="btn-acao" type="button" title="Editar usuário"
+        data-acao="editar" data-id="${usuario.id}">
+    <i class="fa-solid fa-pen"></i>
+</button>
+
+
+<button class="btn-acao" type="button" title="Ver permissões"
+        data-acao="permissoes" data-id="${usuario.id}">
+    <i class="fa-solid fa-key"></i>
+</button>
+
+
+<button 
+    class="btn-acao btn-excluir" 
+    type="button" 
+    title="Desativar usuário"
+    data-acao="desativar"
+    data-id="${usuario.id}">
+    <i class="fa-solid fa-user-slash"></i>
+</button>
+
+
+</div>
         </td>
       </tr>
     `;
@@ -201,6 +216,70 @@ tabela.addEventListener("click", evento => {
 
   abrirEdicao(usuario);
 });
+
+
+// =====================================
+// DESATIVAR USUÁRIO
+// =====================================
+
+async function desativarUsuario(usuario){
+
+    const confirmar =
+        confirm(
+            `Deseja realmente desativar o usuário ${usuario.nome}?`
+        );
+
+
+    if(!confirmar){
+        return;
+    }
+
+
+    try{
+
+        const referencia =
+            doc(
+                db,
+                "usuarios",
+                usuario.id
+            );
+
+
+        await updateDoc(
+            referencia,
+            {
+                ativo:false,
+                atualizadoEm:serverTimestamp()
+            }
+        );
+
+
+        mostrarToast(
+            "Usuário desativado com sucesso."
+        );
+
+
+        await carregarUsuarios();
+
+
+    }catch(erro){
+
+        console.error(
+            "Erro ao desativar usuário:",
+            erro
+        );
+
+
+        mostrarToast(
+            "Não foi possível desativar o usuário.",
+            true
+        );
+
+    }
+
+}
+
+
 
 formUsuario.addEventListener("submit", salvarUsuario);
 
