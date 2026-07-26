@@ -39,6 +39,9 @@ const btnEntrar =
 const btnMostrarSenha =
     document.getElementById("btnMostrarSenha");
 
+const btnEsqueciSenha =
+    document.getElementById("btnEsqueciSenha");
+
 
 //-----------------------------------------------------
 // SAUDAÇÃO
@@ -106,6 +109,24 @@ btnMostrarSenha?.addEventListener(
                 ? "Ocultar senha"
                 : "Mostrar senha"
         );
+    }
+);
+
+
+//-----------------------------------------------------
+// ESQUECI MINHA SENHA
+//-----------------------------------------------------
+
+btnEsqueciSenha?.addEventListener(
+    "click",
+    function () {
+
+        mensagemLogin.classList.remove(
+            "sucesso"
+        );
+
+        mensagemLogin.textContent =
+            "Para redefinir sua senha, entre em contato com o setor de TI.";
     }
 );
 
