@@ -10,6 +10,7 @@ import {
   doc,
   setDoc,
   updateDoc,
+  deleteDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
@@ -332,7 +333,7 @@ function abrirEdicao(usuario) {
   usuarioEmEdicao = usuario;
   tituloModal.textContent = "Editar usuário";
   campoUid.value = usuario.uid || usuario.id || "";
-  campoUid.disabled = true;
+campoUid.disabled = false;
   campoUid.value = usuario.uid || usuario.id || "";
   campoNome.value = usuario.nome || "";
   campoEmail.value = usuario.email || "";
@@ -405,20 +406,65 @@ if(
   btnSalvar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando';
 
   try {
-    const referencia = doc(db, "usuarios", uid);
 
-    if (usuarioEmEdicao) {
-      await updateDoc(referencia, dados);
-      mostrarToast("Usuário atualizado com sucesso.");
-    } else {
-      await setDoc(referencia, {
-        ...dados,
-        foto: "",
-        criadoEm: serverTimestamp()
-      });
+const referenciaNova = doc(db, "usuarios", uid);
 
-      mostrarToast("Perfil criado com sucesso.");
+if (usuarioEmEdicao) {
+
+  const uidAntigo = usuarioEmEdicao.id;
+  const uidFoiAlterado = uid !== uidAntigo;
+
+  if (uidFoiAlterado) {
+
+    const confirmarAlteracao = confirm(
+      `Você está alterando o UID de:\n\n` +
+      `${usuarioEmEdicao.nome || "Usuário"}\n\n` +
+      `UID antigo: ${uidAntigo}\n` +
+      `UID novo: ${uid}\n\n` +
+      `Confirma a correção?`
+    );
+
+    if (!confirmarAlteracao) {
+      btnSalvar.disabled = false;
+      btnSalvar.innerHTML =
+        '<i class="fa-solid fa-floppy-disk"></i> Salvar';
+      return;
     }
+
+    const referenciaAntiga =
+      doc(db, "usuarios", uidAntigo);
+
+    await setDoc(referenciaNova, {
+      ...usuarioEmEdicao,
+      ...dados,
+      foto: usuarioEmEdicao.foto || "",
+      criadoEm:
+        usuarioEmEdicao.criadoEm ||
+        serverTimestamp()
+    });
+
+    await deleteDoc(referenciaAntiga);
+
+    mostrarToast("UID corrigido e usuário atualizado.");
+
+  } else {
+
+    await updateDoc(referenciaNova, dados);
+
+    mostrarToast("Usuário atualizado com sucesso.");
+  }
+
+} else {
+
+  await setDoc(referenciaNova, {
+    ...dados,
+    foto: "",
+    criadoEm: serverTimestamp()
+  });
+
+  mostrarToast("Perfil criado com sucesso.");
+}
+    
 
     fecharModal();
     await carregarUsuarios();
