@@ -41,9 +41,6 @@ const btnLogout =
 const btnMinhaConta =
     document.getElementById("btnMinhaConta");
 
-const btnAlterarSenha =
-    document.getElementById("btnAlterarSenha");
-
 
 // =====================================================
 // ELEMENTOS DO USUÁRIO NO TOPO
@@ -1015,16 +1012,6 @@ menuUsuario?.addEventListener(
 // =====================================================
 // BOTÃO ALTERAR SENHA
 // =====================================================
-
-btnAlterarSenha?.addEventListener(
-    "click",
-    function () {
-
-        fecharMenuUsuario();
-
-        abrirModalAlterarSenha();
-    }
-);
 
 
 // =====================================================
