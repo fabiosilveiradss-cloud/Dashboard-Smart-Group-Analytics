@@ -14,7 +14,7 @@
 
     <link
         rel="stylesheet"
-        href="login.css?v=15"
+        href="login.css?v=16"
     >
 
 </head>
@@ -211,103 +211,11 @@
 
         </section>
 
-        <!-- MODAL RECUPERAR SENHA -->
-
-        <div
-            id="modalRecuperarSenha"
-            class="modal-recuperacao"
-            aria-hidden="true"
-        >
-
-            <div
-                class="modal-recuperacao-conteudo"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="tituloRecuperacao"
-            >
-
-                <button
-                    type="button"
-                    id="btnFecharRecuperacao"
-                    class="btn-fechar-modal"
-                    aria-label="Fechar"
-                >
-                    ×
-                </button>
-
-                <div class="icone-recuperacao">
-                    🔑
-                </div>
-
-                <h2 id="tituloRecuperacao">
-                    Recuperar senha
-                </h2>
-
-                <p>
-                    Informe seu e-mail corporativo.
-                    Você receberá um link para criar uma nova senha.
-                </p>
-
-                <form id="formRecuperarSenha">
-
-                    <div class="campo">
-
-                        <label for="emailRecuperacao">
-                            E-mail
-                        </label>
-
-                        <input
-                            type="email"
-                            id="emailRecuperacao"
-                            autocomplete="email"
-                            placeholder="seuemail@smartgroup.net.br"
-                            required
-                        >
-
-                    </div>
-
-                    <div
-                        id="mensagemRecuperacao"
-                        class="mensagem-recuperacao"
-                        aria-live="polite"
-                    ></div>
-
-                    <div class="acoes-recuperacao">
-
-                        <button
-                            type="button"
-                            id="btnCancelarRecuperacao"
-                            class="btn-cancelar-recuperacao"
-                        >
-                            Cancelar
-                        </button>
-
-                        <button
-                            type="submit"
-                            id="btnEnviarRecuperacao"
-                            class="btn-enviar-recuperacao"
-                        >
-                            Enviar e-mail
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-        </div>
-
     </main>
-
-       <script
-        type="module"
-        src="login.js?v=3"
-    ></script>
 
     <script
         type="module"
-        src="password-reset.js?v=2"
+        src="login.js?v=4"
     ></script>
 
 </body>
