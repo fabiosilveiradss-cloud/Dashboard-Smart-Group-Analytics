@@ -1,1 +1,504 @@
+:root {
+    --cor-fundo: #071a33;
+    --cor-superficie: #0d2748;
+    --cor-superficie-clara: #12345c;
+    --cor-borda: rgba(255, 255, 255, 0.09);
 
+    --cor-primaria: #1683ff;
+    --cor-primaria-hover: #0c6edb;
+
+    --cor-texto: #ffffff;
+    --cor-texto-secundario: #a9bed8;
+
+    --sombra:
+        0 12px 32px rgba(0, 0, 0, 0.22);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+}
+
+body {
+    background:
+        linear-gradient(
+            180deg,
+            #0b2c56 0%,
+            var(--cor-fundo) 100%
+        );
+
+    color: var(--cor-texto);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.financeiro-app {
+    min-height: 100vh;
+    padding: 22px;
+}
+
+.financeiro-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 18px 20px;
+
+    background: rgba(8, 29, 57, 0.72);
+    border: 1px solid var(--cor-borda);
+    border-radius: 14px;
+
+    box-shadow: var(--sombra);
+}
+
+.financeiro-titulo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.financeiro-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 46px;
+    height: 46px;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1683ff,
+            #0753b4
+        );
+
+    font-size: 20px;
+}
+
+.financeiro-titulo h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.financeiro-titulo p {
+    margin: 5px 0 0;
+    color: var(--cor-texto-secundario);
+    font-size: 14px;
+}
+
+.financeiro-acoes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ultima-atualizacao {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 10px 12px;
+
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+}
+
+.ultima-atualizacao strong {
+    color: var(--cor-texto);
+}
+
+.btn-filtros,
+.btn-exportar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 42px;
+    padding: 0 16px;
+
+    border-radius: 9px;
+    border: 1px solid var(--cor-borda);
+
+    color: var(--cor-texto);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.btn-filtros {
+    background: var(--cor-superficie-clara);
+}
+
+.btn-exportar {
+    background: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+}
+
+.btn-filtros:hover,
+.btn-exportar:hover {
+    transform: translateY(-1px);
+}
+
+.btn-exportar:hover {
+    background: var(--cor-primaria-hover);
+}
+
+.financeiro-abas {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    margin-top: 16px;
+    padding: 8px;
+
+    overflow-x: auto;
+
+    background: rgba(8, 29, 57, 0.72);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+}
+
+.aba-financeiro {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 42px;
+    padding: 0 15px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: transparent;
+    color: var(--cor-texto-secundario);
+
+    white-space: nowrap;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.aba-financeiro:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--cor-texto);
+}
+
+.aba-financeiro.ativa {
+    background: var(--cor-primaria);
+    color: var(--cor-texto);
+}
+
+.financeiro-conteudo {
+    margin-top: 16px;
+}
+
+.pagina-financeiro {
+    display: none;
+}
+
+.pagina-financeiro.ativa {
+    display: block;
+}
+
+.pagina-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 20px;
+
+    background: rgba(8, 29, 57, 0.72);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+}
+
+.pagina-cabecalho h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.pagina-cabecalho p {
+    margin: 6px 0 0;
+    color: var(--cor-texto-secundario);
+    font-size: 14px;
+}
+
+.estado-inicial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 430px;
+    margin-top: 16px;
+    padding: 40px;
+
+    text-align: center;
+
+    background: rgba(8, 29, 57, 0.58);
+    border: 1px dashed rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+}
+
+.estado-inicial-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 72px;
+    height: 72px;
+
+    border-radius: 22px;
+
+    background: rgba(22, 131, 255, 0.16);
+    color: #35a0ff;
+
+    font-size: 30px;
+}
+
+.estado-inicial h3 {
+    margin: 20px 0 8px;
+    font-size: 22px;
+}
+
+.estado-inicial p {
+    max-width: 560px;
+    margin: 0;
+
+    color: var(--cor-texto-secundario);
+    line-height: 1.6;
+}
+
+.filtros-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 998;
+
+    visibility: hidden;
+    opacity: 0;
+
+    background: rgba(0, 0, 0, 0.54);
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.filtros-overlay.ativo {
+    visibility: visible;
+    opacity: 1;
+}
+
+.painel-filtros {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 999;
+
+    width: min(390px, 92vw);
+    height: 100vh;
+
+    padding: 22px;
+
+    overflow-y: auto;
+
+    background: #081f3c;
+    border-left: 1px solid var(--cor-borda);
+
+    box-shadow:
+        -18px 0 40px rgba(0, 0, 0, 0.36);
+
+    transform: translateX(105%);
+
+    transition: transform 0.28s ease;
+}
+
+.painel-filtros.aberto {
+    transform: translateX(0);
+}
+
+.painel-filtros-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.painel-filtros-header h2 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.painel-filtros-header p {
+    margin: 5px 0 0;
+    color: var(--cor-texto-secundario);
+    font-size: 13px;
+}
+
+.btn-fechar-filtros {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid var(--cor-borda);
+    border-radius: 9px;
+
+    background: var(--cor-superficie);
+    color: var(--cor-texto);
+
+    font-size: 17px;
+}
+
+.form-filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.campo-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.campo-filtro label {
+    color: var(--cor-texto-secundario);
+    font-size: 13px;
+}
+
+.campo-filtro input,
+.campo-filtro select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    outline: none;
+
+    background: var(--cor-superficie);
+    color: var(--cor-texto);
+}
+
+.campo-filtro input:focus,
+.campo-filtro select:focus {
+    border-color: var(--cor-primaria);
+}
+
+.campo-filtro select option {
+    background: var(--cor-superficie);
+    color: var(--cor-texto);
+}
+
+.acoes-filtros {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+.btn-limpar,
+.btn-aplicar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 44px;
+
+    border-radius: 8px;
+    color: var(--cor-texto);
+}
+
+.btn-limpar {
+    border: 1px solid var(--cor-borda);
+    background: var(--cor-superficie);
+}
+
+.btn-aplicar {
+    border: 1px solid var(--cor-primaria);
+    background: var(--cor-primaria);
+}
+
+@media (max-width: 900px) {
+
+    .financeiro-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .financeiro-acoes {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .ultima-atualizacao {
+        width: 100%;
+        padding-left: 0;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .financeiro-app {
+        padding: 12px;
+    }
+
+    .financeiro-header {
+        padding: 15px;
+    }
+
+    .financeiro-titulo h1 {
+        font-size: 21px;
+    }
+
+    .btn-filtros,
+    .btn-exportar {
+        flex: 1;
+    }
+
+    .estado-inicial {
+        min-height: 330px;
+        padding: 24px;
+    }
+
+    .acoes-filtros {
+        grid-template-columns: 1fr;
+    }
+
+}
