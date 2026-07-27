@@ -90,6 +90,24 @@ break;
 
 break;
 
+            case "financeiro":
+
+    titulo.innerText = "Financeiro";
+
+    subtitulo.innerText =
+    "Gestão financeira, recebimentos e fluxo de caixa.";
+
+    conteudo.innerHTML = `
+        <iframe
+            src="modulos/financeiro/index.html?v=3"
+            class="iframe-modulo"
+            title="Módulo Financeiro"
+            frameborder="0">
+        </iframe>
+    `;
+
+break;
+
  case "usuarios":
 
     titulo.innerText = "Usuários";
