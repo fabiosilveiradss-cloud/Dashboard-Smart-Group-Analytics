@@ -10,15 +10,14 @@
     --cor-texto: #ffffff;
     --cor-texto-secundario: #a9bed8;
 
-    --sombra:
-        0 12px 32px rgba(0, 0, 0, 0.22);
+    --sombra: 0 12px 32px rgba(0, 0, 0, 0.22);
 }
 
 * {
     box-sizing: border-box;
 }
 
-html,f
+html,
 body {
     width: 100%;
     min-height: 100%;
@@ -295,183 +294,7 @@ button {
     line-height: 1.6;
 }
 
-.filtros-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 998;
-
-    visibility: hidden;
-    opacity: 0;
-
-    background: rgba(0, 0, 0, 0.54);
-
-    transition:
-        opacity 0.25s ease,
-        visibility 0.25s ease;
-}
-
-.filtros-overlay.ativo {
-    visibility: visible;
-    opacity: 1;
-}
-
-.painel-filtros {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 999;
-
-    width: min(390px, 92vw);
-    height: 100vh;
-
-    padding: 22px;
-
-    overflow-y: auto;
-
-    background: #081f3c;
-    border-left: 1px solid var(--cor-borda);
-
-    box-shadow:
-        -18px 0 40px rgba(0, 0, 0, 0.36);
-
-    transform: translateX(105%);
-
-    transition: transform 0.28s ease;
-}
-
-.painel-filtros.aberto {
-    transform: translateX(0);
-}
-
-.painel-filtros-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-
-    padding-bottom: 18px;
-    margin-bottom: 20px;
-
-    border-bottom: 1px solid var(--cor-borda);
-}
-
-.painel-filtros-header h2 {
-    margin: 0;
-    font-size: 21px;
-}
-
-.painel-filtros-header p {
-    margin: 5px 0 0;
-    color: var(--cor-texto-secundario);
-    font-size: 13px;
-}
-
-.btn-fechar-filtros {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 38px;
-    height: 38px;
-
-    border: 1px solid var(--cor-borda);
-    border-radius: 9px;
-
-    background: var(--cor-superficie);
-    color: var(--cor-texto);
-
-    font-size: 17px;
-}
-
-.form-filtros {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.campo-filtro {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.campo-filtro label {
-    color: var(--cor-texto-secundario);
-    font-size: 13px;
-}
-
-.campo-filtro input,
-.campo-filtro select {
-    width: 100%;
-    height: 44px;
-    padding: 0 12px;
-
-    border: 1px solid var(--cor-borda);
-    border-radius: 8px;
-    outline: none;
-
-    background: var(--cor-superficie);
-    color: var(--cor-texto);
-}
-
-.campo-filtro input:focus,
-.campo-filtro select:focus {
-    border-color: var(--cor-primaria);
-}
-
-.campo-filtro select option {
-    background: var(--cor-superficie);
-    color: var(--cor-texto);
-}
-
-.acoes-filtros {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 10px;
-
-    margin-top: 10px;
-}
-
-.btn-limpar,
-.btn-aplicar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    min-height: 44px;
-
-    border-radius: 8px;
-    color: var(--cor-texto);
-}
-
-.btn-limpar {
-    border: 1px solid var(--cor-borda);
-    background: var(--cor-superficie);
-}
-
-.btn-aplicar {
-    border: 1px solid var(--cor-primaria);
-    background: var(--cor-primaria);
-}
-
-@media (max-width: 900px) {
-
-    .financeiro-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .financeiro-acoes {
-        width: 100%;
-        flex-wrap: wrap;
-    }
-
-    .ultima-atualizacao {
-        width: 100%;
-        padding-left: 0;
-    }
-
-}
+/* KPIs */
 
 .grade-kpis {
     display: grid;
@@ -502,8 +325,7 @@ button {
     border: 1px solid var(--cor-borda);
     border-radius: 14px;
 
-    box-shadow:
-        0 10px 26px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
 
     transition:
         transform 0.2s ease,
@@ -651,6 +473,8 @@ button {
     color: #a47cff;
 }
 
+/* Placeholder dos próximos gráficos */
+
 .area-proxima-etapa {
     margin-top: 16px;
 }
@@ -702,9 +526,198 @@ button {
     line-height: 1.5;
 }
 
+/* Painel lateral de filtros */
+
+.filtros-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 998;
+
+    visibility: hidden;
+    opacity: 0;
+
+    background: rgba(0, 0, 0, 0.54);
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.filtros-overlay.ativo {
+    visibility: visible;
+    opacity: 1;
+}
+
+.painel-filtros {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 999;
+
+    width: min(390px, 92vw);
+    height: 100vh;
+
+    padding: 22px;
+
+    overflow-y: auto;
+
+    background: #081f3c;
+    border-left: 1px solid var(--cor-borda);
+
+    box-shadow: -18px 0 40px rgba(0, 0, 0, 0.36);
+
+    transform: translateX(105%);
+
+    transition: transform 0.28s ease;
+}
+
+.painel-filtros.aberto {
+    transform: translateX(0);
+}
+
+.painel-filtros-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.painel-filtros-header h2 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.painel-filtros-header p {
+    margin: 5px 0 0;
+    color: var(--cor-texto-secundario);
+    font-size: 13px;
+}
+
+.btn-fechar-filtros {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid var(--cor-borda);
+    border-radius: 9px;
+
+    background: var(--cor-superficie);
+    color: var(--cor-texto);
+
+    font-size: 17px;
+}
+
+.form-filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.campo-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.campo-filtro label {
+    color: var(--cor-texto-secundario);
+    font-size: 13px;
+}
+
+.campo-filtro input,
+.campo-filtro select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    outline: none;
+
+    background: var(--cor-superficie);
+    color: var(--cor-texto);
+}
+
+.campo-filtro input:focus,
+.campo-filtro select:focus {
+    border-color: var(--cor-primaria);
+}
+
+.campo-filtro select option {
+    background: var(--cor-superficie);
+    color: var(--cor-texto);
+}
+
+.acoes-filtros {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+.btn-limpar,
+.btn-aplicar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 44px;
+
+    border-radius: 8px;
+    color: var(--cor-texto);
+}
+
+.btn-limpar {
+    border: 1px solid var(--cor-borda);
+    background: var(--cor-superficie);
+}
+
+.btn-aplicar {
+    border: 1px solid var(--cor-primaria);
+    background: var(--cor-primaria);
+}
+
+/* Responsividade */
+
+@media (max-width: 1450px) {
+    .grade-kpis {
+        grid-template-columns: repeat(3, minmax(210px, 1fr));
+    }
+}
+
+@media (max-width: 950px) {
+    .grade-kpis {
+        grid-template-columns: repeat(2, minmax(210px, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .financeiro-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .financeiro-acoes {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .ultima-atualizacao {
+        width: 100%;
+        padding-left: 0;
+    }
+}
 
 @media (max-width: 600px) {
-
     .financeiro-app {
         padding: 12px;
     }
@@ -722,6 +735,15 @@ button {
         flex: 1;
     }
 
+    .grade-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .placeholder-grafico {
+        flex-direction: column;
+        text-align: center;
+    }
+
     .estado-inicial {
         min-height: 330px;
         padding: 24px;
@@ -730,5 +752,4 @@ button {
     .acoes-filtros {
         grid-template-columns: 1fr;
     }
-
 }
