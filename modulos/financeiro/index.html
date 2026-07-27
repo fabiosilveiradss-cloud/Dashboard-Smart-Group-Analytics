@@ -1,1 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
 
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Módulo Financeiro</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="financeiro.css"
+    >
+</head>
+
+<body>
+
+    <div class="financeiro-app">
+
+        <header class="financeiro-header">
+
+            <div class="financeiro-titulo">
+
+                <div class="financeiro-icone">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+
+                <div>
+                    <h1>Financeiro</h1>
+                    <p>Gestão financeira e fluxo de caixa</p>
+                </div>
+
+            </div>
+
+            <div class="financeiro-acoes">
+
+                <span class="ultima-atualizacao">
+                    <i class="fa-solid fa-rotate"></i>
+                    Atualizado em
+                    <strong id="dataAtualizacao">--</strong>
+                </span>
+
+                <button
+                    type="button"
+                    class="btn-filtros"
+                    id="btnAbrirFiltros"
+                >
+                    <i class="fa-solid fa-filter"></i>
+                    Filtros
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-exportar"
+                >
+                    <i class="fa-solid fa-download"></i>
+                    Exportar
+                </button>
+
+            </div>
+
+        </header>
+
+        <nav
+            class="financeiro-abas"
+            aria-label="Navegação do módulo financeiro"
+        >
+
+            <button
+                type="button"
+                class="aba-financeiro ativa"
+                data-pagina="visao-geral"
+            >
+                <i class="fa-solid fa-chart-pie"></i>
+                Visão Geral
+            </button>
+
+            <button
+                type="button"
+                class="aba-financeiro"
+                data-pagina="contas-receber"
+            >
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                Contas a Receber
+            </button>
+
+            <button
+                type="button"
+                class="aba-financeiro"
+                data-pagina="contas-pagar"
+            >
+                <i class="fa-solid fa-money-check-dollar"></i>
+                Contas a Pagar
+            </button>
+
+            <button
+                type="button"
+                class="aba-financeiro"
+                data-pagina="fluxo-caixa"
+            >
+                <i class="fa-solid fa-chart-line"></i>
+                Fluxo de Caixa
+            </button>
+
+            <button
+                type="button"
+                class="aba-financeiro"
+                data-pagina="bancos"
+            >
+                <i class="fa-solid fa-building-columns"></i>
+                Bancos
+            </button>
+
+            <button
+                type="button"
+                class="aba-financeiro"
+                data-pagina="relatorios"
+            >
+                <i class="fa-solid fa-file-lines"></i>
+                Relatórios
+            </button>
+
+        </nav>
+
+        <main
+            class="financeiro-conteudo"
+            id="financeiroConteudo"
+        >
+
+            <section class="pagina-financeiro ativa" id="visao-geral">
+
+                <div class="pagina-cabecalho">
+                    <div>
+                        <h2>Visão Geral</h2>
+                        <p>
+                            Acompanhe os principais indicadores financeiros
+                            da empresa.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="estado-inicial">
+
+                    <div class="estado-inicial-icone">
+                        <i class="fa-solid fa-chart-column"></i>
+                    </div>
+
+                    <h3>Dashboard Financeiro</h3>
+
+                    <p>
+                        A estrutura do módulo está pronta.
+                        Os indicadores, gráficos e tabelas serão adicionados
+                        na próxima etapa.
+                    </p>
+
+                </div>
+
+            </section>
+
+            <section class="pagina-financeiro" id="contas-receber">
+
+                <div class="pagina-cabecalho">
+                    <div>
+                        <h2>Contas a Receber</h2>
+                        <p>
+                            Controle de valores recebidos, pendentes e atrasados.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="estado-inicial">
+                    <div class="estado-inicial-icone">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+
+                    <h3>Contas a Receber</h3>
+                    <p>Conteúdo em preparação.</p>
+                </div>
+
+            </section>
+
+            <section class="pagina-financeiro" id="contas-pagar">
+
+                <div class="pagina-cabecalho">
+                    <div>
+                        <h2>Contas a Pagar</h2>
+                        <p>
+                            Controle de compromissos e pagamentos financeiros.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="estado-inicial">
+                    <div class="estado-inicial-icone">
+                        <i class="fa-solid fa-money-check-dollar"></i>
+                    </div>
+
+                    <h3>Contas a Pagar</h3>
+                    <p>Conteúdo em preparação.</p>
+                </div>
+
+            </section>
+
+            <section class="pagina-financeiro" id="fluxo-caixa">
+
+                <div class="pagina-cabecalho">
+                    <div>
+                        <h2>Fluxo de Caixa</h2>
+                        <p>
+                            Entradas, saídas, saldo e projeção financeira.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="estado-inicial">
+                    <div class="estado-inicial-icone">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+
+                    <h3>Fluxo de Caixa</h3>
+                    <p>Conteúdo em preparação.</p>
+                </div>
+
+            </section>
+
+            <section class="pagina-financeiro" id="bancos">
+
+                <div class="pagina-cabecalho">
+                    <div>
+                        <h2>Bancos e Contas</h2>
+                        <p>
+                            Visão consolidada das contas e movimentações bancárias.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="estado-inicial">
+                    <div class="estado-inicial-icone">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+
+                    <h3>Bancos e Contas</h3>
+                    <p>Conteúdo em preparação.</p>
+                </div>
+
+            </section>
+
+            <section class="pagina-financeiro" id="relatorios">
+
+                <div class="pagina-cabecalho">
+                    <div>
+                        <h2>Relatórios</h2>
+                        <p>
+                            Relatórios financeiros e exportação de informações.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="estado-inicial">
+                    <div class="estado-inicial-icone">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </div>
+
+                    <h3>Relatórios Financeiros</h3>
+                    <p>Conteúdo em preparação.</p>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <div
+        class="filtros-overlay"
+        id="filtrosOverlay"
+    ></div>
+
+    <aside
+        class="painel-filtros"
+        id="painelFiltros"
+        aria-hidden="true"
+    >
+
+        <div class="painel-filtros-header">
+
+            <div>
+                <h2>Filtros</h2>
+                <p>Refine os dados exibidos</p>
+            </div>
+
+            <button
+                type="button"
+                class="btn-fechar-filtros"
+                id="btnFecharFiltros"
+                aria-label="Fechar filtros"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <form
+            class="form-filtros"
+            id="formFiltros"
+        >
+
+            <div class="campo-filtro">
+                <label for="periodoInicio">Data inicial</label>
+                <input
+                    type="date"
+                    id="periodoInicio"
+                    name="periodoInicio"
+                >
+            </div>
+
+            <div class="campo-filtro">
+                <label for="periodoFim">Data final</label>
+                <input
+                    type="date"
+                    id="periodoFim"
+                    name="periodoFim"
+                >
+            </div>
+
+            <div class="campo-filtro">
+                <label for="cliente">Cliente / Fornecedor</label>
+                <select id="cliente" name="cliente">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+
+            <div class="campo-filtro">
+                <label for="representante">Representante</label>
+                <select id="representante" name="representante">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+
+            <div class="campo-filtro">
+                <label for="banco">Banco / Conta</label>
+                <select id="banco" name="banco">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+
+            <div class="campo-filtro">
+                <label for="planoFinanceiro">Plano Financeiro</label>
+                <select id="planoFinanceiro" name="planoFinanceiro">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+
+            <div class="campo-filtro">
+                <label for="situacao">Situação</label>
+                <select id="situacao" name="situacao">
+                    <option value="">Todas</option>
+                    <option value="pago">Pago</option>
+                    <option value="aberto">Em aberto</option>
+                    <option value="atrasado">Em atraso</option>
+                </select>
+            </div>
+
+            <div class="campo-filtro">
+                <label for="tipoDocumento">Tipo de documento</label>
+                <select id="tipoDocumento" name="tipoDocumento">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+
+            <div class="acoes-filtros">
+
+                <button
+                    type="button"
+                    class="btn-limpar"
+                    id="btnLimparFiltros"
+                >
+                    <i class="fa-solid fa-eraser"></i>
+                    Limpar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-aplicar"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    Aplicar filtros
+                </button>
+
+            </div>
+
+        </form>
+
+    </aside>
+
+    <script src="financeiro.js"></script>
+
+</body>
+</html>
