@@ -6,18 +6,17 @@
 function abrirModulo(modulo, elemento){
 
 const mapaPermissoes = {
-
-        dashboard: "dashboard",
-        estoque: "estoque",
-        vendas: "vendas",
-        usuarios: "usuarios",
-        permissoes: "usuarios",
-        logs: "usuarios",
-        configuracoes: "configuracoes",
-        "minha-conta": null
-
+    dashboard: "dashboard",
+    estoque: "estoque",
+    vendas: "vendas",
+    financeiro: null,
+    usuarios: "usuarios",
+    permissoes: "usuarios",
+    logs: "usuarios",
+    configuracoes: "configuracoes",
+    "minha-conta": null
 };
-
+        
     const permissaoNecessaria =
         mapaPermissoes[modulo];
 
