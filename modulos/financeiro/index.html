@@ -16,9 +16,9 @@
     >
 
     <link
-    rel="stylesheet"
-    href="financeiro.css?v=3"
->
+        rel="stylesheet"
+        href="financeiro.css?v=4"
+    >
 </head>
 
 <body>
@@ -60,6 +60,7 @@
                 <button
                     type="button"
                     class="btn-exportar"
+                    id="btnExportar"
                 >
                     <i class="fa-solid fa-download"></i>
                     Exportar
@@ -147,134 +148,152 @@
                     </div>
                 </div>
 
-         <section class="grade-kpis" aria-label="Indicadores financeiros">
+                <section
+                    class="grade-kpis"
+                    aria-label="Indicadores financeiros"
+                >
 
-    <article class="card-kpi kpi-recebido">
+                    <article class="card-kpi kpi-recebido">
 
-        <div class="kpi-icone">
-            <i class="fa-solid fa-dollar-sign"></i>
-        </div>
+                        <div class="kpi-icone">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
 
-        <div class="kpi-conteudo">
-            <span class="kpi-titulo">Total Recebido</span>
+                        <div class="kpi-conteudo">
+                            <span class="kpi-titulo">Total Recebido</span>
 
-            <strong class="kpi-valor" id="kpiTotalRecebido">
-                R$ 0,00
-            </strong>
+                            <strong
+                                class="kpi-valor"
+                                id="kpiTotalRecebido"
+                            >
+                                R$ 0,00
+                            </strong>
 
-            <span class="kpi-variacao positiva">
-                <i class="fa-solid fa-arrow-up"></i>
-                12,5% em relação ao mês anterior
-            </span>
-        </div>
+                            <span class="kpi-variacao positiva">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                12,5% em relação ao mês anterior
+                            </span>
+                        </div>
 
-    </article>
+                    </article>
 
-    <article class="card-kpi kpi-receber">
+                    <article class="card-kpi kpi-receber">
 
-        <div class="kpi-icone">
-            <i class="fa-solid fa-calendar-days"></i>
-        </div>
+                        <div class="kpi-icone">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
 
-        <div class="kpi-conteudo">
-            <span class="kpi-titulo">A Receber</span>
+                        <div class="kpi-conteudo">
+                            <span class="kpi-titulo">A Receber</span>
 
-            <strong class="kpi-valor" id="kpiAReceber">
-                R$ 0,00
-            </strong>
+                            <strong
+                                class="kpi-valor"
+                                id="kpiAReceber"
+                            >
+                                R$ 0,00
+                            </strong>
 
-            <span class="kpi-variacao positiva">
-                <i class="fa-solid fa-arrow-up"></i>
-                8,3% em relação ao mês anterior
-            </span>
-        </div>
+                            <span class="kpi-variacao positiva">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                8,3% em relação ao mês anterior
+                            </span>
+                        </div>
 
-    </article>
+                    </article>
 
-    <article class="card-kpi kpi-atraso">
+                    <article class="card-kpi kpi-atraso">
 
-        <div class="kpi-icone">
-            <i class="fa-regular fa-clock"></i>
-        </div>
+                        <div class="kpi-icone">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
 
-        <div class="kpi-conteudo">
-            <span class="kpi-titulo">Em Atraso</span>
+                        <div class="kpi-conteudo">
+                            <span class="kpi-titulo">Em Atraso</span>
 
-            <strong class="kpi-valor" id="kpiEmAtraso">
-                R$ 0,00
-            </strong>
+                            <strong
+                                class="kpi-valor"
+                                id="kpiEmAtraso"
+                            >
+                                R$ 0,00
+                            </strong>
 
-            <span class="kpi-variacao negativa">
-                <i class="fa-solid fa-arrow-up"></i>
-                15,7% em relação ao mês anterior
-            </span>
-        </div>
+                            <span class="kpi-variacao negativa">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                15,7% em relação ao mês anterior
+                            </span>
+                        </div>
 
-    </article>
+                    </article>
 
-    <article class="card-kpi kpi-pago">
+                    <article class="card-kpi kpi-pago">
 
-        <div class="kpi-icone">
-            <i class="fa-solid fa-check"></i>
-        </div>
+                        <div class="kpi-icone">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
 
-        <div class="kpi-conteudo">
-            <span class="kpi-titulo">Pago no Mês</span>
+                        <div class="kpi-conteudo">
+                            <span class="kpi-titulo">Pago no Mês</span>
 
-            <strong class="kpi-valor" id="kpiPagoMes">
-                R$ 0,00
-            </strong>
+                            <strong
+                                class="kpi-valor"
+                                id="kpiPagoMes"
+                            >
+                                R$ 0,00
+                            </strong>
 
-            <span class="kpi-variacao positiva">
-                <i class="fa-solid fa-arrow-up"></i>
-                10,2% em relação ao mês anterior
-            </span>
-        </div>
+                            <span class="kpi-variacao positiva">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                10,2% em relação ao mês anterior
+                            </span>
+                        </div>
 
-    </article>
+                    </article>
 
-    <article class="card-kpi kpi-ticket">
+                    <article class="card-kpi kpi-ticket">
 
-        <div class="kpi-icone">
-            <i class="fa-solid fa-receipt"></i>
-        </div>
+                        <div class="kpi-icone">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
 
-        <div class="kpi-conteudo">
-            <span class="kpi-titulo">Ticket Médio</span>
+                        <div class="kpi-conteudo">
+                            <span class="kpi-titulo">Ticket Médio</span>
 
-            <strong class="kpi-valor" id="kpiTicketMedio">
-                R$ 0,00
-            </strong>
+                            <strong
+                                class="kpi-valor"
+                                id="kpiTicketMedio"
+                            >
+                                R$ 0,00
+                            </strong>
 
-            <span class="kpi-variacao negativa">
-                <i class="fa-solid fa-arrow-down"></i>
-                2,1% em relação ao mês anterior
-            </span>
-        </div>
+                            <span class="kpi-variacao negativa">
+                                <i class="fa-solid fa-arrow-down"></i>
+                                2,1% em relação ao mês anterior
+                            </span>
+                        </div>
 
-    </article>
+                    </article>
 
-</section>
+                </section>
 
-<section class="area-proxima-etapa">
+                <section class="area-proxima-etapa">
 
-    <div class="placeholder-grafico">
+                    <div class="placeholder-grafico">
 
-        <div class="placeholder-icone">
-            <i class="fa-solid fa-chart-line"></i>
-        </div>
+                        <div class="placeholder-icone">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
 
-        <div>
-            <h3>Gráficos financeiros</h3>
-            <p>
-                O fluxo de caixa e os recebimentos diários serão adicionados
-                na próxima etapa.
-            </p>
-        </div>
+                        <div>
+                            <h3>Gráficos financeiros</h3>
+                            <p>
+                                O fluxo de caixa e os recebimentos diários
+                                serão adicionados na próxima etapa.
+                            </p>
+                        </div>
 
-    </div>
+                    </div>
 
-</section>
+                </section>
 
             </section>
 
@@ -355,14 +374,31 @@
                     </div>
                 </div>
 
-                <div class="estado-inicial">
-                    <div class="estado-inicial-icone">
+                <section class="resumo-bancario">
+
+                    <div class="resumo-bancario-icone">
                         <i class="fa-solid fa-building-columns"></i>
                     </div>
 
-                    <h3>Bancos e Contas</h3>
-                    <p>Conteúdo em preparação.</p>
-                </div>
+                    <div class="resumo-bancario-conteudo">
+                        <span>Saldo bancário total</span>
+
+                        <strong id="saldoBancarioTotal">
+                            R$ 0,00
+                        </strong>
+
+                        <small id="quantidadeContas">
+                            0 contas cadastradas
+                        </small>
+                    </div>
+
+                </section>
+
+                <section
+                    class="grade-bancos"
+                    id="gradeBancos"
+                    aria-label="Contas bancárias"
+                ></section>
 
             </section>
 
@@ -514,7 +550,92 @@
 
     </aside>
 
-<script src="financeiro.js?v=3"></script>
+    <div
+        class="banco-overlay"
+        id="bancoOverlay"
+    ></div>
+
+    <aside
+        class="painel-banco"
+        id="painelBanco"
+        aria-hidden="true"
+    >
+
+        <div class="painel-banco-header">
+
+            <div class="painel-banco-identidade">
+
+                <div
+                    class="painel-banco-logo"
+                    id="detalheBancoLogo"
+                ></div>
+
+                <div>
+                    <h2 id="detalheBancoNome">Banco</h2>
+                    <p id="detalheBancoConta">Conta</p>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="btn-fechar-banco"
+                id="btnFecharBanco"
+                aria-label="Fechar detalhes do banco"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="painel-banco-conteudo">
+
+            <div class="detalhe-saldo">
+                <span>Saldo disponível</span>
+                <strong id="detalheBancoSaldo">R$ 0,00</strong>
+            </div>
+
+            <div class="detalhe-grade">
+
+                <article>
+                    <span>Total recebido</span>
+                    <strong id="detalheBancoRecebido">R$ 0,00</strong>
+                </article>
+
+                <article>
+                    <span>Total pago</span>
+                    <strong id="detalheBancoPago">R$ 0,00</strong>
+                </article>
+
+                <article>
+                    <span>Em aberto</span>
+                    <strong id="detalheBancoAberto">R$ 0,00</strong>
+                </article>
+
+                <article>
+                    <span>Em atraso</span>
+                    <strong id="detalheBancoAtraso">R$ 0,00</strong>
+                </article>
+
+            </div>
+
+            <div class="movimentacoes-placeholder">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                <div>
+                    <h3>Movimentações recentes</h3>
+                    <p>
+                        O extrato deste banco será conectado aos dados reais
+                        em uma etapa futura.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </aside>
+
+    <script src="financeiro.js?v=4"></script>
 
 </body>
 </html>
