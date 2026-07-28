@@ -200,12 +200,14 @@ button {
 
     transition:
         background 0.2s ease,
-        color 0.2s ease;
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .aba-financeiro:hover {
     background: rgba(255, 255, 255, 0.06);
     color: var(--cor-texto);
+    transform: translateY(-1px);
 }
 
 .aba-financeiro.ativa {
@@ -473,7 +475,7 @@ button {
     color: #a47cff;
 }
 
-/* Placeholder dos próximos gráficos */
+/* Placeholder */
 
 .area-proxima-etapa {
     margin-top: 16px;
@@ -526,9 +528,249 @@ button {
     line-height: 1.5;
 }
 
-/* Painel lateral de filtros */
+/* Bancos */
 
-.filtros-overlay {
+.resumo-bancario {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    margin-top: 16px;
+    padding: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(18, 57, 102, 0.98),
+            rgba(8, 31, 60, 0.98)
+        );
+
+    border: 1px solid var(--cor-borda);
+    border-radius: 14px;
+
+    box-shadow: var(--sombra);
+}
+
+.resumo-bancario-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 60px;
+    height: 60px;
+
+    flex: 0 0 60px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1683ff,
+            #0753b4
+        );
+
+    font-size: 23px;
+}
+
+.resumo-bancario-conteudo {
+    display: flex;
+    flex-direction: column;
+}
+
+.resumo-bancario-conteudo span {
+    color: var(--cor-texto-secundario);
+    font-size: 13px;
+}
+
+.resumo-bancario-conteudo strong {
+    margin-top: 5px;
+
+    color: #2ee57c;
+
+    font-size: clamp(26px, 3vw, 38px);
+}
+
+.resumo-bancario-conteudo small {
+    margin-top: 6px;
+    color: var(--cor-texto-secundario);
+}
+
+.grade-bancos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(250px, 1fr));
+    gap: 16px;
+
+    margin-top: 16px;
+}
+
+.card-banco {
+    position: relative;
+
+    width: 100%;
+    min-height: 230px;
+    padding: 18px;
+
+    text-align: left;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16, 48, 87, 0.98),
+            rgba(8, 31, 60, 0.98)
+        );
+
+    border: 1px solid var(--cor-borda);
+    border-radius: 14px;
+
+    color: var(--cor-texto);
+
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.card-banco:hover {
+    transform: translateY(-4px);
+    border-color: rgba(22, 131, 255, 0.55);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
+}
+
+.card-banco-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.banco-identidade {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-width: 0;
+}
+
+.banco-logo,
+.painel-banco-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 54px;
+
+    width: 54px;
+    height: 54px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+    border-radius: 14px;
+}
+
+.logo-banco-imagem {
+    display: block;
+
+    max-width: 42px;
+    max-height: 42px;
+
+    object-fit: contain;
+}
+
+.logo-banco-imagem-grande {
+    max-width: 52px;
+    max-height: 52px;
+}
+
+.logo-banco-fallback {
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    background: var(--cor-banco, #1683ff);
+    color: #ffffff;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.banco-identidade h3 {
+    margin: 0;
+
+    overflow: hidden;
+
+    font-size: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.banco-identidade p {
+    margin: 5px 0 0;
+
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+}
+
+.card-banco-seta {
+    margin-top: 5px;
+    color: var(--cor-texto-secundario);
+}
+
+.banco-dados-conta {
+    display: flex;
+    gap: 12px;
+
+    margin-top: 18px;
+
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+}
+
+.banco-saldo {
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 22px;
+}
+
+.banco-saldo span {
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+}
+
+.banco-saldo strong {
+    margin-top: 6px;
+
+    color: #2ee57c;
+
+    font-size: 25px;
+}
+
+.banco-rodape {
+    margin-top: 18px;
+    padding-top: 14px;
+
+    border-top: 1px solid var(--cor-borda);
+
+    color: var(--cor-texto-secundario);
+    font-size: 11px;
+}
+
+.banco-rodape i {
+    margin-right: 5px;
+    color: #2ee57c;
+}
+
+/* Painéis laterais */
+
+.filtros-overlay,
+.banco-overlay {
     position: fixed;
     inset: 0;
     z-index: 998;
@@ -543,18 +785,20 @@ button {
         visibility 0.25s ease;
 }
 
-.filtros-overlay.ativo {
+.filtros-overlay.ativo,
+.banco-overlay.ativo {
     visibility: visible;
     opacity: 1;
 }
 
-.painel-filtros {
+.painel-filtros,
+.painel-banco {
     position: fixed;
     top: 0;
     right: 0;
     z-index: 999;
 
-    width: min(390px, 92vw);
+    width: min(410px, 94vw);
     height: 100vh;
 
     padding: 22px;
@@ -571,14 +815,17 @@ button {
     transition: transform 0.28s ease;
 }
 
-.painel-filtros.aberto {
+.painel-filtros.aberto,
+.painel-banco.aberto {
     transform: translateX(0);
 }
 
-.painel-filtros-header {
+.painel-filtros-header,
+.painel-banco-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: 16px;
 
     padding-bottom: 18px;
     margin-bottom: 20px;
@@ -586,24 +833,29 @@ button {
     border-bottom: 1px solid var(--cor-borda);
 }
 
-.painel-filtros-header h2 {
+.painel-filtros-header h2,
+.painel-banco-header h2 {
     margin: 0;
     font-size: 21px;
 }
 
-.painel-filtros-header p {
+.painel-filtros-header p,
+.painel-banco-header p {
     margin: 5px 0 0;
     color: var(--cor-texto-secundario);
     font-size: 13px;
 }
 
-.btn-fechar-filtros {
+.btn-fechar-filtros,
+.btn-fechar-banco {
     display: flex;
     align-items: center;
     justify-content: center;
 
     width: 38px;
     height: 38px;
+
+    flex: 0 0 38px;
 
     border: 1px solid var(--cor-borda);
     border-radius: 9px;
@@ -686,11 +938,126 @@ button {
     background: var(--cor-primaria);
 }
 
+/* Detalhes do banco */
+
+.painel-banco-identidade {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.painel-banco-logo {
+    flex-basis: 64px;
+    width: 64px;
+    height: 64px;
+}
+
+.detalhe-saldo {
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(18, 57, 102, 0.98),
+            rgba(8, 31, 60, 0.98)
+        );
+
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+}
+
+.detalhe-saldo span {
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+}
+
+.detalhe-saldo strong {
+    margin-top: 7px;
+
+    color: #2ee57c;
+
+    font-size: 30px;
+}
+
+.detalhe-grade {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+
+    margin-top: 14px;
+}
+
+.detalhe-grade article {
+    padding: 15px;
+
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+}
+
+.detalhe-grade span {
+    display: block;
+
+    color: var(--cor-texto-secundario);
+    font-size: 11px;
+}
+
+.detalhe-grade strong {
+    display: block;
+    margin-top: 7px;
+
+    font-size: 15px;
+}
+
+.movimentacoes-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-top: 16px;
+    padding: 18px;
+
+    background: rgba(22, 131, 255, 0.08);
+    border: 1px dashed rgba(22, 131, 255, 0.35);
+    border-radius: 12px;
+}
+
+.movimentacoes-placeholder > i {
+    color: #35a0ff;
+    font-size: 24px;
+}
+
+.movimentacoes-placeholder h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.movimentacoes-placeholder p {
+    margin: 6px 0 0;
+
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 /* Responsividade */
 
 @media (max-width: 1450px) {
     .grade-kpis {
         grid-template-columns: repeat(3, minmax(210px, 1fr));
+    }
+
+    .grade-bancos {
+        grid-template-columns: repeat(3, minmax(240px, 1fr));
+    }
+}
+
+@media (max-width: 1100px) {
+    .grade-bancos {
+        grid-template-columns: repeat(2, minmax(240px, 1fr));
     }
 }
 
@@ -714,6 +1081,12 @@ button {
     .ultima-atualizacao {
         width: 100%;
         padding-left: 0;
+    }
+}
+
+@media (max-width: 700px) {
+    .grade-bancos {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -751,5 +1124,37 @@ button {
 
     .acoes-filtros {
         grid-template-columns: 1fr;
+    }
+
+    .resumo-bancario {
+        align-items: flex-start;
+    }
+
+    .detalhe-grade {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media print {
+    .financeiro-acoes,
+    .financeiro-abas,
+    .painel-filtros,
+    .painel-banco,
+    .filtros-overlay,
+    .banco-overlay {
+        display: none !important;
+    }
+
+    body {
+        background: #ffffff;
+        color: #000000;
+    }
+
+    .financeiro-header,
+    .pagina-cabecalho,
+    .card-kpi,
+    .resumo-bancario,
+    .card-banco {
+        box-shadow: none;
     }
 }
