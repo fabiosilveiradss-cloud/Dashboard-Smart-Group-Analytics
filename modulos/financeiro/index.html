@@ -17,7 +17,7 @@
 
     <link
         rel="stylesheet"
-        href="financeiro.css?v=4"
+        href="financeiro.css?v=5"
     >
 </head>
 
@@ -50,6 +50,22 @@
 
                 <button
                     type="button"
+                    class="btn-carregar-planilha"
+                    id="btnCarregarPlanilha"
+                >
+                    <i class="fa-solid fa-file-excel"></i>
+                    Carregar planilha
+                </button>
+
+                <input
+                    type="file"
+                    id="inputPlanilha"
+                    accept=".xlsx,.xls"
+                    hidden
+                >
+
+                <button
+                    type="button"
                     class="btn-filtros"
                     id="btnAbrirFiltros"
                 >
@@ -69,6 +85,18 @@
             </div>
 
         </header>
+
+        <div
+            class="status-importacao"
+            id="statusImportacao"
+            hidden
+        >
+            <i class="fa-solid fa-circle-info"></i>
+
+            <span id="textoStatusImportacao">
+                Nenhuma planilha carregada.
+            </span>
+        </div>
 
         <nav
             class="financeiro-abas"
@@ -381,7 +409,7 @@
                     </div>
 
                     <div class="resumo-bancario-conteudo">
-                        <span>Saldo bancário total</span>
+                        <span>Total movimentado no período</span>
 
                         <strong id="saldoBancarioTotal">
                             R$ 0,00
@@ -572,7 +600,7 @@
 
                 <div>
                     <h2 id="detalheBancoNome">Banco</h2>
-                    <p id="detalheBancoConta">Conta</p>
+                    <p>Movimentações consolidadas do banco</p>
                 </div>
 
             </div>
@@ -591,7 +619,7 @@
         <div class="painel-banco-conteudo">
 
             <div class="detalhe-saldo">
-                <span>Saldo disponível</span>
+                <span>Total movimentado no período</span>
                 <strong id="detalheBancoSaldo">R$ 0,00</strong>
             </div>
 
@@ -635,7 +663,11 @@
 
     </aside>
 
-    <script src="financeiro.js?v=4"></script>
+    <script
+        src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"
+    ></script>
+
+    <script src="financeiro.js?v=5"></script>
 
 </body>
 </html>
