@@ -1,12 +1,9 @@
 "use strict";
 
-const bancosFinanceiros = [
+let bancosFinanceiros = [
     {
         id: "banco-do-brasil",
         nome: "Banco do Brasil",
-        tipoConta: "Conta Corrente",
-        agencia: "0001",
-        conta: "12345-6",
         saldo: 820000,
         totalRecebido: 245000,
         totalPago: 180000,
@@ -19,9 +16,6 @@ const bancosFinanceiros = [
     {
         id: "sicredi",
         nome: "Sicredi",
-        tipoConta: "Conta Corrente",
-        agencia: "0710",
-        conta: "98765-4",
         saldo: 240000,
         totalRecebido: 132000,
         totalPago: 89000,
@@ -34,9 +28,6 @@ const bancosFinanceiros = [
     {
         id: "caixa",
         nome: "Caixa Econômica Federal",
-        tipoConta: "Conta Corrente",
-        agencia: "1234",
-        conta: "45678-9",
         saldo: 680000,
         totalRecebido: 198000,
         totalPago: 153000,
@@ -49,9 +40,6 @@ const bancosFinanceiros = [
     {
         id: "itau",
         nome: "Itaú",
-        tipoConta: "Conta Corrente",
-        agencia: "4455",
-        conta: "11223-4",
         saldo: 315000,
         totalRecebido: 96000,
         totalPago: 77000,
@@ -70,6 +58,7 @@ function iniciarModuloFinanceiro() {
     configurarPainelFiltros();
     configurarPainelBanco();
     configurarExportacao();
+    configurarImportacaoPlanilha();
     atualizarDataHora();
     carregarIndicadoresDemonstrativos();
     renderizarBancos();
@@ -263,10 +252,6 @@ function abrirDetalhesBanco(banco) {
         banco.nome
     );
 
-    preencherTexto(
-        "detalheBancoConta",
-        `${banco.tipoConta} • Ag. ${banco.agencia} • Cc. ${banco.conta}`
-    );
 
     preencherTexto(
         "detalheBancoSaldo",
@@ -343,20 +328,16 @@ function renderizarBancos() {
 
                     <div>
                         <h3>${escaparHtml(banco.nome)}</h3>
-                        <p>${escaparHtml(banco.tipoConta)}</p>
+                        <p>Movimentações consolidadas</p>
                     </div>
                 </div>
 
                 <i class="fa-solid fa-chevron-right card-banco-seta"></i>
             </div>
 
-            <div class="banco-dados-conta">
-                <span>Ag. ${escaparHtml(banco.agencia)}</span>
-                <span>Cc. ${escaparHtml(banco.conta)}</span>
-            </div>
 
             <div class="banco-saldo">
-                <span>Saldo disponível</span>
+                <span>Total movimentado</span>
                 <strong>${formatarMoeda(banco.saldo)}</strong>
             </div>
 
@@ -388,7 +369,7 @@ function renderizarBancos() {
 
     if (quantidade) {
         quantidade.textContent =
-            `${bancosFinanceiros.length} contas cadastradas`;
+            `${bancosFinanceiros.length} bancos carregados`;
     }
 }
 
@@ -427,12 +408,17 @@ function criarLogoBanco(banco, tamanho = "normal") {
     `;
 }
 
-function preencherFiltroBancos() {
+function preencherFiltroBancos(limparAntes = false) {
     const select =
         document.getElementById("banco");
 
     if (!select) {
         return;
+    }
+
+    if (limparAntes) {
+        select.innerHTML =
+            '<option value="">Todos</option>';
     }
 
     bancosFinanceiros.forEach((banco) => {
@@ -524,4 +510,443 @@ function escaparHtml(valor) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+function configurarImportacaoPlanilha() {
+    const botao =
+        document.getElementById("btnCarregarPlanilha");
+
+    const input =
+        document.getElementById("inputPlanilha");
+
+    if (!botao || !input) {
+        return;
+    }
+
+    botao.addEventListener("click", () => {
+        input.click();
+    });
+
+    input.addEventListener("change", async () => {
+        const arquivo = input.files?.[0];
+
+        if (!arquivo) {
+            return;
+        }
+
+        try {
+            botao.disabled = true;
+
+            atualizarStatusImportacao(
+                "Processando a planilha...",
+                ""
+            );
+
+            const resultado =
+                await processarPlanilhaFinanceira(arquivo);
+
+            bancosFinanceiros = resultado.bancos;
+
+            renderizarBancos();
+            preencherFiltroBancos(true);
+            atualizarDataHora();
+
+            atualizarStatusImportacao(
+                `${resultado.quantidadeRegistros} registros importados de ` +
+                `${resultado.quantidadeBancos} bancos.`,
+                "sucesso"
+            );
+        } catch (erro) {
+            console.error(
+                "Erro ao importar planilha:",
+                erro
+            );
+
+            atualizarStatusImportacao(
+                erro.message ||
+                "Não foi possível processar a planilha.",
+                "erro"
+            );
+        } finally {
+            botao.disabled = false;
+            input.value = "";
+        }
+    });
+}
+
+async function processarPlanilhaFinanceira(arquivo) {
+    if (typeof XLSX === "undefined") {
+        throw new Error(
+            "A biblioteca de leitura do Excel não foi carregada."
+        );
+    }
+
+    const dadosArquivo =
+        await arquivo.arrayBuffer();
+
+    const workbook =
+        XLSX.read(dadosArquivo, {
+            type: "array",
+            cellDates: true
+        });
+
+    const nomePrimeiraAba =
+        workbook.SheetNames[0];
+
+    if (!nomePrimeiraAba) {
+        throw new Error(
+            "A planilha não possui nenhuma aba."
+        );
+    }
+
+    const worksheet =
+        workbook.Sheets[nomePrimeiraAba];
+
+    const linhas =
+        XLSX.utils.sheet_to_json(
+            worksheet,
+            {
+                header: 1,
+                defval: "",
+                raw: true
+            }
+        );
+
+    const indiceCabecalho =
+        localizarCabecalhoFinanceiro(linhas);
+
+    if (indiceCabecalho === -1) {
+        throw new Error(
+            "Não foi possível localizar o cabeçalho financeiro."
+        );
+    }
+
+    const cabecalho =
+        linhas[indiceCabecalho];
+
+    const indices =
+        localizarColunasFinanceiras(cabecalho);
+
+    const registros =
+        linhas
+            .slice(indiceCabecalho + 1)
+            .filter((linha) => {
+                return linha.some((valor) => {
+                    return valor !== "" &&
+                        valor !== null &&
+                        valor !== undefined;
+                });
+            });
+
+    const bancos =
+        agruparMovimentacoesPorBanco(
+            registros,
+            indices
+        );
+
+    if (!bancos.length) {
+        throw new Error(
+            "Nenhuma movimentação bancária foi encontrada."
+        );
+    }
+
+    return {
+        bancos,
+        quantidadeRegistros: registros.length,
+        quantidadeBancos: bancos.length
+    };
+}
+
+function localizarCabecalhoFinanceiro(linhas) {
+    return linhas.findIndex((linha) => {
+        const textos =
+            linha.map((valor) => normalizarTexto(valor));
+
+        const possuiValor =
+            textos.includes("vlr liq pago") ||
+            textos.includes("valor liquido pago");
+
+        return textos.includes("descricao") &&
+            possuiValor;
+    });
+}
+
+function localizarColunasFinanceiras(cabecalho) {
+    const cabecalhoNormalizado =
+        cabecalho.map((valor) => normalizarTexto(valor));
+
+    const indiceBanco =
+        cabecalhoNormalizado.indexOf("descricao");
+
+    let indiceValor =
+        cabecalhoNormalizado.indexOf("vlr liq pago");
+
+    if (indiceValor === -1) {
+        indiceValor =
+            cabecalhoNormalizado.indexOf("valor liquido pago");
+    }
+
+    const indicesAbreviacao = [];
+
+    cabecalhoNormalizado.forEach((valor, indice) => {
+        if (valor === "abreviacao") {
+            indicesAbreviacao.push(indice);
+        }
+    });
+
+    const indiceSiglaBanco =
+        indicesAbreviacao.length > 1
+            ? indicesAbreviacao[1]
+            : indicesAbreviacao[0] ?? -1;
+
+    if (indiceBanco === -1 || indiceValor === -1) {
+        throw new Error(
+            "As colunas Descrição e Vlr.líq.pago não foram encontradas."
+        );
+    }
+
+    return {
+        banco: indiceBanco,
+        siglaBanco: indiceSiglaBanco,
+        valorLiquidoPago: indiceValor
+    };
+}
+
+function agruparMovimentacoesPorBanco(
+    registros,
+    indices
+) {
+    const agrupamento = new Map();
+
+    registros.forEach((linha) => {
+        const nomeOriginal =
+            String(linha[indices.banco] || "").trim();
+
+        const siglaOriginal =
+            indices.siglaBanco >= 0
+                ? String(linha[indices.siglaBanco] || "").trim()
+                : "";
+
+        const valor =
+            converterNumeroFinanceiro(
+                linha[indices.valorLiquidoPago]
+            );
+
+        if (!nomeOriginal || valor === 0) {
+            return;
+        }
+
+        const chave =
+            normalizarTexto(nomeOriginal);
+
+        if (!agrupamento.has(chave)) {
+            const identidade =
+                identificarBanco(
+                    nomeOriginal,
+                    siglaOriginal
+                );
+
+            agrupamento.set(chave, {
+                id: identidade.id,
+                nome: nomeOriginal,
+                saldo: 0,
+                totalRecebido: 0,
+                totalPago: 0,
+                emAberto: 0,
+                emAtraso: 0,
+                logo: identidade.logo,
+                sigla: identidade.sigla,
+                cor: identidade.cor
+            });
+        }
+
+        const banco =
+            agrupamento.get(chave);
+
+        banco.saldo += valor;
+        banco.totalRecebido += valor;
+    });
+
+    return Array.from(agrupamento.values())
+        .sort((a, b) => b.saldo - a.saldo);
+}
+
+function identificarBanco(
+    nomeBanco,
+    siglaPlanilha
+) {
+    const nome =
+        normalizarTexto(nomeBanco);
+
+    const catalogo = [
+        {
+            termos: ["banco do brasil"],
+            id: "banco-do-brasil",
+            sigla: "BB",
+            logo: "assets/bancos/banco-do-brasil.svg",
+            cor: "#f6d000"
+        },
+        {
+            termos: ["sicredi"],
+            id: "sicredi",
+            sigla: "SI",
+            logo: "assets/bancos/sicredi.svg",
+            cor: "#59a52c"
+        },
+        {
+            termos: ["caixa"],
+            id: "caixa",
+            sigla: "CX",
+            logo: "assets/bancos/caixa.svg",
+            cor: "#0074b8"
+        },
+        {
+            termos: ["itau"],
+            id: "itau",
+            sigla: "IT",
+            logo: "assets/bancos/itau.svg",
+            cor: "#ec7000"
+        },
+        {
+            termos: ["bradesco"],
+            id: "bradesco",
+            sigla: "BR",
+            logo: "assets/bancos/bradesco.svg",
+            cor: "#cc092f"
+        },
+        {
+            termos: ["santander"],
+            id: "santander",
+            sigla: "ST",
+            logo: "assets/bancos/santander.svg",
+            cor: "#ec0000"
+        },
+        {
+            termos: ["sicoob"],
+            id: "sicoob",
+            sigla: "SC",
+            logo: "assets/bancos/sicoob.svg",
+            cor: "#1d6b55"
+        }
+    ];
+
+    const encontrado =
+        catalogo.find((banco) => {
+            return banco.termos.some((termo) => {
+                return nome.includes(termo);
+            });
+        });
+
+    if (encontrado) {
+        return encontrado;
+    }
+
+    return {
+        id: gerarIdentificador(nomeBanco),
+        sigla:
+            siglaPlanilha ||
+            gerarSiglaBanco(nomeBanco),
+        logo: "assets/bancos/banco-generico.svg",
+        cor: "#1683ff"
+    };
+}
+
+function converterNumeroFinanceiro(valor) {
+    if (typeof valor === "number") {
+        return Number.isFinite(valor)
+            ? valor
+            : 0;
+    }
+
+    const texto =
+        String(valor || "")
+            .trim()
+            .replace(/\s/g, "")
+            .replace(/R\$/gi, "");
+
+    if (!texto) {
+        return 0;
+    }
+
+    let normalizado = texto;
+
+    if (
+        normalizado.includes(".") &&
+        normalizado.includes(",")
+    ) {
+        normalizado =
+            normalizado
+                .replace(/\./g, "")
+                .replace(",", ".");
+    } else if (normalizado.includes(",")) {
+        normalizado =
+            normalizado.replace(",", ".");
+    }
+
+    const numero =
+        Number(normalizado);
+
+    return Number.isFinite(numero)
+        ? numero
+        : 0;
+}
+
+function normalizarTexto(valor) {
+    return String(valor || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[./_()-]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function gerarIdentificador(nome) {
+    return normalizarTexto(nome)
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+}
+
+function gerarSiglaBanco(nome) {
+    const palavras =
+        String(nome || "")
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+    return palavras
+        .slice(0, 2)
+        .map((palavra) => palavra[0])
+        .join("")
+        .toUpperCase() || "BK";
+}
+
+function atualizarStatusImportacao(
+    mensagem,
+    tipo
+) {
+    const container =
+        document.getElementById("statusImportacao");
+
+    const texto =
+        document.getElementById(
+            "textoStatusImportacao"
+        );
+
+    if (!container || !texto) {
+        return;
+    }
+
+    container.hidden = false;
+
+    container.classList.remove(
+        "sucesso",
+        "erro"
+    );
+
+    if (tipo) {
+        container.classList.add(tipo);
+    }
+
+    texto.textContent = mensagem;
 }
