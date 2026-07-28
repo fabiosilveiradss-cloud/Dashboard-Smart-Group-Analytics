@@ -62,6 +62,40 @@ function aplicarFiltrosTabela() {
     let produtosAgrupados =
         agruparProdutos(dadosAtuais);
 
+    produtosAgrupados.sort((a, b) => {
+
+    const descricaoA =
+        (a["Desc.completa"] || "")
+            .trim()
+            .toUpperCase();
+
+    const descricaoB =
+        (b["Desc.completa"] || "")
+            .trim()
+            .toUpperCase();
+
+    // Primeiro organiza pela descrição
+    const comparacaoDescricao =
+        descricaoA.localeCompare(
+            descricaoB,
+            "pt-BR",
+            {
+                sensitivity: "base"
+            }
+        );
+
+    if (comparacaoDescricao !== 0) {
+        return comparacaoDescricao;
+    }
+
+    // Se a descrição for igual,
+    // organiza pelo código
+
+    return Number(a.Produto) - Number(b.Produto);
+
+});
+    
+
     if (texto) {
 
         produtosAgrupados =
