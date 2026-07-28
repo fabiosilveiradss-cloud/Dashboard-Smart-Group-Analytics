@@ -128,6 +128,7 @@ button {
     color: var(--cor-texto);
 }
 
+.btn-carregar-planilha,
 .btn-filtros,
 .btn-exportar {
     display: inline-flex;
@@ -157,6 +158,7 @@ button {
     border-color: var(--cor-primaria);
 }
 
+.btn-carregar-planilha:hover,
 .btn-filtros:hover,
 .btn-exportar:hover {
     transform: translateY(-1px);
@@ -164,6 +166,54 @@ button {
 
 .btn-exportar:hover {
     background: var(--cor-primaria-hover);
+}
+
+.btn-carregar-planilha {
+    background: rgba(21, 156, 82, 0.18);
+    border-color: rgba(46, 229, 124, 0.35);
+}
+
+.btn-carregar-planilha:hover {
+    background: rgba(21, 156, 82, 0.28);
+    border-color: rgba(46, 229, 124, 0.65);
+}
+
+.btn-carregar-planilha:disabled {
+    cursor: wait;
+    opacity: 0.65;
+    transform: none;
+}
+
+.status-importacao {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-top: 12px;
+    padding: 11px 14px;
+
+    background: rgba(22, 131, 255, 0.09);
+    border: 1px solid rgba(22, 131, 255, 0.25);
+    border-radius: 9px;
+
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+}
+
+.status-importacao[hidden] {
+    display: none;
+}
+
+.status-importacao.sucesso {
+    background: rgba(33, 209, 111, 0.09);
+    border-color: rgba(33, 209, 111, 0.28);
+    color: #8ceeb7;
+}
+
+.status-importacao.erro {
+    background: rgba(255, 86, 77, 0.09);
+    border-color: rgba(255, 86, 77, 0.28);
+    color: #ffaaa5;
 }
 
 .financeiro-abas {
@@ -1103,6 +1153,7 @@ button {
         font-size: 21px;
     }
 
+    .btn-carregar-planilha,
     .btn-filtros,
     .btn-exportar {
         flex: 1;
@@ -1137,6 +1188,7 @@ button {
 
 @media print {
     .financeiro-acoes,
+    .status-importacao,
     .financeiro-abas,
     .painel-filtros,
     .painel-banco,
