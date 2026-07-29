@@ -799,29 +799,34 @@ function opcoesGraficoRosca(titulo) {
                                         )
                                         : 0;
 
-                                return {
-                                    text:
-                                        `${rotulo} ` +
-                                        `${percentual.toLocaleString(
-                                            "pt-BR",
-                                            {
-                                                minimumFractionDigits: 1,
-                                                maximumFractionDigits: 1
-                                            }
-                                        )}%`,
+                            return {
+    text:
+        `${rotulo} ${percentual.toLocaleString(
+            "pt-BR",
+            {
+                minimumFractionDigits:1,
+                maximumFractionDigits:1
+            }
+        )}%`,
 
-                                    fillStyle:
-                                        grafico.data.datasets[0]
-                                            .backgroundColor[indice],
+    fillStyle:
+        grafico.data.datasets[0]
+            .backgroundColor[indice],
 
-                                    strokeStyle:
-                                        grafico.data.datasets[0]
-                                            .backgroundColor[indice],
+    strokeStyle:
+        grafico.data.datasets[0]
+            .backgroundColor[indice],
 
-                                    lineWidth: 0,
-                                    hidden: false,
-                                    index: indice
-                                };
+    fontColor:"#ffffff",
+
+    color:"#ffffff",
+
+    lineWidth:0,
+
+    hidden:false,
+
+    index:indice
+};
                             }
                         );
                     }
