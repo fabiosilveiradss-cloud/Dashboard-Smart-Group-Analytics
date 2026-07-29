@@ -16,18 +16,13 @@ Tabelas Financeiras
             rgba(6, 28, 55, 0.98)
         );
 
-    border: 1px solid rgba(92, 155, 219, 0.2);
+    border: 1px solid rgba(92, 155, 219, 0.20);
     border-radius: 16px;
 
     box-shadow:
         0 14px 35px rgba(0, 0, 0, 0.18),
         inset 0 1px 0 rgba(255, 255, 255, 0.025);
 }
-
-
-/* ======================================================
-   CABEÇALHO DA TABELA
-   ====================================================== */
 
 .card-tabela-atrasos .card-grafico-header {
     display: flex;
@@ -39,13 +34,7 @@ Tabelas Financeiras
     padding: 18px 20px;
 
     background: rgba(9, 37, 70, 0.65);
-
-    border-bottom:
-        1px solid rgba(109, 168, 226, 0.14);
-}
-
-.card-tabela-atrasos .card-grafico-header > div:first-child {
-    min-width: 0;
+    border-bottom: 1px solid rgba(109, 168, 226, 0.14);
 }
 
 .card-tabela-atrasos .card-grafico-header h3 {
@@ -56,7 +45,7 @@ Tabelas Financeiras
     margin: 0;
 
     color: #ffffff;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
 }
 
@@ -84,14 +73,8 @@ Tabelas Financeiras
     margin: 6px 0 0 44px;
 
     color: #91abc9;
-    font-size: 11px;
-    line-height: 1.45;
+    font-size: 10px;
 }
-
-
-/* ======================================================
-   CONTADOR
-   ====================================================== */
 
 .contador-atrasos {
     display: inline-flex;
@@ -103,64 +86,28 @@ Tabelas Financeiras
     height: 30px;
     padding: 0 12px;
 
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 81, 73, 0.22),
-            rgba(255, 81, 73, 0.1)
-        );
-
+    background: rgba(255, 81, 73, 0.16);
     border: 1px solid rgba(255, 102, 94, 0.32);
     border-radius: 999px;
 
     color: #ff827c;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
-
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
-
-
-/* ======================================================
-   ÁREA DA TABELA
-   ====================================================== */
 
 .tabela-responsiva {
     width: 100%;
     overflow-x: auto;
-    scrollbar-width: thin;
-    scrollbar-color:
-        rgba(83, 146, 209, 0.45)
-        rgba(6, 28, 55, 0.45);
 }
-
-.tabela-responsiva::-webkit-scrollbar {
-    height: 7px;
-}
-
-.tabela-responsiva::-webkit-scrollbar-track {
-    background: rgba(6, 28, 55, 0.45);
-}
-
-.tabela-responsiva::-webkit-scrollbar-thumb {
-    background: rgba(83, 146, 209, 0.45);
-    border-radius: 999px;
-}
-
-
-/* ======================================================
-   TABELA
-   ====================================================== */
 
 .tabela-atrasos {
     width: 100%;
-    min-width: 900px;
+    min-width: 930px;
 
     border-collapse: separate;
     border-spacing: 0;
 
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .tabela-atrasos thead {
@@ -170,16 +117,12 @@ Tabelas Financeiras
 .tabela-atrasos th {
     padding: 12px 15px;
 
-    border-bottom:
-        1px solid rgba(113, 170, 225, 0.16);
+    border-bottom: 1px solid rgba(113, 170, 225, 0.16);
 
     color: #8eabc9;
-
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 0.07em;
-    line-height: 1.3;
-
     text-align: left;
     text-transform: uppercase;
     white-space: nowrap;
@@ -188,86 +131,59 @@ Tabelas Financeiras
 .tabela-atrasos td {
     padding: 11px 15px;
 
-    border-bottom:
-        1px solid rgba(255, 255, 255, 0.055);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
 
     color: #d8e7f7;
-
-    font-size: 11px;
-    line-height: 1.35;
-
+    font-size: 10px;
     text-align: left;
     white-space: nowrap;
-
-    transition:
-        background 0.18s ease,
-        color 0.18s ease;
-}
-
-.tabela-atrasos tbody tr {
-    transition:
-        background 0.18s ease,
-        transform 0.18s ease;
 }
 
 .tabela-atrasos tbody tr:nth-child(even) {
-    background: rgba(20, 62, 103, 0.13);
+    background: rgba(20, 62, 103, 0.15);
 }
 
 .tabela-atrasos tbody tr:hover {
-    background: rgba(26, 113, 201, 0.13);
+    background: rgba(26, 113, 201, 0.14);
 }
 
 .tabela-atrasos tbody tr:last-child td {
     border-bottom: none;
 }
 
-
-/* Cliente */
-
 .tabela-atrasos th:first-child,
 .tabela-atrasos td:first-child {
-    min-width: 235px;
+    min-width: 240px;
 }
 
 .tabela-atrasos td:first-child {
     color: #ffffff;
-    font-weight: 600;
+    font-weight: 650;
 }
-
-
-/* Documento */
-
-.tabela-atrasos td:nth-child(2) {
-    color: #a9c8e7;
-    font-weight: 600;
-}
-
-
-/* Dias em atraso */
 
 .tabela-atrasos th:nth-child(4),
 .tabela-atrasos td:nth-child(4) {
     text-align: center;
 }
 
-
-/* Valor */
-
 .tabela-atrasos th:nth-child(5),
 .tabela-atrasos td:nth-child(5) {
     text-align: right;
 }
 
-.tabela-atrasos td:nth-child(5) {
-    color: #ffffff;
-    font-weight: 700;
+.valor-financeiro {
+    color: #72e6ad !important;
+    font-weight: 750;
 }
 
+.banco-tabela {
+    color: #72b8ff !important;
+}
 
-/* ======================================================
-   ETIQUETA DE DIAS EM ATRASO
-   ====================================================== */
+.representante-tabela {
+    color: #c7d6e7 !important;
+    font-weight: 600;
+}
 
 .dias-atraso {
     display: inline-flex;
@@ -283,31 +199,18 @@ Tabelas Financeiras
     border-radius: 999px;
 
     color: #ff7770;
-
     font-size: 10px;
     font-weight: 800;
 }
-
-
-/* ======================================================
-   TABELA VAZIA
-   ====================================================== */
 
 .tabela-vazia {
     padding: 38px 20px !important;
 
     color: #8ca7c5 !important;
-
-    font-size: 12px !important;
+    font-size: 11px !important;
     font-weight: 400 !important;
-
     text-align: center !important;
 }
-
-
-/* ======================================================
-   RESPONSIVIDADE
-   ====================================================== */
 
 @media (max-width: 900px) {
     .card-tabela-atrasos .card-grafico-header {
@@ -318,12 +221,6 @@ Tabelas Financeiras
     .card-tabela-atrasos .card-grafico-header p {
         margin-left: 0;
     }
-
-    .tabela-atrasos th,
-    .tabela-atrasos td {
-        padding-right: 12px;
-        padding-left: 12px;
-    }
 }
 
 @media (max-width: 600px) {
@@ -333,20 +230,5 @@ Tabelas Financeiras
 
     .card-tabela-atrasos .card-grafico-header {
         padding: 14px;
-    }
-
-    .card-tabela-atrasos .card-grafico-header h3 {
-        font-size: 14px;
-    }
-
-    .card-tabela-atrasos .card-grafico-header h3::before {
-        width: 31px;
-        height: 31px;
-    }
-
-    .contador-atrasos {
-        min-width: 34px;
-        height: 27px;
-        padding: 0 9px;
     }
 }
