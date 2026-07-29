@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -328,8 +327,7 @@ width:280px;
 
 <script>
 
-console.log('VERSAO_JSON_SEM_LOCALSTORAGE_06_07_2135');
-
+console.log('VERSAO_JSON_CACHE_ESTAVEL_29_07_2026');
 
 let dados = [];
 let filtrados = [];
@@ -337,7 +335,6 @@ let paginaProdutos = 1;
 let produtosAgrupadosGlobal = {};
 
 const PRODUTOS_POR_PAGINA = 100;
-  
 
 let produtoSelecionado = '';
 let produtoDetalheHTML = '';
@@ -345,8 +342,25 @@ let produtoDetalheHTML = '';
 let clientesSelecionados = [];
 let representantesSelecionados = [];
 
+/* =========================================================
+   CARREGAMENTO ESTÁVEL DOS DADOS
+========================================================= */
+
+const URL_DADOS =
+  'https://script.google.com/macros/s/AKfycbx6qiKN8B72HDasjWiyd8NMluboduWGGUQToCgHmVhCOtsZKausC6-JvXr-yvtQuVGX/exec';
+
+const CHAVE_CACHE_DADOS = 'smartgroup_dashboard_vendas_dados_v1';
+const CHAVE_CACHE_DATA = 'smartgroup_dashboard_vendas_data_v1';
+
+const TEMPO_CACHE_ATUAL = 20 * 60 * 1000;   // 20 minutos
+const TEMPO_LIMITE_JSONP = 120 * 1000;      // 120 segundos
+
+let carregamentoEmAndamento = false;
+let ultimaAtualizacaoServidor = 0;
+
 function ehMobile(){
-  return window.innerWidth <= 900 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  return window.innerWidth <= 900 ||
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 }
 
 function prepararFiltrosDepoisDeCarregar(){
@@ -358,10 +372,10 @@ function prepararFiltrosDepoisDeCarregar(){
     representantesSelecionados = [];
 
     document.getElementById('clientesMulti').innerHTML =
-    '<p style="padding:10px;margin:0;">Filtro de clientes será carregado ao abrir.</p>';
+      '<p style="padding:10px;margin:0;">Filtro de clientes será carregado ao abrir.</p>';
 
     document.getElementById('representantesMulti').innerHTML =
-    '<p style="padding:10px;margin:0;">Filtro de representantes será carregado ao abrir.</p>';
+      '<p style="padding:10px;margin:0;">Filtro de representantes será carregado ao abrir.</p>';
   }else{
     popularClientesMulti();
     popularRepresentantesMulti();
@@ -370,104 +384,268 @@ function prepararFiltrosDepoisDeCarregar(){
   aplicarFiltros();
 }
 
-function carregarJSONP(url){
+function dadosValidos(lista){
+  return Array.isArray(lista) &&
+    lista.length > 0 &&
+    lista.some(item =>
+      item &&
+      typeof item === 'object' &&
+      item['Razão social']
+    );
+}
 
+function salvarCache(lista){
+  if(!dadosValidos(lista)){
+    return;
+  }
+
+  try{
+    localStorage.setItem(
+      CHAVE_CACHE_DADOS,
+      JSON.stringify(lista)
+    );
+
+    localStorage.setItem(
+      CHAVE_CACHE_DATA,
+      String(Date.now())
+    );
+  }catch(erro){
+    console.warn(
+      'Não foi possível salvar o cache local:',
+      erro
+    );
+  }
+}
+
+function carregarCache(){
+  try{
+    const texto =
+      localStorage.getItem(CHAVE_CACHE_DADOS);
+
+    const dataCache =
+      Number(
+        localStorage.getItem(CHAVE_CACHE_DATA) || 0
+      );
+
+    if(!texto){
+      return null;
+    }
+
+    const lista = JSON.parse(texto);
+
+    if(!dadosValidos(lista)){
+      localStorage.removeItem(CHAVE_CACHE_DADOS);
+      localStorage.removeItem(CHAVE_CACHE_DATA);
+      return null;
+    }
+
+    return {
+      dados: lista,
+      data: dataCache
+    };
+
+  }catch(erro){
+    console.warn(
+      'Cache local inválido. Ele será ignorado:',
+      erro
+    );
+
+    localStorage.removeItem(CHAVE_CACHE_DADOS);
+    localStorage.removeItem(CHAVE_CACHE_DATA);
+
+    return null;
+  }
+}
+
+function carregarJSONP(url){
   return new Promise((resolve, reject) => {
 
     const callbackName =
-      'callbackDashboard_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+      'callbackDashboard_' +
+      Date.now() +
+      '_' +
+      Math.floor(Math.random() * 100000);
 
     const script =
       document.createElement('script');
 
-    const tempoLimite = setTimeout(() => {
+    let finalizado = false;
 
-      delete window[callbackName];
-
-      if(script && script.parentNode){
+    function limpar(){
+      if(script.parentNode){
         script.parentNode.removeChild(script);
       }
 
-      reject('Tempo limite ao carregar JSONP');
+      try{
+        delete window[callbackName];
+      }catch(_){
+        window[callbackName] = undefined;
+      }
+    }
 
-    }, 120000);
+    const tempoLimite = setTimeout(() => {
+      if(finalizado){
+        return;
+      }
+
+      finalizado = true;
+      limpar();
+      reject(new Error('Tempo limite ao carregar os dados'));
+    }, TEMPO_LIMITE_JSONP);
 
     window[callbackName] = function(dadosRecebidos){
-
-      clearTimeout(tempoLimite);
-
-      resolve(dadosRecebidos);
-
-      delete window[callbackName];
-
-      if(script && script.parentNode){
-        script.parentNode.removeChild(script);
+      if(finalizado){
+        return;
       }
 
+      finalizado = true;
+      clearTimeout(tempoLimite);
+      limpar();
+      resolve(dadosRecebidos);
     };
 
     script.async = true;
 
     script.src =
-      url + '?callback=' + callbackName + '&t=' + Date.now();
+      url +
+      '?callback=' +
+      encodeURIComponent(callbackName) +
+      '&t=' +
+      Date.now();
 
     script.onerror = function(){
-
-      clearTimeout(tempoLimite);
-
-      delete window[callbackName];
-
-      if(script && script.parentNode){
-        script.parentNode.removeChild(script);
+      if(finalizado){
+        return;
       }
 
-      reject('Erro JSONP');
-
+      finalizado = true;
+      clearTimeout(tempoLimite);
+      limpar();
+      reject(new Error('Erro JSONP'));
     };
 
     document.body.appendChild(script);
-
   });
-
-}
-  
-async function carregarAutomatico(){
-
-const url =
-'https://script.google.com/macros/s/AKfycbx6qiKN8B72HDasjWiyd8NMluboduWGGUQToCgHmVhCOtsZKausC6-JvXr-yvtQuVGX/exec';
-
-try{
-
-dados = await carregarJSONP(url);
-
-prepararFiltrosDepoisDeCarregar();
-
-console.log('Dados carregados do JSON:', dados.length);
-
-}catch(e){
-
-console.error('Erro ao carregar JSON:', e);
-
 }
 
+async function carregarAutomatico(opcoes = {}){
+  const silencioso = opcoes.silencioso === true;
+
+  if(carregamentoEmAndamento){
+    console.log(
+      'Uma atualização já está em andamento. Nova chamada bloqueada.'
+    );
+    return false;
+  }
+
+  carregamentoEmAndamento = true;
+
+  try{
+    const recebidos =
+      await carregarJSONP(URL_DADOS);
+
+    if(!dadosValidos(recebidos)){
+      throw new Error(
+        'O servidor retornou uma lista vazia ou inválida'
+      );
+    }
+
+    dados = recebidos;
+    ultimaAtualizacaoServidor = Date.now();
+
+    salvarCache(dados);
+    prepararFiltrosDepoisDeCarregar();
+
+    console.log(
+      'Dados carregados do servidor:',
+      dados.length
+    );
+
+    return true;
+
+  }catch(erro){
+    if(!silencioso){
+      console.error(
+        'Erro ao atualizar os dados:',
+        erro
+      );
+    }else{
+      console.warn(
+        'Atualização em segundo plano não concluída:',
+        erro
+      );
+    }
+
+    return false;
+
+  }finally{
+    carregamentoEmAndamento = false;
+  }
 }
 
-async function atualizarServidorEmSegundoPlano(){
+async function iniciarDashboard(){
+  const cache = carregarCache();
 
-carregarAutomatico();
+  if(cache){
+    dados = cache.dados;
+    prepararFiltrosDepoisDeCarregar();
 
+    console.log(
+      'Dashboard aberto pelo cache:',
+      dados.length,
+      'registros'
+    );
+
+    const idadeCache =
+      Date.now() - cache.data;
+
+    if(idadeCache < TEMPO_CACHE_ATUAL){
+      console.log(
+        'Cache ainda atualizado. Consulta ao servidor adiada.'
+      );
+      return;
+    }
+
+    setTimeout(() => {
+      carregarAutomatico({
+        silencioso: true
+      });
+    }, 1500);
+
+    return;
+  }
+
+  console.log(
+    'Sem cache disponível. Buscando dados no servidor.'
+  );
+
+  await carregarAutomatico();
 }
 
+function atualizarServidorEmSegundoPlano(){
+  return carregarAutomatico({
+    silencioso: true
+  });
+}
+
+/*
+  Atualiza somente a cada 20 minutos.
+  A trava carregamentoEmAndamento impede solicitações simultâneas.
+*/
 setInterval(
-carregarAutomatico,
-20 * 60 * 1000
+  atualizarServidorEmSegundoPlano,
+  20 * 60 * 1000
 );
-  
-document.getElementById('csvFile').addEventListener('change', carregar);
+
+document
+  .getElementById('csvFile')
+  .addEventListener('change', carregar);
+
 window.addEventListener(
-'load',
-carregarAutomatico
+  'load',
+  iniciarDashboard
 );
+
 document.getElementById('ufFiltro')
 .addEventListener('change', ()=>{
 aplicarFiltros();
