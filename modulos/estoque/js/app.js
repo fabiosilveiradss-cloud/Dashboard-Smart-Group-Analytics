@@ -21,111 +21,237 @@ console.log("APP ESTOQUE INICIOU");
 
 
 //-----------------------------------------------------
-// CARREGAMENTO AUTOMÁTICO VIA JSONP
+// CARREGAMENTO ESTÁVEL: CACHE + RETENTATIVAS + TRAVA
 //-----------------------------------------------------
 
-function carregarEstoqueAutomaticamente() {
+const CHAVE_CACHE_ESTOQUE = "smartgroup_estoque_dados_v2";
+const CHAVE_CACHE_META_ESTOQUE = "smartgroup_estoque_meta_v2";
+const TEMPO_CACHE_ESTOQUE = 20 * 60 * 1000;
+const TEMPO_LIMITE_ESTOQUE = 45000;
+const MAX_TENTATIVAS_ESTOQUE = 3;
 
-    atualizarTextoCarregamento(
-        "⏳ Carregando dados do estoque..."
-    );
+let carregamentoEstoqueEmAndamento = false;
 
-    const nomeCallback =
-        "receberDadosEstoque_" + Date.now();
+function salvarCacheEstoque(resultado) {
 
-    const script =
-        document.createElement("script");
+    if (!resultado || !Array.isArray(resultado.dados) || resultado.dados.length === 0) {
+        return;
+    }
 
-    const timeout = setTimeout(function () {
-
-        removerScriptJsonp(script, nomeCallback);
-
-        mostrarErroCarregamento(
-            "Tempo limite excedido ao carregar o estoque."
+    try {
+        localStorage.setItem(
+            CHAVE_CACHE_ESTOQUE,
+            JSON.stringify(resultado.dados)
         );
 
-    }, 30000);
-
-
-    window[nomeCallback] = function (resultado) {
-
-        clearTimeout(timeout);
-
-        removerScriptJsonp(
-            script,
-            nomeCallback
+        localStorage.setItem(
+            CHAVE_CACHE_META_ESTOQUE,
+            JSON.stringify({
+                salvoEm: Date.now(),
+                atualizadoEmISO: resultado.atualizadoEmISO || "",
+                atualizadoEm: resultado.atualizadoEm || "",
+                arquivoOrigem: resultado.arquivoOrigem || ""
+            })
         );
-
-        try {
-
-            if (
-                !resultado ||
-                !Array.isArray(resultado.dados)
-            ) {
-
-                throw new Error(
-                    "A API não retornou dados válidos."
-                );
-            }
-
-            prepararDadosEstoque(
-                resultado.dados
-            );
-
-            atualizarStatusRelatorio(
-                resultado.atualizadoEmISO,
-                resultado.atualizadoEm
-            );
-
-            console.log(
-                "Dados do estoque carregados:",
-                resultado.dados.length
-            );
-
-            console.log(
-                "Arquivo de origem:",
-                resultado.arquivoOrigem
-            );
-
-        } catch (erro) {
-
-            console.error(
-                "Erro ao preparar o estoque:",
-                erro
-            );
-
-            mostrarErroCarregamento(
-                erro.message
-            );
-        }
-    };
-
-
-    script.onerror = function () {
-
-        clearTimeout(timeout);
-
-        removerScriptJsonp(
-            script,
-            nomeCallback
-        );
-
-        mostrarErroCarregamento(
-            "Não foi possível acessar a API de estoque."
-        );
-    };
-
-
-    script.src =
-        URL_API_ESTOQUE +
-        "?callback=" +
-        encodeURIComponent(nomeCallback) +
-        "&t=" +
-        Date.now();
-
-    document.body.appendChild(script);
+    } catch (erro) {
+        console.warn("Não foi possível salvar o cache do estoque:", erro);
+    }
 }
 
+function carregarCacheEstoque() {
+
+    try {
+        const textoDados = localStorage.getItem(CHAVE_CACHE_ESTOQUE);
+        const textoMeta = localStorage.getItem(CHAVE_CACHE_META_ESTOQUE);
+
+        if (!textoDados) {
+            return null;
+        }
+
+        const dados = JSON.parse(textoDados);
+        const meta = textoMeta ? JSON.parse(textoMeta) : {};
+
+        if (!Array.isArray(dados) || dados.length === 0) {
+            throw new Error("Cache vazio ou inválido");
+        }
+
+        return { dados, meta };
+
+    } catch (erro) {
+        console.warn("Cache do estoque inválido. Será apagado:", erro);
+        localStorage.removeItem(CHAVE_CACHE_ESTOQUE);
+        localStorage.removeItem(CHAVE_CACHE_META_ESTOQUE);
+        return null;
+    }
+}
+
+function esperarEstoque(ms) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, ms);
+    });
+}
+
+function carregarEstoqueJsonpUmaVez() {
+
+    return new Promise(function (resolve, reject) {
+
+        const nomeCallback =
+            "receberDadosEstoque_" +
+            Date.now() + "_" +
+            Math.floor(Math.random() * 100000);
+
+        const script = document.createElement("script");
+        let finalizado = false;
+
+        function finalizar() {
+            removerScriptJsonp(script, nomeCallback);
+        }
+
+        const timeout = setTimeout(function () {
+            if (finalizado) return;
+            finalizado = true;
+            finalizar();
+            reject(new Error("Tempo limite ao acessar o estoque"));
+        }, TEMPO_LIMITE_ESTOQUE);
+
+        window[nomeCallback] = function (resultado) {
+            if (finalizado) return;
+            finalizado = true;
+            clearTimeout(timeout);
+            finalizar();
+            resolve(resultado);
+        };
+
+        script.async = true;
+
+        script.onerror = function () {
+            if (finalizado) return;
+            finalizado = true;
+            clearTimeout(timeout);
+            finalizar();
+            reject(new Error("Falha de conexão com a API de estoque"));
+        };
+
+        script.src =
+            URL_API_ESTOQUE +
+            "?callback=" +
+            encodeURIComponent(nomeCallback) +
+            "&t=" +
+            Date.now();
+
+        document.body.appendChild(script);
+    });
+}
+
+async function buscarEstoqueComRetentativas() {
+
+    let ultimoErro = null;
+
+    for (let tentativa = 1; tentativa <= MAX_TENTATIVAS_ESTOQUE; tentativa++) {
+
+        try {
+            console.log("Tentativa de estoque:", tentativa);
+            return await carregarEstoqueJsonpUmaVez();
+        } catch (erro) {
+            ultimoErro = erro;
+            console.warn("Tentativa " + tentativa + " falhou:", erro);
+
+            if (tentativa < MAX_TENTATIVAS_ESTOQUE) {
+                await esperarEstoque(tentativa * 1500);
+            }
+        }
+    }
+
+    throw ultimoErro || new Error("Não foi possível carregar o estoque");
+}
+
+async function carregarEstoqueAutomaticamente(opcoes) {
+
+    opcoes = opcoes || {};
+    const silencioso = opcoes.silencioso === true;
+
+    if (carregamentoEstoqueEmAndamento) {
+        console.log("Uma atualização do estoque já está em andamento.");
+        return false;
+    }
+
+    carregamentoEstoqueEmAndamento = true;
+
+    if (!silencioso && dadosProdutos.length === 0) {
+        atualizarTextoCarregamento("⏳ Carregando dados do estoque...");
+    }
+
+    try {
+        const resultado = await buscarEstoqueComRetentativas();
+
+        if (!resultado || !Array.isArray(resultado.dados) || resultado.dados.length === 0) {
+            throw new Error(
+                resultado && resultado.mensagem
+                    ? resultado.mensagem
+                    : "A API não retornou dados válidos."
+            );
+        }
+
+        prepararDadosEstoque(resultado.dados);
+        salvarCacheEstoque(resultado);
+
+        atualizarStatusRelatorio(
+            resultado.atualizadoEmISO,
+            resultado.atualizadoEm
+        );
+
+        console.log("Dados do estoque carregados do servidor:", resultado.dados.length);
+        return true;
+
+    } catch (erro) {
+        console.error("Erro ao atualizar o estoque:", erro);
+
+        if (dadosProdutos.length > 0) {
+            atualizarTextoCarregamento(
+                "🟠 Usando os últimos dados salvos — atualização indisponível"
+            );
+            return false;
+        }
+
+        mostrarErroCarregamento(
+            "Não foi possível carregar o estoque. Tente novamente em alguns instantes."
+        );
+        return false;
+
+    } finally {
+        carregamentoEstoqueEmAndamento = false;
+    }
+}
+
+async function iniciarEstoque() {
+
+    const cache = carregarCacheEstoque();
+
+    if (cache) {
+        prepararDadosEstoque(cache.dados);
+
+        atualizarStatusRelatorio(
+            cache.meta.atualizadoEmISO,
+            cache.meta.atualizadoEm
+        );
+
+        console.log("Estoque aberto pelo cache:", cache.dados.length);
+
+        const idade = Date.now() - Number(cache.meta.salvoEm || 0);
+
+        if (idade < TEMPO_CACHE_ESTOQUE) {
+            return;
+        }
+
+        setTimeout(function () {
+            carregarEstoqueAutomaticamente({ silencioso: true });
+        }, 1200);
+
+        return;
+    }
+
+    await carregarEstoqueAutomaticamente();
+}
 
 //-----------------------------------------------------
 // PREPARAR OS DADOS RECEBIDOS
@@ -493,8 +619,12 @@ document
 
 document.addEventListener(
     "DOMContentLoaded",
-    carregarEstoqueAutomaticamente
+    iniciarEstoque
 );
+
+setInterval(function () {
+    carregarEstoqueAutomaticamente({ silencioso: true });
+}, 20 * 60 * 1000);
 
 console.log(
     "APP.JS DO ESTOQUE CARREGADO"
