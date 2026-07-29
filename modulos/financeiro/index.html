@@ -17,7 +17,7 @@
 
     <link
         rel="stylesheet"
-        href="financeiro.css?v=5"
+        href="financeiro.css?v=6"
     >
 </head>
 
@@ -169,158 +169,193 @@
                 <div class="pagina-cabecalho">
                     <div>
                         <h2>Visão Geral</h2>
-                        <p>
-                            Acompanhe os principais indicadores financeiros
-                            da empresa.
-                        </p>
+                        <p>Indicadores e movimentações extraídos da planilha carregada.</p>
                     </div>
+                    <span class="periodo-dashboard" id="periodoDashboard">
+                        Carregue uma planilha para visualizar os dados
+                    </span>
                 </div>
 
-                <section
-                    class="grade-kpis"
-                    aria-label="Indicadores financeiros"
-                >
-
+                <section class="grade-kpis" aria-label="Indicadores financeiros">
                     <article class="card-kpi kpi-recebido">
-
-                        <div class="kpi-icone">
-                            <i class="fa-solid fa-dollar-sign"></i>
-                        </div>
-
+                        <div class="kpi-icone"><i class="fa-solid fa-dollar-sign"></i></div>
                         <div class="kpi-conteudo">
                             <span class="kpi-titulo">Total Recebido</span>
-
-                            <strong
-                                class="kpi-valor"
-                                id="kpiTotalRecebido"
-                            >
-                                R$ 0,00
-                            </strong>
-
-                            <span class="kpi-variacao positiva">
-                                <i class="fa-solid fa-arrow-up"></i>
-                                12,5% em relação ao mês anterior
-                            </span>
+                            <strong class="kpi-valor" id="kpiTotalRecebido">R$ 0,00</strong>
+                            <span class="kpi-legenda" id="legendaTotalRecebido">Clientes pagos</span>
                         </div>
-
                     </article>
 
                     <article class="card-kpi kpi-receber">
-
-                        <div class="kpi-icone">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
-
+                        <div class="kpi-icone"><i class="fa-solid fa-calendar-days"></i></div>
                         <div class="kpi-conteudo">
                             <span class="kpi-titulo">A Receber</span>
-
-                            <strong
-                                class="kpi-valor"
-                                id="kpiAReceber"
-                            >
-                                R$ 0,00
-                            </strong>
-
-                            <span class="kpi-variacao positiva">
-                                <i class="fa-solid fa-arrow-up"></i>
-                                8,3% em relação ao mês anterior
-                            </span>
+                            <strong class="kpi-valor" id="kpiAReceber">R$ 0,00</strong>
+                            <span class="kpi-legenda" id="legendaAReceber">Títulos de clientes em aberto</span>
                         </div>
-
                     </article>
 
                     <article class="card-kpi kpi-atraso">
-
-                        <div class="kpi-icone">
-                            <i class="fa-regular fa-clock"></i>
-                        </div>
-
+                        <div class="kpi-icone"><i class="fa-regular fa-clock"></i></div>
                         <div class="kpi-conteudo">
                             <span class="kpi-titulo">Em Atraso</span>
-
-                            <strong
-                                class="kpi-valor"
-                                id="kpiEmAtraso"
-                            >
-                                R$ 0,00
-                            </strong>
-
-                            <span class="kpi-variacao negativa">
-                                <i class="fa-solid fa-arrow-up"></i>
-                                15,7% em relação ao mês anterior
-                            </span>
+                            <strong class="kpi-valor" id="kpiEmAtraso">R$ 0,00</strong>
+                            <span class="kpi-legenda" id="legendaEmAtraso">Clientes vencidos e não pagos</span>
                         </div>
-
                     </article>
 
                     <article class="card-kpi kpi-pago">
-
-                        <div class="kpi-icone">
-                            <i class="fa-solid fa-check"></i>
-                        </div>
-
+                        <div class="kpi-icone"><i class="fa-solid fa-check"></i></div>
                         <div class="kpi-conteudo">
                             <span class="kpi-titulo">Pago no Mês</span>
-
-                            <strong
-                                class="kpi-valor"
-                                id="kpiPagoMes"
-                            >
-                                R$ 0,00
-                            </strong>
-
-                            <span class="kpi-variacao positiva">
-                                <i class="fa-solid fa-arrow-up"></i>
-                                10,2% em relação ao mês anterior
-                            </span>
+                            <strong class="kpi-valor" id="kpiPagoMes">R$ 0,00</strong>
+                            <span class="kpi-legenda" id="legendaPagoMes">Pagamentos a fornecedores</span>
                         </div>
-
                     </article>
 
                     <article class="card-kpi kpi-ticket">
-
-                        <div class="kpi-icone">
-                            <i class="fa-solid fa-receipt"></i>
-                        </div>
-
+                        <div class="kpi-icone"><i class="fa-solid fa-receipt"></i></div>
                         <div class="kpi-conteudo">
                             <span class="kpi-titulo">Ticket Médio</span>
-
-                            <strong
-                                class="kpi-valor"
-                                id="kpiTicketMedio"
-                            >
-                                R$ 0,00
-                            </strong>
-
-                            <span class="kpi-variacao negativa">
-                                <i class="fa-solid fa-arrow-down"></i>
-                                2,1% em relação ao mês anterior
-                            </span>
+                            <strong class="kpi-valor" id="kpiTicketMedio">R$ 0,00</strong>
+                            <span class="kpi-legenda" id="legendaTicketMedio">Média por título recebido</span>
                         </div>
-
                     </article>
-
                 </section>
 
-                <section class="area-proxima-etapa">
-
-                    <div class="placeholder-grafico">
-
-                        <div class="placeholder-icone">
-                            <i class="fa-solid fa-chart-line"></i>
+                <section class="grade-graficos grade-graficos-principal">
+                    <article class="card-grafico card-grafico-largo">
+                        <div class="card-grafico-header">
+                            <div>
+                                <h3>Fluxo de Caixa</h3>
+                                <p>Recebimentos de clientes e pagamentos a fornecedores por mês</p>
+                            </div>
                         </div>
+                        <div class="grafico-container grafico-alto">
+                            <canvas id="graficoFluxoCaixa"></canvas>
+                        </div>
+                    </article>
 
+                    <article class="card-grafico">
+                        <div class="card-grafico-header">
+                            <div>
+                                <h3>Recebimentos por Dia</h3>
+                                <p>Valores recebidos conforme a data de pagamento</p>
+                            </div>
+                        </div>
+                        <div class="grafico-container grafico-alto">
+                            <canvas id="graficoRecebimentosDia"></canvas>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="grade-graficos grade-graficos-secundaria">
+                    <article class="card-grafico">
+                        <div class="card-grafico-header">
+                            <div>
+                                <h3>Top 10 Clientes</h3>
+                                <p>Por valor efetivamente recebido</p>
+                            </div>
+                        </div>
+                        <div class="grafico-container">
+                            <canvas id="graficoTopClientes"></canvas>
+                        </div>
+                    </article>
+
+                    <article class="card-grafico">
+                        <div class="card-grafico-header">
+                            <div>
+                                <h3>Recebimentos por Banco</h3>
+                                <p>Somente registros com banco informado</p>
+                            </div>
+                        </div>
+                        <div class="grafico-container">
+                            <canvas id="graficoRecebimentosBanco"></canvas>
+                        </div>
+                    </article>
+
+                    <article class="card-grafico">
+                        <div class="card-grafico-header">
+                            <div>
+                                <h3>Recebimentos por Plano Financeiro</h3>
+                                <p>Agrupados pela conta de planejamento</p>
+                            </div>
+                        </div>
+                        <div class="grafico-container">
+                            <canvas id="graficoPlanoFinanceiro"></canvas>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="grade-graficos grade-graficos-terciaria">
+                    <article class="card-grafico">
+                        <div class="card-grafico-header">
+                            <div>
+                                <h3>Representantes</h3>
+                                <p>Recebimentos por representante</p>
+                            </div>
+                        </div>
+                        <div class="grafico-container">
+                            <canvas id="graficoRepresentantes"></canvas>
+                        </div>
+                    </article>
+
+                    <article class="card-resumo">
+                        <span>Prazo Médio de Recebimento</span>
+                        <strong id="prazoMedioRecebimento">0 dias</strong>
+                        <small>Da movimentação até o pagamento</small>
+                    </article>
+
+                    <article class="card-resumo">
+                        <span>Inadimplência</span>
+                        <strong id="taxaInadimplencia">0,0%</strong>
+                        <small>Valor vencido sobre a carteira de clientes</small>
+                    </article>
+
+                    <article class="card-grafico">
+                        <div class="card-grafico-header">
+                            <div>
+                                <h3>Situação das Contas a Receber</h3>
+                                <p>Pago, em aberto e em atraso</p>
+                            </div>
+                        </div>
+                        <div class="grafico-container">
+                            <canvas id="graficoSituacaoReceber"></canvas>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="card-tabela-atrasos">
+                    <div class="card-grafico-header">
                         <div>
-                            <h3>Gráficos financeiros</h3>
-                            <p>
-                                O fluxo de caixa e os recebimentos diários
-                                serão adicionados na próxima etapa.
-                            </p>
+                            <h3>Contas em Atraso</h3>
+                            <p>Clientes com títulos vencidos e sem pagamento</p>
                         </div>
-
+                        <span class="contador-atrasos" id="contadorAtrasos">0</span>
                     </div>
 
+                    <div class="tabela-responsiva">
+                        <table class="tabela-atrasos">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Documento</th>
+                                    <th>Vencimento</th>
+                                    <th>Dias em atraso</th>
+                                    <th>Valor</th>
+                                    <th>Banco</th>
+                                    <th>Representante</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoTabelaAtrasos">
+                                <tr>
+                                    <td colspan="7" class="tabela-vazia">
+                                        Carregue uma planilha para visualizar.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
 
             </section>
@@ -663,11 +698,20 @@
 
     </aside>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
     <script
         src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"
     ></script>
 
-    <script src="financeiro.js?v=5"></script>
+    <script src="js/utilitarios-financeiros.js?v=7"></script>
+    <script src="js/processador-financeiro.js?v=7"></script>
+    <script src="js/indicadores-financeiros.js?v=7"></script>
+    <script src="js/graficos-financeiros.js?v=7"></script>
+    <script src="js/bancos-financeiros.js?v=7"></script>
+    <script src="js/filtros-financeiro.js?v=7"></script>
+    <script src="js/importacao-planilha.js?v=7"></script>
+    <script src="financeiro.js?v=7"></script>
 
 </body>
 </html>
