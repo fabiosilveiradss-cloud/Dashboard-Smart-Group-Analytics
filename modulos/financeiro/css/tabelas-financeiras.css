@@ -1,5 +1,352 @@
 /*
- * Estilos específicos adicionais das tabelas financeiras.
- * A tabela de atrasos está temporariamente em graficos-financeiros.css.
- */
+==========================================================
+SMART GROUP ANALYTICS
+Tabelas Financeiras
+==========================================================
+*/
 
+.card-tabela-atrasos {
+    margin-top: 18px;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12, 42, 79, 0.96),
+            rgba(6, 28, 55, 0.98)
+        );
+
+    border: 1px solid rgba(92, 155, 219, 0.2);
+    border-radius: 16px;
+
+    box-shadow:
+        0 14px 35px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+
+/* ======================================================
+   CABEÇALHO DA TABELA
+   ====================================================== */
+
+.card-tabela-atrasos .card-grafico-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+
+    margin: 0;
+    padding: 18px 20px;
+
+    background: rgba(9, 37, 70, 0.65);
+
+    border-bottom:
+        1px solid rgba(109, 168, 226, 0.14);
+}
+
+.card-tabela-atrasos .card-grafico-header > div:first-child {
+    min-width: 0;
+}
+
+.card-tabela-atrasos .card-grafico-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin: 0;
+
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.card-tabela-atrasos .card-grafico-header h3::before {
+    content: "\f071";
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    background: rgba(255, 91, 82, 0.14);
+    border: 1px solid rgba(255, 91, 82, 0.24);
+    border-radius: 10px;
+
+    color: #ff6860;
+    font-family: "Font Awesome 6 Free";
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.card-tabela-atrasos .card-grafico-header p {
+    margin: 6px 0 0 44px;
+
+    color: #91abc9;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+
+/* ======================================================
+   CONTADOR
+   ====================================================== */
+
+.contador-atrasos {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    min-width: 38px;
+    height: 30px;
+    padding: 0 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 81, 73, 0.22),
+            rgba(255, 81, 73, 0.1)
+        );
+
+    border: 1px solid rgba(255, 102, 94, 0.32);
+    border-radius: 999px;
+
+    color: #ff827c;
+    font-size: 12px;
+    font-weight: 800;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+
+/* ======================================================
+   ÁREA DA TABELA
+   ====================================================== */
+
+.tabela-responsiva {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color:
+        rgba(83, 146, 209, 0.45)
+        rgba(6, 28, 55, 0.45);
+}
+
+.tabela-responsiva::-webkit-scrollbar {
+    height: 7px;
+}
+
+.tabela-responsiva::-webkit-scrollbar-track {
+    background: rgba(6, 28, 55, 0.45);
+}
+
+.tabela-responsiva::-webkit-scrollbar-thumb {
+    background: rgba(83, 146, 209, 0.45);
+    border-radius: 999px;
+}
+
+
+/* ======================================================
+   TABELA
+   ====================================================== */
+
+.tabela-atrasos {
+    width: 100%;
+    min-width: 900px;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    font-size: 11px;
+}
+
+.tabela-atrasos thead {
+    background: rgba(5, 27, 53, 0.76);
+}
+
+.tabela-atrasos th {
+    padding: 12px 15px;
+
+    border-bottom:
+        1px solid rgba(113, 170, 225, 0.16);
+
+    color: #8eabc9;
+
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    line-height: 1.3;
+
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tabela-atrasos td {
+    padding: 11px 15px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.055);
+
+    color: #d8e7f7;
+
+    font-size: 11px;
+    line-height: 1.35;
+
+    text-align: left;
+    white-space: nowrap;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease;
+}
+
+.tabela-atrasos tbody tr {
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease;
+}
+
+.tabela-atrasos tbody tr:nth-child(even) {
+    background: rgba(20, 62, 103, 0.13);
+}
+
+.tabela-atrasos tbody tr:hover {
+    background: rgba(26, 113, 201, 0.13);
+}
+
+.tabela-atrasos tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* Cliente */
+
+.tabela-atrasos th:first-child,
+.tabela-atrasos td:first-child {
+    min-width: 235px;
+}
+
+.tabela-atrasos td:first-child {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+
+/* Documento */
+
+.tabela-atrasos td:nth-child(2) {
+    color: #a9c8e7;
+    font-weight: 600;
+}
+
+
+/* Dias em atraso */
+
+.tabela-atrasos th:nth-child(4),
+.tabela-atrasos td:nth-child(4) {
+    text-align: center;
+}
+
+
+/* Valor */
+
+.tabela-atrasos th:nth-child(5),
+.tabela-atrasos td:nth-child(5) {
+    text-align: right;
+}
+
+.tabela-atrasos td:nth-child(5) {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+
+/* ======================================================
+   ETIQUETA DE DIAS EM ATRASO
+   ====================================================== */
+
+.dias-atraso {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 35px;
+    height: 25px;
+    padding: 0 9px;
+
+    background: rgba(255, 84, 76, 0.14);
+    border: 1px solid rgba(255, 84, 76, 0.24);
+    border-radius: 999px;
+
+    color: #ff7770;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* ======================================================
+   TABELA VAZIA
+   ====================================================== */
+
+.tabela-vazia {
+    padding: 38px 20px !important;
+
+    color: #8ca7c5 !important;
+
+    font-size: 12px !important;
+    font-weight: 400 !important;
+
+    text-align: center !important;
+}
+
+
+/* ======================================================
+   RESPONSIVIDADE
+   ====================================================== */
+
+@media (max-width: 900px) {
+    .card-tabela-atrasos .card-grafico-header {
+        align-items: flex-start;
+        padding: 16px;
+    }
+
+    .card-tabela-atrasos .card-grafico-header p {
+        margin-left: 0;
+    }
+
+    .tabela-atrasos th,
+    .tabela-atrasos td {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .card-tabela-atrasos {
+        border-radius: 12px;
+    }
+
+    .card-tabela-atrasos .card-grafico-header {
+        padding: 14px;
+    }
+
+    .card-tabela-atrasos .card-grafico-header h3 {
+        font-size: 14px;
+    }
+
+    .card-tabela-atrasos .card-grafico-header h3::before {
+        width: 31px;
+        height: 31px;
+    }
+
+    .contador-atrasos {
+        min-width: 34px;
+        height: 27px;
+        padding: 0 9px;
+    }
+}
