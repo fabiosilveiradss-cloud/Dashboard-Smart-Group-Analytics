@@ -1,1 +1,211 @@
+/* =========================================================
+   VISÃO GERAL — GRÁFICOS E TABELA
+   ========================================================= */
 
+.periodo-dashboard {
+    padding: 8px 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.kpi-legenda {
+    display: block;
+    margin-top: 8px;
+    color: var(--cor-texto-secundario);
+    font-size: 11px;
+}
+
+.grade-graficos {
+    display: grid;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.grade-graficos-principal {
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr);
+}
+
+.grade-graficos-secundaria {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grade-graficos-terciaria {
+    grid-template-columns: minmax(300px, 1.4fr) minmax(170px, 0.55fr)
+        minmax(170px, 0.55fr) minmax(300px, 1.1fr);
+    align-items: stretch;
+}
+
+.card-grafico,
+.card-resumo,
+.card-tabela-atrasos {
+    min-width: 0;
+    background: rgba(8, 29, 57, 0.76);
+    border: 1px solid var(--cor-borda);
+    border-radius: 13px;
+    box-shadow: var(--sombra);
+}
+
+.card-grafico {
+    padding: 16px;
+}
+
+.card-grafico-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.card-grafico-header h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.card-grafico-header p {
+    margin: 5px 0 0;
+    color: var(--cor-texto-secundario);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.grafico-container {
+    position: relative;
+    width: 100%;
+    height: 250px;
+}
+
+.grafico-alto {
+    height: 290px;
+}
+
+.card-resumo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+}
+
+.card-resumo span {
+    color: var(--cor-texto-secundario);
+    font-size: 12px;
+}
+
+.card-resumo strong {
+    margin: 12px 0 8px;
+    color: #52a3ff;
+    font-size: 30px;
+}
+
+.card-resumo:nth-of-type(3) strong {
+    color: #ff665c;
+}
+
+.card-resumo small {
+    color: var(--cor-texto-secundario);
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.card-tabela-atrasos {
+    margin-top: 16px;
+    padding: 16px;
+}
+
+.contador-atrasos {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 999px;
+    background: rgba(255, 77, 77, 0.18);
+    color: #ff7770;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.tabela-responsiva {
+    overflow-x: auto;
+}
+
+.tabela-atrasos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.tabela-atrasos th,
+.tabela-atrasos td {
+    padding: 10px 11px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.tabela-atrasos th {
+    color: var(--cor-texto-secundario);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.tabela-atrasos tbody tr:hover {
+    background: rgba(22, 131, 255, 0.06);
+}
+
+.dias-atraso {
+    display: inline-flex;
+    min-width: 34px;
+    justify-content: center;
+    padding: 4px 7px;
+    border-radius: 999px;
+    background: rgba(255, 77, 77, 0.14);
+    color: #ff7770;
+    font-weight: 700;
+}
+
+.tabela-vazia {
+    padding: 30px !important;
+    color: var(--cor-texto-secundario);
+    text-align: center !important;
+}
+
+@media (max-width: 1250px) {
+    .grade-graficos-secundaria {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grade-graficos-terciaria {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .grade-graficos-principal,
+    .grade-graficos-secundaria,
+    .grade-graficos-terciaria {
+        grid-template-columns: 1fr;
+    }
+
+    .periodo-dashboard {
+        white-space: normal;
+    }
+}
+
+@media (max-width: 600px) {
+    .grafico-container,
+    .grafico-alto {
+        height: 240px;
+    }
+
+    .card-grafico,
+    .card-tabela-atrasos {
+        padding: 13px;
+    }
+}
