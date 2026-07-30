@@ -154,13 +154,7 @@
             <h3>Módulos disponíveis</h3>
           </div>
 
-          <div class="permissoes-grid">
-            <label><input type="checkbox" data-modulo="dashboard"> Dashboard</label>
-            <label><input type="checkbox" data-modulo="estoque"> Estoque</label>
-            <label><input type="checkbox" data-modulo="vendas"> Vendas</label>
-            <label><input type="checkbox" data-modulo="usuarios"> Usuários</label>
-            <label><input type="checkbox" data-modulo="configuracoes"> Configurações</label>
-          </div>
+          <div class="permissoes-grid" id="gradePermissoes"></div>
         </div>
 
         <footer class="modal-footer">
@@ -176,7 +170,7 @@
 
   <div class="toast" id="toast" aria-live="polite"></div>
 
-<script type="module">
+<script src="../modulos-config.js?v=1"></script>\n\n<script type="module">
 
 import { protegerModulo } from "../module-guard.js?v=2";
 
@@ -184,7 +178,7 @@ try {
 
     await protegerModulo("usuarios");
 
-    await import("./app.js?v=8");
+    await import("./app.js?v=9");
 
 } catch (erro) {
 
