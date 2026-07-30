@@ -485,49 +485,41 @@ function renderizarRecebimentosBanco(recebimentos) {
         "circle";
 
     opcoes.plugins.legend.labels.generateLabels =
-        (grafico) => {
+        () => {
             return ranking.map(
-                (item, indice) => {
-                    const imagem =
-                        criarImagemLogoBancoGrafico(
-                            item.logo,
-                            grafico
-                        );
+                (item, indice) => ({
+                    text:
+                        `${item.nome} · ` +
+                        `${formatarMoeda(
+                            item.valorRecebido
+                        )} · ` +
+                        `${item.participacao.toLocaleString(
+                            "pt-BR",
+                            {
+                                minimumFractionDigits: 1,
+                                maximumFractionDigits: 1
+                            }
+                        )}%`,
 
-                    return {
-                        text:
-                            `${item.nome} · ` +
-                            `${formatarMoeda(
-                                item.valorRecebido
-                            )} · ` +
-                            `${item.participacao.toLocaleString(
-                                "pt-BR",
-                                {
-                                    minimumFractionDigits: 1,
-                                    maximumFractionDigits: 1
-                                }
-                            )}%`,
+                    fillStyle:
+                        cores[indice],
 
-                        fillStyle:
-                            cores[indice],
+                    strokeStyle:
+                        cores[indice],
 
-                        strokeStyle:
-                            cores[indice],
+                    pointStyle:
+                        "circle",
 
-                        pointStyle:
-                            imagem || "circle",
+                    fontColor:
+                        "#ffffff",
 
-                        fontColor:
-                            "#ffffff",
+                    color:
+                        "#ffffff",
 
-                        color:
-                            "#ffffff",
-
-                        lineWidth: 0,
-                        hidden: false,
-                        index: indice
-                    };
-                }
+                    lineWidth: 0,
+                    hidden: false,
+                    index: indice
+                })
             );
         };
 
@@ -659,8 +651,7 @@ function criarImagemLogoBancoGrafico(
 }
 
 function obterLogoBancoGrafico(nomeBanco) {
-    const nome =
-        normalizarTexto(nomeBanco);
+    const nome = normalizarTextoBanco(nomeBanco);
 
     if (
         nome.includes("banco do brasil") ||
@@ -674,13 +665,15 @@ function obterLogoBancoGrafico(nomeBanco) {
     }
 
     if (
-        nome.includes("maxicredito") ||
-        nome.includes("maxi credito")
+        nome.includes("sicoob maxi credito") ||
+        nome.includes("maxi credito") ||
+        nome.includes("maxicredito")
     ) {
         return "assets/bancos/sicoob-maxicredito.png";
     }
 
     if (
+        nome.includes("sicoob vale sul") ||
         nome.includes("vale sul") ||
         nome.includes("vale do sul")
     ) {

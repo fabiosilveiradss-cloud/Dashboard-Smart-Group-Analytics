@@ -78,7 +78,9 @@ function obterIdentidadeVisualBanco(banco) {
         return {
             ...identidade,
             nome: "Sicoob",
-            sigla: "SC"
+            sigla: "SC",
+            logo:
+                "assets/bancos/sicoob-maxicredito.png"
         };
     }
 
