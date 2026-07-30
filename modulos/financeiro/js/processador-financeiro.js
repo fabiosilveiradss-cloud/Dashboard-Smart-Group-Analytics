@@ -1,117 +1,85 @@
 "use strict";
 
 
-/*
- * Resolve a instituição financeira sem misturar as duas
- * cooperativas Sicoob existentes na planilha.
- *
- * Desc. Banco costuma trazer apenas "SICOOB".
- * Desc. Local de Cobrança traz a cooperativa específica.
- */
-function resolverBancoFinanceiro(
-    bancoOriginal,
-    localCobranca
-) {
-    const banco =
-        normalizarTexto(bancoOriginal);
+function padronizarLocalCobranca(valorOriginal) {
+    const original =
+        String(valorOriginal || "").trim();
 
-    const local =
-        normalizarTexto(localCobranca);
+    const nome =
+        normalizarTexto(original);
 
-    if (
-        local.includes("sicoob maxi credito") ||
-        local.includes("maxi credito") ||
-        local.includes("maxicredito")
-    ) {
-        if (!banco || banco.includes("sicoob")) {
-            return "Sicoob MaxiCrédito";
-        }
+    if (!nome) {
+        return "Não informado";
     }
 
     if (
-        local.includes("sicoob vale sul") ||
-        local.includes("vale sul") ||
-        local.includes("vale do sul")
+        nome.includes("sicoob maxi credito") ||
+        nome.includes("maxi credito") ||
+        nome.includes("maxicredito")
     ) {
-        if (!banco || banco.includes("sicoob")) {
-            return "Sicoob Vale Sul";
-        }
+        return "Sicoob MaxiCrédito";
     }
 
     if (
-        banco === "bb" ||
-        banco.includes("banco do brasil")
+        nome.includes("sicoob vale sul") ||
+        nome.includes("vale sul") ||
+        nome.includes("vale do sul")
+    ) {
+        return "Sicoob Vale Sul";
+    }
+
+    if (
+        nome === "bb" ||
+        nome.includes("banco do brasil")
     ) {
         return "Banco do Brasil";
     }
 
-    if (banco.includes("itau")) {
+    if (nome.includes("itau")) {
         return "Itaú";
     }
 
-    if (banco.includes("sicredi")) {
+    if (nome.includes("sicredi")) {
         return "Sicredi";
     }
 
-    if (banco.includes("caixa")) {
+    if (nome.includes("caixa")) {
         return "Caixa Econômica Federal";
     }
 
-    if (banco.includes("bradesco")) {
+    if (nome.includes("bradesco")) {
         return "Bradesco";
     }
 
-    if (banco.includes("santander")) {
+    if (nome.includes("santander")) {
         return "Santander";
     }
 
-    if (banco.includes("integra")) {
-        return "INTEGRA";
+    if (nome.includes("boleto")) {
+        return "Boleto";
     }
 
-    if (banco.includes("sicoob")) {
-        return "Sicoob";
+    if (nome.includes("carteira")) {
+        return "Carteira";
     }
 
-    /*
-     * Quando Desc. Banco está vazio, utiliza o local
-     * somente se ele realmente identificar uma instituição.
-     */
-    if (!banco) {
-        if (local.includes("banco do brasil")) {
-            return "Banco do Brasil";
-        }
-
-        if (local.includes("itau")) {
-            return "Itaú";
-        }
-
-        if (local.includes("sicredi")) {
-            return "Sicredi";
-        }
-
-        if (local.includes("caixa")) {
-            return "Caixa Econômica Federal";
-        }
-
-        if (local.includes("bradesco")) {
-            return "Bradesco";
-        }
-
-        if (local.includes("santander")) {
-            return "Santander";
-        }
+    if (nome.includes("pix")) {
+        return "PIX";
     }
 
-    return String(
-        bancoOriginal ||
-        "Não informado"
-    ).trim() || "Não informado";
+    if (
+        nome.includes("cartao credito") ||
+        nome.includes("cartao de credito")
+    ) {
+        return "Cartão de Crédito";
+    }
+
+    return original;
 }
 
-function identificarBancoFinanceiro(nomeBanco) {
+function identificarLocalCobranca(nomeOriginal) {
     const nome =
-        normalizarTexto(nomeBanco);
+        normalizarTexto(nomeOriginal);
 
     if (
         nome.includes("sicoob maxi credito") ||
@@ -164,11 +132,10 @@ function identificarBancoFinanceiro(nomeBanco) {
         };
     }
 
-    /*
-     * Para bancos ainda sem imagem própria, mantém
-     * o catálogo já existente no projeto.
-     */
-    return identificarBanco(nomeBanco, "");
+    return identificarBanco(
+        nomeOriginal,
+        ""
+    );
 }
 
 /* Processamento e padronização dos lançamentos da planilha. */
@@ -287,21 +254,27 @@ function criarLancamento(linha, colunas, numeroLinha) {
         valorLiquidoPago,
         juros,
         descontos,
-        bancoOriginal:
-            String(
-                valor("banco") ||
-                ""
-            ).trim(),
-
+        /*
+         * Fonte oficial dos recebimentos por instituição:
+         * Desc. Local de Cobrança.
+         *
+         * Desc. Banco fica apenas preservada para auditoria,
+         * sem participar dos agrupamentos e cálculos.
+         */
         localCobranca:
             String(
                 valor("localCobranca") ||
                 ""
             ).trim(),
 
+        bancoOriginal:
+            String(
+                valor("banco") ||
+                ""
+            ).trim(),
+
         banco:
-            resolverBancoFinanceiro(
-                valor("banco"),
+            padronizarLocalCobranca(
                 valor("localCobranca")
             ),
 
@@ -339,7 +312,7 @@ function agruparBancosDosLancamentos(lancamentos) {
 
         const chave = normalizarTexto(item.banco);
         if (!mapa.has(chave)) {
-            const identidade = identificarBancoFinanceiro(item.banco);
+            const identidade = identificarLocalCobranca(item.banco);
             mapa.set(chave, {
                 id: identidade.id,
                 nome: item.banco,

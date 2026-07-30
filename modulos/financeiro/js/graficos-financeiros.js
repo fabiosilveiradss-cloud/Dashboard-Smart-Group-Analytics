@@ -1152,10 +1152,6 @@ function nomeBancoAmigavel(nomeOriginal) {
         return "Não informado";
     }
 
-    /*
-     * As regras específicas precisam vir antes
-     * da regra genérica do Sicoob.
-     */
     if (
         nome.includes("sicoob maxi credito") ||
         nome.includes("maxi credito") ||
@@ -1183,16 +1179,12 @@ function nomeBancoAmigavel(nomeOriginal) {
         return "Itaú";
     }
 
-    if (nome.includes("sicoob")) {
-        return "Sicoob";
-    }
-
     if (nome.includes("sicredi")) {
         return "Sicredi";
     }
 
     if (nome.includes("caixa")) {
-        return "Caixa Econômica";
+        return "Caixa Econômica Federal";
     }
 
     if (nome.includes("bradesco")) {
@@ -1203,8 +1195,23 @@ function nomeBancoAmigavel(nomeOriginal) {
         return "Santander";
     }
 
-    if (nome.includes("integra")) {
-        return "Integra";
+    if (nome.includes("boleto")) {
+        return "Boleto";
+    }
+
+    if (nome.includes("carteira")) {
+        return "Carteira";
+    }
+
+    if (nome.includes("pix")) {
+        return "PIX";
+    }
+
+    if (
+        nome.includes("cartao credito") ||
+        nome.includes("cartao de credito")
+    ) {
+        return "Cartão de Crédito";
     }
 
     return String(
