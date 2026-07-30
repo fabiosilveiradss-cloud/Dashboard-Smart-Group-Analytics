@@ -2,124 +2,6 @@
 
 /* Aba Bancos e painel de detalhes. */
 
-/*
- * Identidade visual dos bancos.
- * Os caminhos são relativos ao index.html do Financeiro.
- */
-function obterIdentidadeVisualBanco(banco) {
-    const nomeOriginal =
-        banco?.nome ||
-        banco?.descricao ||
-        "";
-
-    const nome =
-        normalizarTexto(nomeOriginal);
-
-    const identidade = {
-        nome:
-            String(nomeOriginal || "Banco")
-                .trim(),
-        logo:
-            banco?.logo || "",
-        sigla:
-            banco?.sigla || "BK"
-    };
-
-    if (
-        nome === "bb" ||
-        nome.includes("banco do brasil")
-    ) {
-        return {
-            ...identidade,
-            nome: "Banco do Brasil",
-            sigla: "BB",
-            logo:
-                "assets/bancos/banco-do-brasil.png"
-        };
-    }
-
-    if (nome.includes("itau")) {
-        return {
-            ...identidade,
-            nome: "Itaú",
-            sigla: "IT",
-            logo:
-                "assets/bancos/itau.png"
-        };
-    }
-
-    if (
-        nome.includes("maxicredito") ||
-        nome.includes("maxi credito")
-    ) {
-        return {
-            ...identidade,
-            nome: "Sicoob MaxiCrédito",
-            sigla: "SM",
-            logo:
-                "assets/bancos/sicoob-maxicredito.png"
-        };
-    }
-
-    if (
-        nome.includes("vale sul") ||
-        nome.includes("vale do sul")
-    ) {
-        return {
-            ...identidade,
-            nome: "Sicoob Vale Sul",
-            sigla: "SV",
-            logo:
-                "assets/bancos/sicoob-vale-sul.png"
-        };
-    }
-
-    if (nome.includes("sicoob")) {
-        return {
-            ...identidade,
-            nome: "Sicoob",
-            sigla: "SC",
-            logo:
-                "assets/bancos/sicoob-maxicredito.png"
-        };
-    }
-
-    return identidade;
-}
-
-function prepararBancoParaExibicao(
-    banco,
-    totalRecebidoGeral
-) {
-    const identidade =
-        obterIdentidadeVisualBanco(banco);
-
-    const recebido =
-        Number(banco.totalRecebido || 0);
-
-    const quantidadeTitulos =
-        Number(
-            banco.quantidadeTitulos ||
-            banco.totalTitulos ||
-            banco.quantidade ||
-            0
-        );
-
-    return {
-        ...banco,
-        ...identidade,
-
-        quantidadeTitulos,
-
-        participacao:
-            totalRecebidoGeral > 0
-                ? recebido /
-                    totalRecebidoGeral *
-                    100
-                : 0
-    };
-}
-
 function configurarPainelBanco() {
     const painel =
         document.getElementById("painelBanco");
@@ -239,45 +121,12 @@ function renderizarBancos() {
 
     grade.innerHTML = "";
 
-    const totalRecebidoGeral =
-        bancosFinanceiros.reduce(
-            (total, banco) =>
-                total +
-                Number(
-                    banco.totalRecebido || 0
-                ),
-            0
-        );
-
-    const bancosExibicao =
-        bancosFinanceiros.map(
-            (banco) =>
-                prepararBancoParaExibicao(
-                    banco,
-                    totalRecebidoGeral
-                )
-        );
-
-    bancosExibicao.forEach((banco) => {
+    bancosFinanceiros.forEach((banco) => {
         const card =
             document.createElement("button");
 
         card.type = "button";
         card.className = "card-banco";
-
-        const percentual =
-            banco.participacao.toLocaleString(
-                "pt-BR",
-                {
-                    minimumFractionDigits: 1,
-                    maximumFractionDigits: 1
-                }
-            );
-
-        const textoTitulos =
-            banco.quantidadeTitulos > 0
-                ? `${banco.quantidadeTitulos} títulos`
-                : "Títulos consolidados";
 
         card.innerHTML = `
             <div class="card-banco-topo">
@@ -288,22 +137,23 @@ function renderizarBancos() {
 
                     <div>
                         <h3>${escaparHtml(banco.nome)}</h3>
-                        <p>${escaparHtml(textoTitulos)}</p>
+                        <p>Movimentações consolidadas</p>
                     </div>
                 </div>
 
                 <i class="fa-solid fa-chevron-right card-banco-seta"></i>
             </div>
 
+
             <div class="banco-saldo">
-                <span>Recebido no período</span>
-                <strong>${formatarMoeda(banco.totalRecebido)}</strong>
+                <span>Total movimentado</span>
+                <strong>${formatarMoeda(banco.saldo)}</strong>
             </div>
 
             <div class="banco-rodape">
                 <span>
-                    <i class="fa-solid fa-chart-pie"></i>
-                    Participação: ${percentual}%
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    Recebido: ${formatarMoeda(banco.totalRecebido)}
                 </span>
             </div>
         `;
@@ -317,9 +167,7 @@ function renderizarBancos() {
 
     const soma =
         bancosFinanceiros.reduce(
-            (total, banco) =>
-                total +
-                Number(banco.saldo || 0),
+            (total, banco) => total + Number(banco.saldo || 0),
             0
         );
 
@@ -349,22 +197,11 @@ function criarLogoBanco(banco, tamanho = "normal") {
     const caminho =
         escaparHtml(banco.logo || "");
 
-    const estiloImagem =
-        caminho
-            ? ""
-            : "display:none;";
-
-    const estiloFallback =
-        caminho
-            ? ""
-            : "display:flex;";
-
     return `
         <img
             src="${caminho}"
             alt="Logotipo ${escaparHtml(banco.nome)}"
             class="${classe}"
-            style="${estiloImagem}"
             onerror="
                 this.style.display='none';
                 this.nextElementSibling.style.display='flex';
@@ -373,7 +210,7 @@ function criarLogoBanco(banco, tamanho = "normal") {
 
         <span
             class="logo-banco-fallback"
-            style="--cor-banco: ${cor}; ${estiloFallback}"
+            style="--cor-banco: ${cor};"
         >
             ${sigla}
         </span>
