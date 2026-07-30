@@ -1,539 +1,466 @@
-import { auth, db } from "../firebase-config.js";
+// ================================
+// SMART GROUP ANALYTICS
+// APP.JS
+// ================================
 
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+function abrirModulo(modulo, elemento){
 
-import {
-  collection,
-  getDocs,
-  doc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+const mapaPermissoes = {
+    dashboard: "dashboard",
+    estoque: "estoque",
+    vendas: "vendas",
+    financeiro: "financeiro",
+    usuarios: "usuarios",
+    permissoes: "usuarios",
+    logs: "usuarios",
+    configuracoes: "configuracoes",
+    "minha-conta": null
+};
+        
+    const permissaoNecessaria =
+        mapaPermissoes[modulo];
 
-const tabela = document.getElementById("tabelaUsuarios");
-const tabelaContainer = document.getElementById("tabelaContainer");
-const mensagem = document.getElementById("mensagem");
-const estadoVazio = document.getElementById("estadoVazio");
-const pesquisa = document.getElementById("pesquisaUsuario");
-const totalUsuarios = document.getElementById("totalUsuarios");
-const usuariosAtivos = document.getElementById("usuariosAtivos");
-const totalAdministradores = document.getElementById("totalAdministradores");
-const btnAtualizar = document.getElementById("btnAtualizar");
-const btnNovoUsuario = document.getElementById("btnNovoUsuario");
-const toast = document.getElementById("toast");
+    if (
+        permissaoNecessaria &&
+        typeof window.usuarioPodeAcessar === "function" &&
+        !window.usuarioPodeAcessar(permissaoNecessaria)
+    ) {
+        alert("Você não possui permissão para acessar este módulo.");
+        return;
+    }
 
-const modalUsuario = document.getElementById("modalUsuario");
-const tituloModal = document.getElementById("tituloModal");
-const formUsuario = document.getElementById("formUsuario");
-const btnFecharModal = document.getElementById("btnFecharModal");
-const btnCancelar = document.getElementById("btnCancelar");
-const btnSalvar = document.getElementById("btnSalvar");
-const campoUid = document.getElementById("campoUid");
-const campoNome = document.getElementById("campoNome");
-const campoEmail = document.getElementById("campoEmail");
-const campoCargo = document.getElementById("campoCargo");
-const campoSetor = document.getElementById("campoSetor");
-const campoEmpresa = document.getElementById("campoEmpresa");
-const campoPerfil = document.getElementById("campoPerfil");
-const campoAtivo = document.getElementById("campoAtivo");
-
-let usuarios = [];
-let usuarioEmEdicao = null;
-
-function renderizarPermissoesDisponiveis() {
-  const grade = document.getElementById("gradePermissoes");
-  if (!grade) return;
-
-  const modulos = typeof window.modulosPermissaoAnalytics === "function"
-    ? window.modulosPermissaoAnalytics()
-    : [];
-
-  grade.innerHTML = modulos.map(modulo => `
-    <label>
-      <input
-        type="checkbox"
-        data-modulo="${modulo.id}"
-        ${modulo.concederPorPadrao ? "data-padrao=\"true\"" : ""}
-      >
-      ${modulo.nome}
-    </label>
-  `).join("");
-}
-
-renderizarPermissoesDisponiveis();
-
-
-onAuthStateChanged(auth, async usuario => {
-  if (!usuario) {
-    window.top.location.replace("../login.html");
-    return;
-  }
-
-  await carregarUsuarios();
-  document.body.classList.remove("carregando");
-});
-
-async function carregarUsuarios() {
-  mostrarCarregando();
-
-  try {
-    const referencia = collection(db, "usuarios");
-    const resultado = await getDocs(referencia);
-
-    usuarios = resultado.docs.map(documento => {
-      const dadosOriginais = documento.data();
-      const dadosCorrigidos = {};
-
-      Object.entries(dadosOriginais).forEach(([campo, valor]) => {
-        dadosCorrigidos[campo.trim()] = valor;
-      });
-
-      return { id: documento.id, ...dadosCorrigidos };
+    // Remove o menu ativo
+    document.querySelectorAll(".menu a").forEach(item=>{
+        item.classList.remove("active");
     });
 
-    usuarios.sort((a, b) =>
-      String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR")
-    );
+    elemento.classList.add("active");
 
-    atualizarResumo();
-    renderizarUsuarios(usuarios);
+    const titulo =
+        document.getElementById("tituloPagina");
 
-  } catch (erro) {
-    console.error("Erro ao carregar usuários:", erro);
-    mensagem.hidden = false;
-    mensagem.textContent =
-      "Não foi possível carregar os usuários. Verifique as permissões do Firestore.";
-    tabelaContainer.hidden = true;
-    estadoVazio.hidden = true;
-    mostrarToast("Erro ao consultar os usuários.", true);
-  }
-}
+    const subtitulo =
+        document.getElementById("subtituloPagina");
 
-function renderizarUsuarios(lista) {
-  mensagem.hidden = true;
+    const conteudo =
+        document.getElementById("conteudo");
 
-  if (!lista.length) {
-    tabela.innerHTML = "";
-    tabelaContainer.hidden = true;
-    estadoVazio.hidden = false;
-    return;
-  }
+    switch(modulo){
 
-  estadoVazio.hidden = true;
-  tabelaContainer.hidden = false;
+        case "dashboard":
 
-  tabela.innerHTML = lista.map(usuario => {
-    const nome = escaparHtml(usuario.nome || "Usuário sem nome");
-    const email = escaparHtml(usuario.email || "E-mail não informado");
-    const cargo = escaparHtml(usuario.cargo || "Cargo não informado");
-    const setor = escaparHtml(usuario.setor || "Setor não informado");
-    const perfil = escaparHtml(formatarPerfil(usuario.perfil));
-    const empresa = escaparHtml(usuario.empresa || "Não informada");
-    const ativo = usuario.ativo === true;
-    const iniciais = obterIniciais(usuario.nome);
+            titulo.innerText="Dashboard";
 
-    return `
-      <tr>
-        <td>
-          <div class="usuario-cell">
-            <div class="avatar">${iniciais}</div>
-            <div><strong>${nome}</strong><span>${email}</span></div>
-          </div>
-        </td>
-        <td>${cargo}<span class="texto-secundario">${setor}</span></td>
-        <td>
-          <span class="badge perfil">
-            <i class="fa-solid fa-shield-halved"></i>${perfil}
-          </span>
-        </td>
-        <td>${empresa}</td>
-        <td>
-          <span class="badge ${ativo ? "ativo" : "inativo"}">
-            <i class="fa-solid fa-circle"></i>${ativo ? "Ativo" : "Inativo"}
-          </span>
-        </td>
-        <td>
-        <div class="acoes">
+            subtitulo.innerText=
+            "Visão geral do Smart Group Analytics";
 
-<button class="btn-acao" type="button" title="Editar usuário"
-        data-acao="editar" data-id="${usuario.id}">
-    <i class="fa-solid fa-pen"></i>
-</button>
+            location.reload();
 
+        break;
 
-<button class="btn-acao" type="button" title="Ver permissões"
-        data-acao="permissoes" data-id="${usuario.id}">
-    <i class="fa-solid fa-key"></i>
-</button>
+case "estoque":
 
+    titulo.innerText = "Estoque Comercial";
 
-<button 
-    class="btn-acao btn-excluir" 
-    type="button" 
-    title="Desativar usuário"
-    data-acao="desativar"
-    data-id="${usuario.id}">
-    <i class="fa-solid fa-user-slash"></i>
-</button>
+    subtitulo.innerText =
+    "Controle inteligente dos estoques.";
 
-
-</div>
-        </td>
-      </tr>
+    conteudo.innerHTML = `
+        <iframe 
+            src="modulos/estoque/index.html?v=8"
+            class="iframe-modulo">
+        </iframe>
     `;
-  }).join("");
-}
 
-function atualizarResumo() {
-  totalUsuarios.textContent = usuarios.length;
-  usuariosAtivos.textContent =
-    usuarios.filter(usuario => usuario.ativo === true).length;
-  totalAdministradores.textContent =
-    usuarios.filter(usuario =>
-      String(usuario.perfil || "").toLowerCase() === "administrador"
-    ).length;
-}
+break;
 
-pesquisa.addEventListener("input", () => {
-  const termo = pesquisa.value.toLowerCase().trim();
+     case "vendas":
 
-  if (!termo) {
-    renderizarUsuarios(usuarios);
-    return;
-  }
+    titulo.innerText = "Dashboard Comercial";
 
-  const filtrados = usuarios.filter(usuario => {
-    const texto = [
-      usuario.nome,
-      usuario.email,
-      usuario.cargo,
-      usuario.setor,
-      usuario.perfil,
-      usuario.empresa
-    ].join(" ").toLowerCase();
+    subtitulo.innerText =
+    "Faturamento, clientes e produtos.";
 
-    return texto.includes(termo);
-  });
+    conteudo.innerHTML = `
+        <iframe 
+            src="modulos/vendas/index.html"
+            class="iframe-modulo">
+        </iframe>
+    `;
 
-  renderizarUsuarios(filtrados);
-});
+break;
 
-btnAtualizar.addEventListener("click", carregarUsuarios);
-btnNovoUsuario.addEventListener("click", abrirNovoUsuario);
-btnFecharModal.addEventListener("click", fecharModal);
-btnCancelar.addEventListener("click", fecharModal);
+            case "financeiro":
 
-modalUsuario.addEventListener("click", evento => {
-  if (evento.target === modalUsuario) fecharModal();
-});
+    titulo.innerText = "Financeiro";
 
-tabela.addEventListener("click", evento => {
+    subtitulo.innerText =
+    "Gestão financeira, recebimentos e fluxo de caixa.";
 
-    const botao =
-        evento.target.closest("[data-acao]");
+    conteudo.innerHTML = `
+        <iframe
+            src="modulos/financeiro/index.html?v=3"
+            class="iframe-modulo"
+            title="Módulo Financeiro"
+            frameborder="0">
+        </iframe>
+    `;
 
-    if (!botao) return;
+break;
 
+ case "usuarios":
 
-    const usuario =
-        usuarios.find(
-            item => item.id === botao.dataset.id
-        );
+    titulo.innerText = "Usuários";
 
+    subtitulo.innerText =
+    "Gerenciamento de usuários.";
 
-    if (!usuario) return;
+    conteudo.innerHTML = `
+        <iframe
+            src="usuarios/index.html?v=3"
+            class="iframe-modulo"
+            title="Gerenciamento de Usuários">
+        </iframe>
+    `;
 
+break;
 
+// =====================================================
+// MINHA CONTA
+// =====================================================
 
-    if(botao.dataset.acao === "editar"){
+case "minha-conta":
 
-        abrirEdicao(usuario);
+    titulo.innerText = "Minha Conta";
 
-        return;
+    subtitulo.innerText =
+    "Dados e informações do usuário conectado.";
+
+    conteudo.innerHTML = `
+        <iframe
+            src="minha-conta/index.html?v=1"
+            class="iframe-modulo"
+            title="Minha Conta">
+        </iframe>
+    `;
+
+break;
+                    
+                    
+
+        case "permissoes":
+
+            titulo.innerText="Permissões";
+
+            subtitulo.innerText=
+            "Perfis de acesso.";
+
+            conteudo.innerHTML=`
+            
+            <div class="loading-dashboard">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <h2>Perfis e Permissões</h2>
+
+            </div>
+
+            `;
+
+        break;
+
+        case "logs":
+
+            titulo.innerText="Logs";
+
+            subtitulo.innerText=
+            "Histórico do sistema.";
+
+            conteudo.innerHTML=`
+            
+            <div class="loading-dashboard">
+
+                <i class="fa-solid fa-file-lines"></i>
+
+                <h2>Logs de acesso</h2>
+
+            </div>
+
+            `;
+
+        break;
+
+        case "configuracoes":
+
+            titulo.innerText="Configurações";
+
+            subtitulo.innerText=
+            "Configurações gerais.";
+
+            conteudo.innerHTML=`
+            
+            <div class="loading-dashboard">
+
+                <i class="fa-solid fa-gear"></i>
+
+                <h2>Configurações</h2>
+
+            </div>
+
+            `;
+
+        break;
 
     }
 
+}
 
+function alternarTelaCheia(){
 
-    if(botao.dataset.acao === "desativar"){
+    document.body.classList.toggle("modo-fullscreen");
 
-        desativarUsuario(usuario);
+    const icone =
+        document.getElementById("iconeFullscreen");
 
-        return;
+    if(!icone) return;
+
+    if(document.body.classList.contains("modo-fullscreen")){
+
+        icone.classList.remove("fa-expand");
+        icone.classList.add("fa-xmark");
+
+    } else {
+
+        icone.classList.remove("fa-xmark");
+        icone.classList.add("fa-expand");
 
     }
 
+}
 
+function voltarPortal(){
+
+    document.getElementById("tituloPagina").innerText="Dashboard";
+
+    document.getElementById("subtituloPagina").innerText=
+    "Visão geral do Smart Group Analytics";
+
+    document.getElementById("conteudo").innerHTML = `
+        <div class="home">
+
+            <div class="boas-vindas">
+                <h2>Olá, Fabio! 👋</h2>
+                <p>Bem-vindo ao Smart Group Analytics.</p>
+            </div>
+
+            <div class="cards-home">
+
+                <div class="card-home">
+                    <i class="fa-solid fa-cube"></i>
+                    <h3>Estoque Comercial</h3>
+                    <p>Acompanhe saldos, locais e famílias de materiais.</p>
+                </div>
+
+                <div class="card-home">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h3>Vendas</h3>
+                    <p>Visualize faturamento, clientes e produtos vendidos.</p>
+                </div>
+
+                <div class="card-home">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h3>Controle de Acesso</h3>
+                    <p>Portal preparado para permissões por usuário.</p>
+                </div>
+
+            </div>
+
+            <img class="marca-dagua" src="logo.png">
+        </div>
+    `;
+
+    document.querySelectorAll(".menu a").forEach(a=>a.classList.remove("active"));
+    document.querySelector(".menu a").classList.add("active");
+}
+
+document.querySelector(".menu-btn")?.addEventListener("click", () => {
+    document.querySelector(".sidebar").classList.toggle("aberto");
+    document.body.classList.toggle("menu-aberto-mobile");
 });
 
 // =====================================
-// DESATIVAR USUÁRIO
+// BUSCA DE DASHBOARDS
 // =====================================
 
-async function desativarUsuario(usuario){
+const modulosBusca = [
+    {
+        nome: "Dashboard",
+        descricao: "Visão geral do Smart Group Analytics",
+        modulo: "dashboard"
+    },
+    {
+        nome: "Estoque Comercial",
+        descricao: "Saldos, produtos, locais e famílias",
+        modulo: "estoque"
+    },
+    {
+        nome: "Vendas",
+        descricao: "Faturamento, clientes e produtos vendidos",
+        modulo: "vendas"
+    }
+];
 
-    const confirmar =
-        confirm(
-            `Deseja realmente desativar o usuário ${usuario.nome}?`
-        );
+const campoBusca =
+    document.getElementById("buscaModulo");
 
+const resultadoBusca =
+    document.getElementById("resultadoBusca");
 
-    if(!confirmar){
+function normalizarTexto(texto) {
+    return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function fecharResultadoBusca() {
+    if (!resultadoBusca) return;
+
+    resultadoBusca.innerHTML = "";
+    resultadoBusca.classList.remove("aberto");
+}
+
+function selecionarModuloBusca(modulo) {
+
+    const linksMenu =
+        document.querySelectorAll(".menu a");
+
+    let elementoMenu = null;
+
+    if (modulo === "dashboard") {
+        elementoMenu = linksMenu[0];
+    }
+
+    if (modulo === "estoque") {
+        elementoMenu = linksMenu[1];
+    }
+
+    if (modulo === "vendas") {
+        elementoMenu = linksMenu[2];
+    }
+
+    if (elementoMenu) {
+        abrirModulo(modulo, elementoMenu);
+    }
+
+    if (campoBusca) {
+        campoBusca.value = "";
+    }
+
+    fecharResultadoBusca();
+}
+
+function mostrarResultadosBusca(textoDigitado) {
+
+    if (!resultadoBusca) return;
+
+    const busca =
+        normalizarTexto(textoDigitado);
+
+    if (!busca) {
+        fecharResultadoBusca();
         return;
     }
 
+    const resultados =
+        modulosBusca.filter(item => {
 
-    try{
+            const conteudo =
+                normalizarTexto(
+                    item.nome + " " + item.descricao
+                );
 
-        const referencia =
-            doc(
-                db,
-                "usuarios",
-                usuario.id
+            return conteudo.includes(busca);
+        });
+
+    if (resultados.length === 0) {
+
+        resultadoBusca.innerHTML = `
+            <div class="resultado-vazio">
+                Nenhum dashboard encontrado
+            </div>
+        `;
+
+        resultadoBusca.classList.add("aberto");
+        return;
+    }
+
+    resultadoBusca.innerHTML =
+        resultados.map(item => `
+            <button
+                type="button"
+                class="resultado-item"
+                data-modulo="${item.modulo}"
+            >
+                <strong>${item.nome}</strong>
+                <small>${item.descricao}</small>
+            </button>
+        `).join("");
+
+    resultadoBusca.classList.add("aberto");
+
+    resultadoBusca
+        .querySelectorAll(".resultado-item")
+        .forEach(botao => {
+
+            botao.addEventListener("click", function () {
+
+                selecionarModuloBusca(
+                    this.dataset.modulo
+                );
+            });
+        });
+}
+
+campoBusca?.addEventListener("input", function () {
+    mostrarResultadosBusca(this.value);
+});
+
+campoBusca?.addEventListener("keydown", function (evento) {
+
+    if (evento.key === "Enter") {
+
+        const primeiroResultado =
+            resultadoBusca?.querySelector(
+                ".resultado-item"
             );
 
-
-        await updateDoc(
-            referencia,
-            {
-                ativo:false,
-                atualizadoEm:serverTimestamp()
-            }
-        );
-
-
-        mostrarToast(
-            "Usuário desativado com sucesso."
-        );
-
-
-        await carregarUsuarios();
-
-
-    }catch(erro){
-
-        console.error(
-            "Erro ao desativar usuário:",
-            erro
-        );
-
-
-        mostrarToast(
-            "Não foi possível desativar o usuário.",
-            true
-        );
-
+        primeiroResultado?.click();
     }
 
-}
+    if (evento.key === "Escape") {
+        fecharResultadoBusca();
+    }
+});
+
+document.addEventListener("click", function (evento) {
+
+    const caixaBusca =
+        document.querySelector(".search-box");
+
+    if (
+        caixaBusca &&
+        !caixaBusca.contains(evento.target)
+    ) {
+        fecharResultadoBusca();
+    }
+
+});
 
 
-
-formUsuario.addEventListener("submit", salvarUsuario);
-
-function abrirNovoUsuario() {
-  usuarioEmEdicao = null;
-  tituloModal.textContent = "Novo usuário";
-  formUsuario.reset();
-  campoUid.disabled = false;
-  campoEmpresa.value = "Smart Group";
-  campoPerfil.value = "usuario";
-  campoAtivo.checked = true;
-
-  document.querySelectorAll("[data-modulo]").forEach(campo => {
-    campo.checked = campo.dataset.padrao === "true";
-  });
-
-  modalUsuario.hidden = false;
-  campoUid.focus();
-}
-
-function abrirEdicao(usuario) {
-  usuarioEmEdicao = usuario;
-  tituloModal.textContent = "Editar usuário";
-  campoUid.value = usuario.uid || usuario.id || "";
-campoUid.disabled = false;
-  campoUid.value = usuario.uid || usuario.id || "";
-  campoNome.value = usuario.nome || "";
-  campoEmail.value = usuario.email || "";
-  campoCargo.value = usuario.cargo || "";
-  campoSetor.value = usuario.setor || "";
-  campoEmpresa.value = usuario.empresa || "Smart Group";
-  campoPerfil.value = usuario.perfil || "usuario";
-  campoAtivo.checked = usuario.ativo === true;
-
-  document.querySelectorAll("[data-modulo]").forEach(campo => {
-    campo.checked = usuario.modulos?.[campo.dataset.modulo] === true;
-  });
-
-  modalUsuario.hidden = false;
-}
-
-function fecharModal() {
-  modalUsuario.hidden = true;
-  usuarioEmEdicao = null;
-}
-
-async function salvarUsuario(evento) {
-  evento.preventDefault();
-
-  // =====================================
-// PROTEÇÃO DE ADMINISTRADORES
+// =====================================
+// DISPONIBILIZAR FUNÇÃO PARA OUTROS MÓDULOS
 // =====================================
 
-if(
-    campoPerfil.value === "administrador" &&
-    window.usuarioAnalytics?.perfil !== "administrador"
-){
-
-    mostrarToast(
-        "Somente administradores podem criar administradores.",
-        true
-    );
-
-    return;
-}
-
-  const uid = String(campoUid.value || "").trim();
-
-  if (!uid) {
-    mostrarToast("Informe o UID do Authentication.", true);
-    return;
-  }
-
-  const modulos = {};
-  document.querySelectorAll("[data-modulo]").forEach(campo => {
-    modulos[campo.dataset.modulo] = campo.checked;
-  });
-
-  const dados = {
-
-    uid: campoUid.value.trim(),
-    
-    nome: String(campoNome.value || "").trim(),
-    email: String(campoEmail.value || "").trim().toLowerCase(),
-    cargo: String(campoCargo.value || "").trim(),
-    setor: String(campoSetor.value || "").trim(),
-    empresa: String(campoEmpresa.value || "").trim() || "Smart Group",
-    perfil: campoPerfil.value,
-    ativo: campoAtivo.checked,
-    modulos,
-    atualizadoEm: serverTimestamp()
-  };
-
-  btnSalvar.disabled = true;
-  btnSalvar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando';
-
-  try {
-
-const referenciaNova = doc(db, "usuarios", uid);
-
-if (usuarioEmEdicao) {
-
-  const uidAntigo = usuarioEmEdicao.id;
-  const uidFoiAlterado = uid !== uidAntigo;
-
-  if (uidFoiAlterado) {
-
-    const confirmarAlteracao = confirm(
-      `Você está alterando o UID de:\n\n` +
-      `${usuarioEmEdicao.nome || "Usuário"}\n\n` +
-      `UID antigo: ${uidAntigo}\n` +
-      `UID novo: ${uid}\n\n` +
-      `Confirma a correção?`
-    );
-
-    if (!confirmarAlteracao) {
-      btnSalvar.disabled = false;
-      btnSalvar.innerHTML =
-        '<i class="fa-solid fa-floppy-disk"></i> Salvar';
-      return;
-    }
-
-    const referenciaAntiga =
-      doc(db, "usuarios", uidAntigo);
-
-    await setDoc(referenciaNova, {
-      ...usuarioEmEdicao,
-      ...dados,
-      foto: usuarioEmEdicao.foto || "",
-      criadoEm:
-        usuarioEmEdicao.criadoEm ||
-        serverTimestamp()
-    });
-
-    await deleteDoc(referenciaAntiga);
-
-    mostrarToast("UID corrigido e usuário atualizado.");
-
-  } else {
-
-    await updateDoc(referenciaNova, dados);
-
-    mostrarToast("Usuário atualizado com sucesso.");
-  }
-
-} else {
-
-  await setDoc(referenciaNova, {
-    ...dados,
-    foto: "",
-    criadoEm: serverTimestamp()
-  });
-
-  mostrarToast("Perfil criado com sucesso.");
-}
-    
-
-    fecharModal();
-    await carregarUsuarios();
-
-  } catch (erro) {
-    console.error("Erro ao salvar usuário:", erro);
-    mostrarToast("Não foi possível salvar o usuário.", true);
-
-  } finally {
-    btnSalvar.disabled = false;
-    btnSalvar.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar';
-  }
-}
-
-function mostrarCarregando() {
-  mensagem.hidden = false;
-  mensagem.textContent = "Carregando usuários...";
-  tabelaContainer.hidden = true;
-  estadoVazio.hidden = true;
-}
-
-function formatarPerfil(perfil) {
-  const valor = String(perfil || "usuário");
-  return valor.charAt(0).toUpperCase() + valor.slice(1).toLowerCase();
-}
-
-function obterIniciais(nome) {
-  const partes = String(nome || "U").trim().split(/\s+/).filter(Boolean);
-  return partes.slice(0, 2).map(parte => parte.charAt(0).toUpperCase()).join("");
-}
-
-function escaparHtml(valor) {
-  return String(valor ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function mostrarToast(texto, erro = false) {
-  toast.textContent = texto;
-  toast.classList.toggle("erro", erro);
-  toast.classList.add("visivel");
-  window.clearTimeout(mostrarToast.tempo);
-  mostrarToast.tempo = window.setTimeout(() => {
-    toast.classList.remove("visivel");
-  }, 3500);
-}
+window.abrirModulo = abrirModulo;

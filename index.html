@@ -69,7 +69,57 @@
 
         <!-- MENU PRINCIPAL -->
 
-        <nav class="menu" id="menuPrincipal"></nav>
+        <nav class="menu">
+
+            <a
+                class="active"
+                data-modulo="dashboard"
+                onclick="abrirModulo('dashboard', this)"
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                Dashboard
+
+            </a>
+
+            <a
+                data-modulo="estoque"
+                onclick="abrirModulo('estoque', this)"
+            >
+
+                <i class="fa-solid fa-cube"></i>
+
+                Estoque Comercial
+
+            </a>
+
+            <a
+                data-modulo="vendas"
+                onclick="abrirModulo('vendas', this)"
+            >
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                Vendas
+
+            </a>
+
+            <a
+               data-modulo="financeiro"
+               onclick="abrirModulo('financeiro', this)"
+          >
+               <i class="fa-solid fa-wallet"></i>
+
+               Financeiro
+                
+            </a>
+
+
+
+    
+        </nav>
+
 
         <!-- ADMINISTRAÇÃO -->
 
@@ -80,7 +130,56 @@
             ADMINISTRAÇÃO
         </div>
 
-        <nav class="menu" id="menuAdministracao"></nav>
+        <nav
+            class="menu"
+            id="menuAdministracao"
+        >
+
+            <a
+                data-modulo="usuarios"
+                onclick="abrirModulo('usuarios', this)"
+            >
+
+                <i class="fa-solid fa-user"></i>
+
+                Usuários
+
+            </a>
+
+            <a
+                data-modulo="permissoes"
+                onclick="abrirModulo('permissoes', this)"
+            >
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Perfis e Permissões
+
+            </a>
+
+            <a
+                data-modulo="logs"
+                onclick="abrirModulo('logs', this)"
+            >
+
+                <i class="fa-solid fa-file-lines"></i>
+
+                Logs de Acesso
+
+            </a>
+
+            <a
+                data-modulo="configuracoes"
+                onclick="abrirModulo('configuracoes', this)"
+            >
+
+                <i class="fa-solid fa-gear"></i>
+
+                Configurações
+
+            </a>
+
+        </nav>
 
 
         <!-- VERSÃO -->
@@ -427,7 +526,7 @@
          SCRIPTS
     ================================================== -->
 
-    <script src="modulos-config.js?v=1"></script>\n    <script src="app.js?v=11"></script>
+    <script src="app.js?v=12"></script>
 
     <script
         type="module"
