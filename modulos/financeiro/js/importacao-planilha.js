@@ -23,6 +23,10 @@ function configurarImportacaoPlanilha() {
             lancamentosFinanceiros = resultado.lancamentos;
             bancosFinanceiros = resultado.bancos;
 
+            if (typeof atualizarContasReceber === "function") {
+                atualizarContasReceber(lancamentosFinanceiros);
+            }
+
             preencherFiltrosComDados();
             preencherFiltroBancos(true);
             renderizarBancos();

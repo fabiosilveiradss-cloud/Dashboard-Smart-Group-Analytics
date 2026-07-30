@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="css/graficos-financeiros.css?v=12">
     <link rel="stylesheet" href="css/bancos-financeiros.css?v=12">
     <link rel="stylesheet" href="css/tabelas-financeiras.css?v=12">
+    <link rel="stylesheet" href="css/contas-receber.css?v=20">
 </head>
 
 <body>
@@ -362,30 +363,181 @@
                 </section>
 
             </section>
-
             <section class="pagina-financeiro" id="contas-receber">
 
-                <div class="pagina-cabecalho">
+                <div class="pagina-cabecalho receber-cabecalho">
                     <div>
                         <h2>Contas a Receber</h2>
-                        <p>
-                            Controle de valores recebidos, pendentes e atrasados.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="estado-inicial">
-                    <div class="estado-inicial-icone">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <p>Controle completo dos títulos de clientes.</p>
                     </div>
 
-                    <h3>Contas a Receber</h3>
-                    <p>Conteúdo em preparação.</p>
+                    <button
+                        type="button"
+                        class="btn-exportar-receber"
+                        id="btnExportarReceber"
+                    >
+                        <i class="fa-solid fa-file-csv"></i>
+                        Exportar filtrados
+                    </button>
                 </div>
+
+                <section class="receber-kpis" aria-label="Indicadores de contas a receber">
+                    <article class="receber-kpi">
+                        <span>Total da carteira</span>
+                        <strong id="receberKpiCarteira">R$ 0,00</strong>
+                        <small id="receberQtdCarteira">0 títulos</small>
+                    </article>
+
+                    <article class="receber-kpi receber-kpi-aberto">
+                        <span>Em aberto</span>
+                        <strong id="receberKpiAberto">R$ 0,00</strong>
+                        <small id="receberQtdAberto">0 títulos</small>
+                    </article>
+
+                    <article class="receber-kpi receber-kpi-atrasado">
+                        <span>Em atraso</span>
+                        <strong id="receberKpiAtrasado">R$ 0,00</strong>
+                        <small id="receberQtdAtrasado">0 títulos</small>
+                    </article>
+
+                    <article class="receber-kpi receber-kpi-pago">
+                        <span>Recebido</span>
+                        <strong id="receberKpiPago">R$ 0,00</strong>
+                        <small id="receberQtdPago">0 títulos</small>
+                    </article>
+
+                    <article class="receber-kpi receber-kpi-vencer">
+                        <span>A vencer</span>
+                        <strong id="receberKpiVencer">R$ 0,00</strong>
+                        <small id="receberQtdVencer">0 títulos</small>
+                    </article>
+                </section>
+
+                <section class="receber-painel">
+                    <div class="receber-filtros">
+                        <label class="receber-busca">
+                            <span>Pesquisar</span>
+                            <div>
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input
+                                    type="search"
+                                    id="receberBusca"
+                                    placeholder="Cliente, documento ou representante"
+                                    autocomplete="off"
+                                >
+                            </div>
+                        </label>
+
+                        <label>
+                            <span>Status</span>
+                            <select id="receberStatus">
+                                <option value="">Todos</option>
+                                <option value="aberto">Em aberto</option>
+                                <option value="atrasado">Em atraso</option>
+                                <option value="pago">Pago</option>
+                            </select>
+                        </label>
+
+                        <label>
+                            <span>Cliente</span>
+                            <select id="receberCliente">
+                                <option value="">Todos</option>
+                            </select>
+                        </label>
+
+                        <label>
+                            <span>Local de cobrança</span>
+                            <select id="receberBanco">
+                                <option value="">Todos</option>
+                            </select>
+                        </label>
+
+                        <label>
+                            <span>Representante</span>
+                            <select id="receberRepresentante">
+                                <option value="">Todos</option>
+                            </select>
+                        </label>
+
+                        <label>
+                            <span>Vencimento inicial</span>
+                            <input type="date" id="receberDataInicio">
+                        </label>
+
+                        <label>
+                            <span>Vencimento final</span>
+                            <input type="date" id="receberDataFim">
+                        </label>
+
+                        <button
+                            type="button"
+                            class="btn-limpar-receber"
+                            id="btnLimparReceber"
+                        >
+                            <i class="fa-solid fa-eraser"></i>
+                            Limpar
+                        </button>
+                    </div>
+
+                    <div class="receber-resumo-filtro">
+                        <span id="receberResumoFiltro">
+                            Carregue uma planilha para visualizar os títulos.
+                        </span>
+
+                        <label>
+                            Exibir
+                            <select id="receberPorPagina">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="receber-tabela-wrapper">
+                        <table class="receber-tabela">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Documento</th>
+                                    <th>Vencimento</th>
+                                    <th>Pagamento</th>
+                                    <th>Status</th>
+                                    <th>Dias</th>
+                                    <th>Valor documento</th>
+                                    <th>Valor pago</th>
+                                    <th>Saldo em aberto</th>
+                                    <th>Local de cobrança</th>
+                                    <th>Representante</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="receberTabelaCorpo">
+                                <tr>
+                                    <td colspan="11" class="receber-vazio">
+                                        Carregue uma planilha para visualizar.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="receber-paginacao">
+                        <button type="button" id="receberPaginaAnterior">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+
+                        <span id="receberInfoPagina">Página 1 de 1</span>
+
+                        <button type="button" id="receberProximaPagina">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </section>
 
             </section>
 
-            <section class="pagina-financeiro" id="contas-pagar">
+<section class="pagina-financeiro" id="contas-pagar">
 
                 <div class="pagina-cabecalho">
                     <div>
@@ -708,12 +860,13 @@
     ></script>
 
     <script src="js/utilitarios-financeiros.js?v=7"></script>
-    <script src="js/processador-financeiro.js?v=19"></script>
+    <script src="js/processador-financeiro.js?v=7"></script>
     <script src="js/indicadores-financeiros.js?v=7"></script>
-    <script src="js/graficos-financeiros.js?v=19"></script>
-    <script src="js/bancos-financeiros.js?v=18"></script>
+    <script src="js/graficos-financeiros.js?v=14"></script>
+    <script src="js/bancos-financeiros.js?v=7"></script>
     <script src="js/filtros-financeiro.js?v=7"></script>
     <script src="js/importacao-planilha.js?v=7"></script>
+    <script src="js/contas-receber.js?v=20"></script>
     <script src="financeiro.js?v=7"></script>
 
 </body>
