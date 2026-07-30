@@ -396,21 +396,184 @@ function renderizarTopClientes(clientes) {
 
 /* ======================================================
    RECEBIMENTOS POR BANCO
+   Valor, participação, quantidade de títulos e logotipos
    ====================================================== */
 
 function renderizarRecebimentosBanco(recebimentos) {
-    const validos = recebimentos.filter(
-        (item) =>
-            normalizarTexto(item.banco) !== "nao informado"
-    );
+    const mapa = new Map();
 
-    const mapa = agruparPor(
-        validos,
-        (item) => nomeBancoAmigavel(item.banco),
-        "valorLiquidoPago"
-    );
+    recebimentos.forEach((item) => {
+        const nome =
+            nomeBancoAmigavel(item.banco);
 
-    const ranking = ordenarMapa(mapa).slice(0, 8);
+        if (
+            !nome ||
+            normalizarTexto(nome) === "nao informado"
+        ) {
+            return;
+        }
+
+        if (!mapa.has(nome)) {
+            mapa.set(nome, {
+                nome,
+                valorRecebido: 0,
+                quantidadeTitulos: 0
+            });
+        }
+
+        const resumo = mapa.get(nome);
+
+        resumo.valorRecebido +=
+            Number(item.valorLiquidoPago || 0);
+
+        resumo.quantidadeTitulos += 1;
+    });
+
+    const totalRecebido =
+        [...mapa.values()].reduce(
+            (total, item) =>
+                total + item.valorRecebido,
+            0
+        );
+
+    const ranking =
+        [...mapa.values()]
+            .map((item) => ({
+                ...item,
+
+                participacao:
+                    totalRecebido > 0
+                        ? (
+                            item.valorRecebido /
+                            totalRecebido *
+                            100
+                        )
+                        : 0,
+
+                logo:
+                    obterLogoBancoGrafico(
+                        item.nome
+                    )
+            }))
+            .sort(
+                (a, b) =>
+                    b.valorRecebido -
+                    a.valorRecebido
+            )
+            .slice(0, 8);
+
+    const cores = [
+        "#1683ff",
+        "#27d17f",
+        "#ff9f43",
+        "#8f61e8",
+        "#31c6d4",
+        "#f15bb5",
+        "#a0aec0",
+        "#f6d000"
+    ];
+
+    const opcoes =
+        opcoesGraficoRosca(
+            "Recebimentos por Banco"
+        );
+
+    opcoes.plugins.legend.labels.usePointStyle =
+        true;
+
+    opcoes.plugins.legend.labels.pointStyle =
+        "circle";
+
+    opcoes.plugins.legend.labels.generateLabels =
+        (grafico) => {
+            return ranking.map(
+                (item, indice) => {
+                    const imagem =
+                        criarImagemLogoBancoGrafico(
+                            item.logo,
+                            grafico
+                        );
+
+                    return {
+                        text:
+                            `${item.nome} · ` +
+                            `${formatarMoeda(
+                                item.valorRecebido
+                            )} · ` +
+                            `${item.participacao.toLocaleString(
+                                "pt-BR",
+                                {
+                                    minimumFractionDigits: 1,
+                                    maximumFractionDigits: 1
+                                }
+                            )}%`,
+
+                        fillStyle:
+                            cores[indice],
+
+                        strokeStyle:
+                            cores[indice],
+
+                        pointStyle:
+                            imagem || "circle",
+
+                        fontColor:
+                            "#ffffff",
+
+                        color:
+                            "#ffffff",
+
+                        lineWidth: 0,
+                        hidden: false,
+                        index: indice
+                    };
+                }
+            );
+        };
+
+    opcoes.plugins.tooltip.callbacks = {
+        title: (itens) => {
+            const indice =
+                itens[0]?.dataIndex;
+
+            return ranking[indice]?.nome ||
+                "Banco";
+        },
+
+        label: () => "",
+
+        afterBody: (itens) => {
+            const indice =
+                itens[0]?.dataIndex;
+
+            const item =
+                ranking[indice];
+
+            if (!item) {
+                return [];
+            }
+
+            return [
+                `Valor recebido: ${formatarMoeda(
+                    item.valorRecebido
+                )}`,
+
+                `Participação: ${
+                    item.participacao.toLocaleString(
+                        "pt-BR",
+                        {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1
+                        }
+                    )
+                }%`,
+
+                `Quantidade de títulos: ${
+                    item.quantidadeTitulos
+                }`
+            ];
+        }
+    };
 
     criarOuAtualizarGrafico(
         "recebimentosBanco",
@@ -419,24 +582,22 @@ function renderizarRecebimentosBanco(recebimentos) {
             type: "doughnut",
 
             data: {
-                labels: ranking.map(([nome]) => nome),
+                labels: ranking.map(
+                    (item) => item.nome
+                ),
 
                 datasets: [
                     {
                         data: ranking.map(
-                            ([, valor]) => valor
+                            (item) =>
+                                item.valorRecebido
                         ),
 
-                        backgroundColor: [
-                            "#1683ff",
-                            "#27d17f",
-                            "#ff9f43",
-                            "#8f61e8",
-                            "#31c6d4",
-                            "#f15bb5",
-                            "#a0aec0",
-                            "#f6d000"
-                        ],
+                        metricas:
+                            ranking,
+
+                        backgroundColor:
+                            cores,
 
                         borderWidth: 0,
                         hoverOffset: 7
@@ -444,9 +605,7 @@ function renderizarRecebimentosBanco(recebimentos) {
                 ]
             },
 
-            options: opcoesGraficoRosca(
-                "Recebimentos"
-            ),
+            options: opcoes,
 
             plugins: [
                 pluginTextoCentralRosca(
@@ -455,6 +614,80 @@ function renderizarRecebimentosBanco(recebimentos) {
             ]
         }
     );
+}
+
+
+const cacheLogosBancosGrafico = new Map();
+
+function criarImagemLogoBancoGrafico(
+    caminho,
+    grafico
+) {
+    if (!caminho) {
+        return null;
+    }
+
+    if (cacheLogosBancosGrafico.has(caminho)) {
+        return cacheLogosBancosGrafico.get(
+            caminho
+        );
+    }
+
+    const imagem = new Image();
+
+    cacheLogosBancosGrafico.set(
+        caminho,
+        imagem
+    );
+
+    imagem.onload = () => {
+        if (grafico && grafico.canvas) {
+            grafico.update("none");
+        }
+    };
+
+    imagem.onerror = () => {
+        cacheLogosBancosGrafico.set(
+            caminho,
+            null
+        );
+    };
+
+    imagem.src = caminho;
+
+    return imagem;
+}
+
+function obterLogoBancoGrafico(nomeBanco) {
+    const nome =
+        normalizarTexto(nomeBanco);
+
+    if (
+        nome.includes("banco do brasil") ||
+        nome === "bb"
+    ) {
+        return "assets/bancos/banco-do-brasil.png";
+    }
+
+    if (nome.includes("itau")) {
+        return "assets/bancos/itau.png";
+    }
+
+    if (
+        nome.includes("maxicredito") ||
+        nome.includes("maxi credito")
+    ) {
+        return "assets/bancos/sicoob-maxicredito.png";
+    }
+
+    if (
+        nome.includes("vale sul") ||
+        nome.includes("vale do sul")
+    ) {
+        return "assets/bancos/sicoob-vale-sul.png";
+    }
+
+    return null;
 }
 
 
@@ -1163,6 +1396,26 @@ function nomeBancoAmigavel(nomeOriginal) {
         return "Itaú";
     }
 
+    if (
+        nome.includes("sicoob") &&
+        (
+            nome.includes("maxicredito") ||
+            nome.includes("maxi credito")
+        )
+    ) {
+        return "Sicoob MaxiCrédito";
+    }
+
+    if (
+        nome.includes("sicoob") &&
+        (
+            nome.includes("vale sul") ||
+            nome.includes("vale do sul")
+        )
+    ) {
+        return "Sicoob Vale Sul";
+    }
+
     if (nome.includes("sicoob")) {
         return "Sicoob";
     }
@@ -1172,7 +1425,7 @@ function nomeBancoAmigavel(nomeOriginal) {
     }
 
     if (nome.includes("caixa")) {
-        return "Caixa Econômica";
+        return "Caixa Econômica Federal";
     }
 
     if (nome.includes("bradesco")) {
