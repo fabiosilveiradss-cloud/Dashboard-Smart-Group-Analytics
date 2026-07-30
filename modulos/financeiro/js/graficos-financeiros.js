@@ -16,8 +16,12 @@ function renderizarGraficos(dados) {
         return;
     }
 
-    const clientesPagos = dados.filter(
-        (item) => item.tipoCadastro === "cliente" && item.pago
+    const clientes = dados.filter(
+        (item) => item.tipoCadastro === "cliente"
+    );
+
+    const clientesPagos = clientes.filter(
+        (item) => item.pago
     );
 
     const fornecedoresPagos = dados.filter(
@@ -26,14 +30,12 @@ function renderizarGraficos(dados) {
 
     renderizarFluxoCaixa(clientesPagos, fornecedoresPagos);
     renderizarRecebimentosDia(clientesPagos);
-    renderizarTopClientes(clientesPagos);
+    renderizarTopClientes(clientes);
     renderizarRecebimentosBanco(clientesPagos);
     renderizarPlanoFinanceiro(clientesPagos);
     renderizarRepresentantes(clientesPagos);
 
-    renderizarSituacaoReceber(
-        dados.filter((item) => item.tipoCadastro === "cliente")
-    );
+    renderizarSituacaoReceber(clientes);
 }
 
 
@@ -188,19 +190,162 @@ function renderizarRecebimentosDia(recebimentos) {
 
 
 /* ======================================================
-   TOP 10 CLIENTES
+   TOP 10 CLIENTES POR VENDAS
+   Usa Vlr.docto de todos os registros de clientes.
    ====================================================== */
 
-function renderizarTopClientes(recebimentos) {
-    const mapa = agruparPor(
-        recebimentos,
-        (item) => item.razaoSocial || "Não informado",
-        "valorLiquidoPago"
-    );
+function renderizarTopClientes(clientes) {
+    const mapa = new Map();
 
-    const ranking = ordenarMapa(mapa)
-        .slice(0, 10)
-        .reverse();
+    clientes.forEach((item) => {
+        const cliente =
+            item.razaoSocial ||
+            item.nomeFantasia ||
+            "Não informado";
+
+        /*
+         * O ranking representa venda, não recebimento.
+         * Por isso usamos valorDocumento (Vlr.docto).
+         */
+        const valorVendido =
+            Number(item.valorDocumento || 0) > 0
+                ? Number(item.valorDocumento || 0)
+                : Number(item.valorLiquidoPago || 0);
+
+        if (!mapa.has(cliente)) {
+            mapa.set(cliente, {
+                cliente,
+                totalVendido: 0,
+                quantidadeTitulos: 0,
+                valorRecebido: 0,
+                valorEmAberto: 0
+            });
+        }
+
+        const resumo =
+            mapa.get(cliente);
+
+        resumo.totalVendido +=
+            valorVendido;
+
+        resumo.quantidadeTitulos += 1;
+
+        if (item.pago) {
+            resumo.valorRecebido +=
+                Number(
+                    item.valorLiquidoPago ||
+                    valorVendido ||
+                    0
+                );
+        } else {
+            resumo.valorEmAberto +=
+                Number(
+                    item.valorDocumento ||
+                    valorVendido ||
+                    0
+                );
+        }
+    });
+
+    const totalGeralVendido =
+        [...mapa.values()].reduce(
+            (total, item) =>
+                total + item.totalVendido,
+            0
+        );
+
+    const ranking =
+        [...mapa.values()]
+            .map((item) => ({
+                ...item,
+
+                participacao:
+                    totalGeralVendido > 0
+                        ? (
+                            item.totalVendido /
+                            totalGeralVendido *
+                            100
+                        )
+                        : 0
+            }))
+            .sort(
+                (a, b) =>
+                    b.totalVendido -
+                    a.totalVendido
+            )
+            .slice(0, 10)
+            .reverse();
+
+    const opcoes =
+        opcoesGraficoHorizontal();
+
+    opcoes.plugins.tooltip = {
+        padding: 12,
+
+        backgroundColor:
+            "rgba(3, 18, 37, 0.97)",
+
+        borderColor:
+            "rgba(39, 209, 127, 0.35)",
+
+        borderWidth: 1,
+
+        titleColor: "#ffffff",
+        bodyColor: "#dbeafe",
+
+        callbacks: {
+            title: (itens) => {
+                const indice =
+                    itens[0]?.dataIndex;
+
+                return ranking[indice]
+                    ?.cliente ||
+                    "Cliente";
+            },
+
+            label: () => "",
+
+            afterBody: (itens) => {
+                const indice =
+                    itens[0]?.dataIndex;
+
+                const dados =
+                    ranking[indice];
+
+                if (!dados) {
+                    return [];
+                }
+
+                return [
+                    `Total vendido: ${formatarMoeda(
+                        dados.totalVendido
+                    )}`,
+
+                    `Quantidade de títulos: ${
+                        dados.quantidadeTitulos
+                    }`,
+
+                    `Valor recebido: ${formatarMoeda(
+                        dados.valorRecebido
+                    )}`,
+
+                    `Valor em aberto: ${formatarMoeda(
+                        dados.valorEmAberto
+                    )}`,
+
+                    `Participação nas vendas: ${
+                        dados.participacao.toLocaleString(
+                            "pt-BR",
+                            {
+                                minimumFractionDigits: 1,
+                                maximumFractionDigits: 1
+                            }
+                        )
+                    }%`
+                ];
+            }
+        }
+    };
 
     criarOuAtualizarGrafico(
         "topClientes",
@@ -210,17 +355,32 @@ function renderizarTopClientes(recebimentos) {
 
             data: {
                 labels: ranking.map(
-                    ([nome]) => abreviarTexto(nome, 30)
+                    (item) =>
+                        abreviarTexto(
+                            item.cliente,
+                            30
+                        )
                 ),
 
                 datasets: [
                     {
-                        label: "Recebido",
+                        label:
+                            "Valor total vendido",
+
                         data: ranking.map(
-                            ([, valor]) => valor
+                            (item) =>
+                                item.totalVendido
                         ),
-                        backgroundColor: "#27d17f",
-                        hoverBackgroundColor: "#52e59e",
+
+                        metricas:
+                            ranking,
+
+                        backgroundColor:
+                            "#27d17f",
+
+                        hoverBackgroundColor:
+                            "#52e59e",
+
                         borderRadius: 6,
                         borderSkipped: false,
                         maxBarThickness: 22
@@ -228,7 +388,7 @@ function renderizarTopClientes(recebimentos) {
                 ]
             },
 
-            options: opcoesGraficoHorizontal()
+            options: opcoes
         }
     );
 }
