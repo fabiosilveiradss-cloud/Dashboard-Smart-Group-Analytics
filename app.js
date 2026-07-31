@@ -238,6 +238,95 @@ function alternarTelaCheia(){
 
 }
 
+function usuarioPodeVerCardDashboard(modulo) {
+
+    if (
+        typeof window.usuarioPodeAcessar !== "function"
+    ) {
+        return false;
+    }
+
+    return window.usuarioPodeAcessar(modulo);
+}
+
+
+function criarCardDashboard({
+    modulo,
+    icone,
+    titulo,
+    descricao
+}) {
+
+    if (!usuarioPodeVerCardDashboard(modulo)) {
+        return "";
+    }
+
+    return `
+        <div
+            class="card-home"
+            data-modulo="${modulo}"
+            role="button"
+            tabindex="0"
+            onclick="abrirModulo(
+                '${modulo}',
+                document.querySelector(
+                    '.menu a[data-modulo=&quot;${modulo}&quot;]'
+                )
+            )"
+        >
+            <i class="${icone}"></i>
+
+            <h3>
+                ${titulo}
+            </h3>
+
+            <p>
+                ${descricao}
+            </p>
+        </div>
+    `;
+}
+
+
+function gerarCardsDashboardPermitidos() {
+
+    const cards = [
+        {
+            modulo: "estoque",
+            icone: "fa-solid fa-cube",
+            titulo: "Estoque Comercial",
+            descricao:
+                "Acompanhe saldos, locais e famílias de materiais."
+        },
+        {
+            modulo: "vendas",
+            icone: "fa-solid fa-chart-line",
+            titulo: "Vendas",
+            descricao:
+                "Visualize faturamento, clientes e produtos vendidos."
+        },
+        {
+            modulo: "financeiro",
+            icone: "fa-solid fa-wallet",
+            titulo: "Financeiro",
+            descricao:
+                "Acompanhe recebimentos, pagamentos e fluxo de caixa."
+        },
+        {
+            modulo: "usuarios",
+            icone: "fa-solid fa-shield-halved",
+            titulo: "Controle de Acesso",
+            descricao:
+                "Gerencie usuários, perfis e permissões."
+        }
+    ];
+
+    return cards
+        .map(criarCardDashboard)
+        .join("");
+}
+
+
 function voltarPortal(){
 
     document.getElementById("tituloPagina").innerText="Dashboard";
@@ -245,42 +334,51 @@ function voltarPortal(){
     document.getElementById("subtituloPagina").innerText=
     "Visão geral do Smart Group Analytics";
 
+    const nomeUsuario =
+        window.usuarioAnalytics?.nome ||
+        "Usuário";
+
     document.getElementById("conteudo").innerHTML = `
         <div class="home">
 
             <div class="boas-vindas">
-                <h2>Olá, Fabio! 👋</h2>
-                <p>Bem-vindo ao Smart Group Analytics.</p>
+                <h2>
+                    Olá,
+                    <span id="nomeSaudacao">
+                        ${nomeUsuario}
+                    </span>!
+                    👋
+                </h2>
+
+                <p>
+                    Bem-vindo ao Smart Group Analytics.
+                </p>
             </div>
 
             <div class="cards-home">
-
-                <div class="card-home">
-                    <i class="fa-solid fa-cube"></i>
-                    <h3>Estoque Comercial</h3>
-                    <p>Acompanhe saldos, locais e famílias de materiais.</p>
-                </div>
-
-                <div class="card-home">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <h3>Vendas</h3>
-                    <p>Visualize faturamento, clientes e produtos vendidos.</p>
-                </div>
-
-                <div class="card-home">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <h3>Controle de Acesso</h3>
-                    <p>Portal preparado para permissões por usuário.</p>
-                </div>
-
+                ${gerarCardsDashboardPermitidos()}
             </div>
 
-            <img class="marca-dagua" src="logo.png">
+            <img
+                class="marca-dagua"
+                src="logo.png"
+                alt="Smart Group"
+            >
         </div>
     `;
 
-    document.querySelectorAll(".menu a").forEach(a=>a.classList.remove("active"));
-    document.querySelector(".menu a").classList.add("active");
+    document
+        .querySelectorAll(".menu a")
+        .forEach(
+            (item) =>
+                item.classList.remove("active")
+        );
+
+    document
+        .querySelector(
+            '.menu a[data-modulo="dashboard"]'
+        )
+        ?.classList.add("active");
 }
 
 document.querySelector(".menu-btn")?.addEventListener("click", () => {
@@ -464,3 +562,26 @@ document.addEventListener("click", function (evento) {
 // =====================================
 
 window.abrirModulo = abrirModulo;
+
+
+document.addEventListener("keydown", (evento) => {
+
+    const card =
+        evento.target.closest?.(
+            ".card-home[data-modulo]"
+        );
+
+    if (!card) {
+        return;
+    }
+
+    if (
+        evento.key !== "Enter" &&
+        evento.key !== " "
+    ) {
+        return;
+    }
+
+    evento.preventDefault();
+    card.click();
+});
