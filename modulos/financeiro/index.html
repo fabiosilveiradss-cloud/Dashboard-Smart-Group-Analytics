@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/bancos-financeiros.css?v=12">
     <link rel="stylesheet" href="css/tabelas-financeiras.css?v=12">
     <link rel="stylesheet" href="css/contas-receber.css?v=20">
+    <link rel="stylesheet" href="css/contas-pagar.css?v=21">
 </head>
 
 <body>
@@ -536,30 +537,64 @@
                 </section>
 
             </section>
-
-<section class="pagina-financeiro" id="contas-pagar">
-
-                <div class="pagina-cabecalho">
+            <section class="pagina-financeiro" id="contas-pagar">
+                <div class="pagina-cabecalho pagar-cabecalho">
                     <div>
                         <h2>Contas a Pagar</h2>
-                        <p>
-                            Controle de compromissos e pagamentos financeiros.
-                        </p>
+                        <p>Controle de compromissos e pagamentos de fornecedores.</p>
                     </div>
+                    <button type="button" class="btn-exportar-pagar" id="btnExportarPagar">
+                        <i class="fa-solid fa-file-csv"></i> Exportar filtrados
+                    </button>
                 </div>
 
-                <div class="estado-inicial">
-                    <div class="estado-inicial-icone">
-                        <i class="fa-solid fa-money-check-dollar"></i>
+                <section class="pagar-kpis">
+                    <article><span>Total dos compromissos</span><strong id="pagarKpiCarteira">R$ 0,00</strong><small id="pagarQtdCarteira">0 títulos</small></article>
+                    <article><span>Em aberto</span><strong id="pagarKpiAberto">R$ 0,00</strong><small id="pagarQtdAberto">0 títulos</small></article>
+                    <article><span>Em atraso</span><strong id="pagarKpiAtrasado">R$ 0,00</strong><small id="pagarQtdAtrasado">0 títulos</small></article>
+                    <article><span>Pago</span><strong id="pagarKpiPago">R$ 0,00</strong><small id="pagarQtdPago">0 títulos</small></article>
+                    <article><span>A vencer</span><strong id="pagarKpiVencer">R$ 0,00</strong><small id="pagarQtdVencer">0 títulos</small></article>
+                </section>
+
+                <section class="pagar-painel">
+                    <div class="pagar-filtros">
+                        <label class="pagar-busca"><span>Pesquisar</span><input type="search" id="pagarBusca" placeholder="Fornecedor ou documento"></label>
+                        <label><span>Status</span><select id="pagarStatus"><option value="">Todos</option><option value="aberto">Em aberto</option><option value="atrasado">Em atraso</option><option value="pago">Pago</option></select></label>
+                        <label><span>Descr.Tp.doc</span><select id="pagarTipoDocumento"><option value="">Todos</option></select></label>
+                        <label><span>Fornecedor</span><select id="pagarFornecedor"><option value="">Todos</option></select></label>
+                        <label><span>Local de cobrança</span><select id="pagarLocal"><option value="">Todos</option></select></label>
+                        <label><span>Plano financeiro</span><select id="pagarPlano"><option value="">Todos</option></select></label>
+                        <label><span>Vencimento inicial</span><input type="date" id="pagarInicio"></label>
+                        <label><span>Vencimento final</span><input type="date" id="pagarFim"></label>
+                        <button type="button" class="btn-limpar-pagar" id="btnLimparPagar"><i class="fa-solid fa-eraser"></i> Limpar</button>
                     </div>
 
-                    <h3>Contas a Pagar</h3>
-                    <p>Conteúdo em preparação.</p>
-                </div>
+                    <div class="pagar-resumo">
+                        <span id="pagarResumo">Carregue uma planilha para visualizar.</span>
+                        <label>Exibir <select id="pagarPorPagina"><option>25</option><option>50</option><option>100</option></select></label>
+                    </div>
 
+                    <div class="pagar-tabela-wrapper">
+                        <table class="pagar-tabela">
+                            <thead><tr>
+                                <th>Fornecedor</th><th>Documento</th><th>Descr.Tp.doc</th>
+                                <th>Vencimento</th><th>Pagamento</th><th>Status</th><th>Dias</th>
+                                <th>Valor documento</th><th>Valor pago</th><th>Saldo em aberto</th>
+                                <th>Local de cobrança</th><th>Plano financeiro</th>
+                            </tr></thead>
+                            <tbody id="pagarTabelaCorpo"><tr><td colspan="12" class="pagar-vazio">Carregue uma planilha para visualizar.</td></tr></tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagar-paginacao">
+                        <button type="button" id="pagarAnterior"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="pagarPaginaInfo">Página 1 de 1</span>
+                        <button type="button" id="pagarProxima"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </section>
             </section>
 
-            <section class="pagina-financeiro" id="fluxo-caixa">
+<section class="pagina-financeiro" id="fluxo-caixa">
 
                 <div class="pagina-cabecalho">
                     <div>
@@ -860,13 +895,14 @@
     ></script>
 
     <script src="js/utilitarios-financeiros.js?v=7"></script>
-    <script src="js/processador-financeiro.js?v=7"></script>
+    <script src="js/processador-financeiro.js?v=21"></script>
     <script src="js/indicadores-financeiros.js?v=7"></script>
     <script src="js/graficos-financeiros.js?v=14"></script>
     <script src="js/bancos-financeiros.js?v=7"></script>
     <script src="js/filtros-financeiro.js?v=7"></script>
     <script src="js/importacao-planilha.js?v=7"></script>
     <script src="js/contas-receber.js?v=20"></script>
+    <script src="js/contas-pagar.js?v=21"></script>
     <script src="financeiro.js?v=7"></script>
 
 </body>
