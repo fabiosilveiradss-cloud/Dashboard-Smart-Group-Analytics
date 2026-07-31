@@ -17,7 +17,7 @@
 
     <link
         rel="stylesheet"
-        href="financeiro.css?v=23"
+        href="financeiro.css?v=6"
     >
     <link rel="stylesheet" href="css/graficos-financeiros.css?v=12">
     <link rel="stylesheet" href="css/bancos-financeiros.css?v=12">
@@ -211,11 +211,22 @@
                     </article>
 
                     <article class="card-kpi kpi-pago">
-                        <div class="kpi-icone"><i class="fa-solid fa-check"></i></div>
+                        <div class="kpi-icone">
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+                        </div>
+
                         <div class="kpi-conteudo">
-                            <span class="kpi-titulo">Pago no Mês</span>
-                            <strong class="kpi-valor" id="kpiPagoMes">R$ 0,00</strong>
-                            <span class="kpi-legenda" id="legendaPagoMes">Pagamentos a fornecedores</span>
+                            <span class="kpi-titulo">
+                                Pagamentos a Fornecedores
+                            </span>
+
+                            <strong class="kpi-valor" id="kpiPagoMes">
+                                R$ 0,00
+                            </strong>
+
+                            <span class="kpi-legenda" id="legendaPagoMes">
+                                Realizados no mês atual
+                            </span>
                         </div>
                     </article>
 
@@ -902,65 +913,10 @@
             </div>
 
             <div class="campo-filtro">
-                <label>Cliente / Fornecedor</label>
-
-                <div class="multiselect-pessoas" id="multiselectPessoas">
-                    <button
-                        type="button"
-                        class="multiselect-pessoas-botao"
-                        id="multiselectPessoasBotao"
-                        aria-expanded="false"
-                    >
-                        <span id="multiselectPessoasResumo">Todos</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </button>
-
-                    <div
-                        class="multiselect-pessoas-painel"
-                        id="multiselectPessoasPainel"
-                        hidden
-                    >
-                        <div class="multiselect-pessoas-busca">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input
-                                type="search"
-                                id="multiselectPessoasBusca"
-                                placeholder="Pesquisar..."
-                                autocomplete="off"
-                            >
-                        </div>
-
-                        <div class="multiselect-pessoas-acoes">
-                            <button type="button" id="btnMarcarTodasPessoas">
-                                Marcar todos
-                            </button>
-
-                            <button type="button" id="btnDesmarcarTodasPessoas">
-                                Desmarcar todos
-                            </button>
-                        </div>
-
-                        <label class="multiselect-pessoas-todos">
-                            <input
-                                type="checkbox"
-                                id="checkboxTodasPessoas"
-                                checked
-                            >
-                            <span>Todos</span>
-                        </label>
-
-                        <div
-                            class="multiselect-pessoas-lista"
-                            id="multiselectPessoasLista"
-                        ></div>
-
-                        <div class="multiselect-pessoas-rodape">
-                            <span id="multiselectPessoasContador">
-                                Todos selecionados
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <label for="cliente">Cliente / Fornecedor</label>
+                <select id="cliente" name="cliente">
+                    <option value="">Todos</option>
+                </select>
             </div>
 
             <div class="campo-filtro">
@@ -1122,7 +1078,7 @@
     <script src="js/indicadores-financeiros.js?v=7"></script>
     <script src="js/graficos-financeiros.js?v=14"></script>
     <script src="js/bancos-financeiros.js?v=7"></script>
-    <script src="js/filtros-financeiro.js?v=23"></script>
+    <script src="js/filtros-financeiro.js?v=7"></script>
     <script src="js/importacao-planilha.js?v=7"></script>
     <script src="js/contas-receber.js?v=20"></script>
     <script src="js/contas-pagar.js?v=21"></script>
