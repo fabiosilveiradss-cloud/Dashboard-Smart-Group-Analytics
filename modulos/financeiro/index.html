@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="css/tabelas-financeiras.css?v=12">
     <link rel="stylesheet" href="css/contas-receber.css?v=20">
     <link rel="stylesheet" href="css/contas-pagar.css?v=21">
+    <link rel="stylesheet" href="css/fluxo-caixa.css?v=22">
 </head>
 
 <body>
@@ -593,30 +594,197 @@
                     </div>
                 </section>
             </section>
+            <section class="pagina-financeiro" id="fluxo-caixa">
 
-<section class="pagina-financeiro" id="fluxo-caixa">
-
-                <div class="pagina-cabecalho">
+                <div class="pagina-cabecalho fluxo-cabecalho">
                     <div>
                         <h2>Fluxo de Caixa</h2>
-                        <p>
-                            Entradas, saídas, saldo e projeção financeira.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="estado-inicial">
-                    <div class="estado-inicial-icone">
-                        <i class="fa-solid fa-chart-line"></i>
+                        <p>Entradas, saídas, saldos e projeções financeiras.</p>
                     </div>
 
-                    <h3>Fluxo de Caixa</h3>
-                    <p>Conteúdo em preparação.</p>
+                    <button
+                        type="button"
+                        class="btn-exportar-fluxo"
+                        id="btnExportarFluxo"
+                    >
+                        <i class="fa-solid fa-file-csv"></i>
+                        Exportar movimentações
+                    </button>
                 </div>
+
+                <section class="fluxo-filtros">
+                    <label>
+                        <span>Visão</span>
+                        <select id="fluxoVisao">
+                            <option value="diario">Diária</option>
+                            <option value="semanal">Semanal</option>
+                            <option value="mensal" selected>Mensal</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Cenário</span>
+                        <select id="fluxoCenario">
+                            <option value="consolidado">Realizado + previsto</option>
+                            <option value="realizado">Somente realizado</option>
+                            <option value="previsto">Somente previsto</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Data inicial</span>
+                        <input type="date" id="fluxoDataInicio">
+                    </label>
+
+                    <label>
+                        <span>Data final</span>
+                        <input type="date" id="fluxoDataFim">
+                    </label>
+
+                    <label>
+                        <span>Tipo</span>
+                        <select id="fluxoTipo">
+                            <option value="">Entradas e saídas</option>
+                            <option value="entrada">Somente entradas</option>
+                            <option value="saida">Somente saídas</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Local de cobrança</span>
+                        <select id="fluxoLocal">
+                            <option value="">Todos</option>
+                        </select>
+                    </label>
+
+                    <button
+                        type="button"
+                        class="btn-limpar-fluxo"
+                        id="btnLimparFluxo"
+                    >
+                        <i class="fa-solid fa-eraser"></i>
+                        Limpar
+                    </button>
+                </section>
+
+                <section class="fluxo-kpis">
+                    <article>
+                        <span>Entradas realizadas</span>
+                        <strong class="positivo" id="fluxoEntradasRealizadas">R$ 0,00</strong>
+                        <small id="fluxoQtdEntradasRealizadas">0 movimentações</small>
+                    </article>
+
+                    <article>
+                        <span>Saídas realizadas</span>
+                        <strong class="negativo" id="fluxoSaidasRealizadas">R$ 0,00</strong>
+                        <small id="fluxoQtdSaidasRealizadas">0 movimentações</small>
+                    </article>
+
+                    <article>
+                        <span>Saldo realizado</span>
+                        <strong id="fluxoSaldoRealizado">R$ 0,00</strong>
+                        <small>Entradas menos saídas pagas</small>
+                    </article>
+
+                    <article>
+                        <span>Entradas previstas</span>
+                        <strong class="previsto" id="fluxoEntradasPrevistas">R$ 0,00</strong>
+                        <small id="fluxoQtdEntradasPrevistas">0 títulos</small>
+                    </article>
+
+                    <article>
+                        <span>Saídas previstas</span>
+                        <strong class="alerta" id="fluxoSaidasPrevistas">R$ 0,00</strong>
+                        <small id="fluxoQtdSaidasPrevistas">0 títulos</small>
+                    </article>
+
+                    <article>
+                        <span>Saldo projetado</span>
+                        <strong id="fluxoSaldoProjetado">R$ 0,00</strong>
+                        <small>Realizado + previsão líquida</small>
+                    </article>
+                </section>
+
+                <section class="fluxo-grafico-card">
+                    <div class="fluxo-card-titulo">
+                        <div>
+                            <h3>Evolução do Fluxo de Caixa</h3>
+                            <p>Entradas, saídas e saldo acumulado do período.</p>
+                        </div>
+
+                        <div class="fluxo-legenda">
+                            <span><i class="entrada"></i>Entradas</span>
+                            <span><i class="saida"></i>Saídas</span>
+                            <span><i class="saldo"></i>Saldo acumulado</span>
+                        </div>
+                    </div>
+
+                    <div class="fluxo-grafico-area">
+                        <canvas id="graficoFluxoCaixaDetalhado"></canvas>
+                    </div>
+                </section>
+
+                <section class="fluxo-tabela-card">
+                    <div class="fluxo-tabela-topo">
+                        <div>
+                            <h3>Movimentações do Fluxo</h3>
+                            <p id="fluxoResumoTabela">Carregue uma planilha para visualizar.</p>
+                        </div>
+
+                        <label>
+                            Exibir
+                            <select id="fluxoPorPagina">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="fluxo-tabela-wrapper">
+                        <table class="fluxo-tabela">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Cenário</th>
+                                    <th>Tipo</th>
+                                    <th>Cliente/Fornecedor</th>
+                                    <th>Documento</th>
+                                    <th>Vencimento</th>
+                                    <th>Pagamento</th>
+                                    <th>Local de cobrança</th>
+                                    <th>Plano financeiro</th>
+                                    <th>Valor</th>
+                                    <th>Impacto</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="fluxoTabelaCorpo">
+                                <tr>
+                                    <td colspan="11" class="fluxo-vazio">
+                                        Carregue uma planilha para visualizar.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="fluxo-paginacao">
+                        <button type="button" id="fluxoPaginaAnterior">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+
+                        <span id="fluxoInfoPagina">Página 1 de 1</span>
+
+                        <button type="button" id="fluxoProximaPagina">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </section>
 
             </section>
 
-            <section class="pagina-financeiro" id="bancos">
+<section class="pagina-financeiro" id="bancos">
 
                 <div class="pagina-cabecalho">
                     <div>
@@ -903,6 +1071,7 @@
     <script src="js/importacao-planilha.js?v=7"></script>
     <script src="js/contas-receber.js?v=20"></script>
     <script src="js/contas-pagar.js?v=21"></script>
+    <script src="js/fluxo-caixa.js?v=22"></script>
     <script src="financeiro.js?v=7"></script>
 
 </body>

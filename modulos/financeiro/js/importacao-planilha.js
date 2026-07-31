@@ -31,6 +31,10 @@ function configurarImportacaoPlanilha() {
                 atualizarContasPagar(lancamentosFinanceiros);
             }
 
+            if (typeof atualizarFluxoCaixa === "function") {
+                atualizarFluxoCaixa(lancamentosFinanceiros);
+            }
+
             preencherFiltrosComDados();
             preencherFiltroBancos(true);
             renderizarBancos();
