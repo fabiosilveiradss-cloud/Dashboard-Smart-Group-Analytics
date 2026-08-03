@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Compras e Suprimentos</title>
+    <link rel="stylesheet" href="compras.css?v=1">
+    <style>
+        html { visibility: hidden; }
+    </style>
+</head>
+
+<body>
+
+    <main class="compras-modulo">
+
+        <div class="compras-barra">
+            <span>Análise Integrada de Suprimentos</span>
+
+            <a
+                href="https://smartstocksight.onrender.com"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Abrir em nova aba
+            </a>
+        </div>
+
+        <iframe
+            src="https://smartstocksight.onrender.com"
+            title="Análise Integrada de Suprimentos"
+            loading="eager"
+            allow="fullscreen"
+            referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+
+    </main>
+
+    <script type="module">
+
+        import {
+            protegerModulo
+        } from "../../module-guard.js?v=3";
+
+        try {
+            await protegerModulo("compras");
+        } catch (erro) {
+            console.warn(
+                "Acesso ao módulo Compras interrompido:",
+                erro.message
+            );
+        }
+
+    </script>
+
+</body>
+</html>

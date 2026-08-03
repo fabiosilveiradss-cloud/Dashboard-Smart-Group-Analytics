@@ -10,6 +10,7 @@ const mapaPermissoes = {
     estoque: "estoque",
     vendas: "vendas",
     financeiro: "financeiro",
+    compras: "compras",
     usuarios: "usuarios",
     permissoes: "usuarios",
     logs: "usuarios",
@@ -102,6 +103,24 @@ break;
             src="modulos/financeiro/index.html?v=3"
             class="iframe-modulo"
             title="Módulo Financeiro"
+            frameborder="0">
+        </iframe>
+    `;
+
+break;
+
+ case "compras":
+
+    titulo.innerText = "Compras e Suprimentos";
+
+    subtitulo.innerText =
+    "Análise integrada de estoque, compras, consumo e produção.";
+
+    conteudo.innerHTML = `
+        <iframe
+            src="modulos/compras/index.html?v=1"
+            class="iframe-modulo"
+            title="Módulo Compras e Suprimentos"
             frameborder="0">
         </iframe>
     `;
@@ -313,6 +332,13 @@ function gerarCardsDashboardPermitidos() {
                 "Acompanhe recebimentos, pagamentos e fluxo de caixa."
         },
         {
+            modulo: "compras",
+            icone: "fa-solid fa-cart-shopping",
+            titulo: "Compras e Suprimentos",
+            descricao:
+                "Acompanhe compras, estoque, consumo e produção."
+        },
+        {
             modulo: "usuarios",
             icone: "fa-solid fa-shield-halved",
             titulo: "Controle de Acesso",
@@ -405,6 +431,16 @@ const modulosBusca = [
         nome: "Vendas",
         descricao: "Faturamento, clientes e produtos vendidos",
         modulo: "vendas"
+    },
+    {
+        nome: "Financeiro",
+        descricao: "Recebimentos, pagamentos e fluxo de caixa",
+        modulo: "financeiro"
+    },
+    {
+        nome: "Compras e Suprimentos",
+        descricao: "Compras, estoque, consumo e produção",
+        modulo: "compras"
     }
 ];
 
@@ -431,22 +467,10 @@ function fecharResultadoBusca() {
 
 function selecionarModuloBusca(modulo) {
 
-    const linksMenu =
-        document.querySelectorAll(".menu a");
-
-    let elementoMenu = null;
-
-    if (modulo === "dashboard") {
-        elementoMenu = linksMenu[0];
-    }
-
-    if (modulo === "estoque") {
-        elementoMenu = linksMenu[1];
-    }
-
-    if (modulo === "vendas") {
-        elementoMenu = linksMenu[2];
-    }
+    const elementoMenu =
+        document.querySelector(
+            `.menu a[data-modulo="${modulo}"]`
+        );
 
     if (elementoMenu) {
         abrirModulo(modulo, elementoMenu);
