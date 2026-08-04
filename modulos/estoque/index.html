@@ -8,7 +8,7 @@
 
     <title>Dashboard Estoque Comercial</title>
 
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
     <link rel="stylesheet" href="responsive.css">
 
     <link rel="stylesheet"
@@ -174,12 +174,38 @@
 
             <h2>📦 Produtos</h2>
 
-<div class="barra-pesquisa-tabela">
+<div class="acoes-produtos">
 
-    <input
-        type="text"
-        id="pesquisaProduto"
-        placeholder="Pesquisar código ou descrição...">
+    <div class="barra-pesquisa-tabela">
+
+        <input
+            type="text"
+            id="pesquisaProduto"
+            placeholder="Pesquisar código ou descrição...">
+
+    </div>
+
+    <div class="botoes-exportacao">
+
+        <button
+            type="button"
+            id="btnExportarTodos"
+            class="btn-exportar btn-exportar-todos"
+            title="Exportar todo o estoque para Excel">
+            <i class="fa-solid fa-file-excel"></i>
+            Exportar todos
+        </button>
+
+        <button
+            type="button"
+            id="btnExportarPesquisa"
+            class="btn-exportar btn-exportar-pesquisa"
+            title="Exportar apenas o resultado atual da pesquisa e dos filtros">
+            <i class="fa-solid fa-filter-circle-down"></i>
+            Exportar pesquisa
+        </button>
+
+    </div>
 
 </div>
 
@@ -218,6 +244,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <script src="./js/util.js"></script>
 <script src="./js/processamento.js"></script>
@@ -229,7 +256,7 @@
 <script src="./js/graficoFamilia.js?v=8"></script>
 <script src="./js/tabela.js?v=16"></script>
 <script src="./js/filtros.js"></script>
-<script src="./js/excel.js"></script>
+<script src="./js/excel.js?v=2"></script>
 <script src="./js/app.js?v=9"></script>
 
 
