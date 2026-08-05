@@ -1,0 +1,2 @@
+@media(max-width:1180px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr 1fr auto}.upload-card{grid-column:1/-1;grid-row:auto}}
+@media(max-width:720px){.comex-shell{padding:15px}.module-header{flex-direction:column}.update-status{white-space:normal}.brand-title h1{font-size:22px}.toolbar{grid-template-columns:1fr}.upload-card{grid-column:auto}.kpi-grid{grid-template-columns:1fr}.timeline{justify-content:flex-start}.timeline:before{left:70px;right:70px}.panel-header{align-items:flex-start;gap:12px}.panel-header .btn{flex:0 0 auto}}

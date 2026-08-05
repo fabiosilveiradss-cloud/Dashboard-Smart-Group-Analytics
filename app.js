@@ -11,6 +11,7 @@ const mapaPermissoes = {
     vendas: "vendas",
     financeiro: "financeiro",
     compras: "compras",
+    comex: "comex",
     usuarios: "usuarios",
     permissoes: "usuarios",
     logs: "usuarios",
@@ -126,6 +127,25 @@ break;
     `;
 
 break;
+
+case "comex":
+
+    titulo.innerText = "COMEX";
+
+    subtitulo.innerText =
+    "Gestão de importações e entregas por material.";
+
+    conteudo.innerHTML = `
+        <iframe
+            src="modulos/comex/index.html?v=1"
+            class="iframe-modulo"
+            title="Módulo COMEX"
+            frameborder="0">
+        </iframe>
+    `;
+
+break;
+
 
  case "usuarios":
 
@@ -339,6 +359,13 @@ function gerarCardsDashboardPermitidos() {
                 "Acompanhe compras, estoque, consumo e produção."
         },
         {
+            modulo: "comex",
+            icone: "fa-solid fa-ship",
+            titulo: "COMEX",
+            descricao:
+                "Acompanhe importações, invoices e entregas por material."
+        },
+        {
             modulo: "usuarios",
             icone: "fa-solid fa-shield-halved",
             titulo: "Controle de Acesso",
@@ -441,6 +468,11 @@ const modulosBusca = [
         nome: "Compras e Suprimentos",
         descricao: "Compras, estoque, consumo e produção",
         modulo: "compras"
+    },
+    {
+        nome: "COMEX",
+        descricao: "Importações, invoices, embarques e entregas por material",
+        modulo: "comex"
     }
 ];
 

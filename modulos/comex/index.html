@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COMEX — Smart Group Analytics</title>
+  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="responsive.css?v=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div id="appComex" class="comex-shell">
+    <header class="module-header">
+      <div class="brand-title">
+        <img src="imagens/logo.png" alt="Smart Group">
+        <div>
+          <span class="eyebrow">SMART GROUP · COMEX</span>
+          <h1 id="pageTitle">Entregas por Material</h1>
+          <p id="pageSubtitle">Acompanhe o detalhamento das importações por material em tempo real.</p>
+        </div>
+      </div>
+      <div class="update-status">
+        <i class="fa-regular fa-calendar"></i>
+        <span id="currentDate">--/--/----</span>
+        <b></b>
+        <span id="lastUpdate">Aguardando documento</span>
+      </div>
+    </header>
+
+    <nav class="comex-nav" aria-label="Navegação do COMEX">
+      <button data-view="dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
+      <button data-view="entregas" class="active"><i class="fa-solid fa-boxes-stacked"></i> Entregas por Material</button>
+      <button data-view="containers"><i class="fa-solid fa-box"></i> Containers</button>
+      <button data-view="invoices"><i class="fa-solid fa-file-invoice"></i> Invoices</button>
+      <button data-view="embarques"><i class="fa-solid fa-ship"></i> Embarques</button>
+      <button data-view="fornecedores"><i class="fa-solid fa-building"></i> Fornecedores</button>
+      <button data-view="documentos"><i class="fa-solid fa-folder-open"></i> Documentos</button>
+      <button data-view="historico"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</button>
+      <button data-view="relatorios"><i class="fa-solid fa-chart-column"></i> Relatórios</button>
+    </nav>
+
+    <main id="mainContent">
+      <section id="entregasView" class="view active">
+        <section class="toolbar">
+          <label class="field">
+            <span>Material</span>
+            <select id="materialFilter"><option value="">Todos os materiais</option></select>
+          </label>
+          <label class="field">
+            <span>Cor</span>
+            <select id="colorFilter"><option value="">Todas as cores</option></select>
+          </label>
+          <button id="clearFilters" class="btn btn-outline"><i class="fa-solid fa-filter-circle-xmark"></i> Limpar filtros</button>
+          <label class="upload-card" for="fileInput">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <strong>Carregar Documento</strong>
+            <small>Clique ou arraste o arquivo aqui</small>
+            <em>XLSX / XLS / CSV</em>
+            <input id="fileInput" type="file" accept=".xlsx,.xls,.csv">
+          </label>
+        </section>
+
+        <section class="kpi-grid">
+          <article class="kpi-card kpi-blue">
+            <div class="kpi-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div><span>Total do Material</span><strong id="totalMaterial">0</strong><small id="unitLabel">Quantidade consolidada</small></div>
+          </article>
+          <article class="kpi-card kpi-indigo">
+            <div class="kpi-icon"><i class="fa-regular fa-file-lines"></i></div>
+            <div><span>Invoices</span><strong id="totalInvoices">0</strong><small>Total de invoices</small></div>
+          </article>
+          <article class="kpi-card kpi-green">
+            <div class="kpi-icon"><i class="fa-solid fa-ship"></i></div>
+            <div><span>Chegada mais próxima</span><strong id="nextArrival">—</strong><small id="nextArrivalPlace">Sem previsão</small></div>
+          </article>
+          <article class="kpi-card kpi-orange">
+            <div class="kpi-icon"><i class="fa-solid fa-truck"></i></div>
+            <div><span>Entrega mais próxima na Smart</span><strong id="nextDelivery">—</strong><small>Previsão de entrega</small></div>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Entregas por Invoice</h2>
+              <p id="resultSummary">Nenhum registro carregado</p>
+            </div>
+            <button id="exportButton" class="btn btn-outline"><i class="fa-solid fa-download"></i> Exportar</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Invoice</th><th>Fornecedor</th><th>Qtd.</th><th>Chegada Porto / Aeroporto</th>
+                <th>Previsão Entrega na Smart</th><th>Status</th><th>Origem</th><th>Nº Pedido</th>
+              </tr></thead>
+              <tbody id="deliveryRows"></tbody>
+              <tfoot><tr><td colspan="2">TOTAL</td><td id="tableTotal">0</td><td colspan="5">—</td></tr></tfoot>
+            </table>
+            <div id="emptyState" class="empty-state">
+              <i class="fa-solid fa-file-circle-plus"></i>
+              <h3>Carregue a planilha de entregas</h3>
+              <p>O dashboard será preenchido automaticamente.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel timeline-panel">
+          <div class="panel-header"><div><h2>Linha do Tempo — Principais Datas</h2><p>Próximas chegadas e entregas previstas</p></div></div>
+          <div id="timeline" class="timeline"></div>
+        </section>
+      </section>
+
+      <section id="placeholderView" class="view placeholder-view">
+        <div class="placeholder-card">
+          <div class="placeholder-icon"><i id="placeholderIcon" class="fa-solid fa-cube"></i></div>
+          <span class="eyebrow">MÓDULO COMEX</span>
+          <h2 id="placeholderTitle">Em desenvolvimento</h2>
+          <p id="placeholderText">A estrutura já está pronta para receber esta área sem impactar os demais módulos.</p>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status"></div>
+  </div>
+
+  <script type="module" src="js/app.js?v=1"></script>
+</body>
+</html>
