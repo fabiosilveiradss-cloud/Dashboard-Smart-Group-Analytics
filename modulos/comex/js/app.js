@@ -45,7 +45,7 @@ const VIEW_META = {
 const ALIASES = {
   material: ["material", "descricao material", "descrição material", "produto", "item", "descricao", "descrição"],
   color: ["cor", "color", "colour"],
-  invoice: ["invoice", "n invoice", "nº invoice", "numero invoice", "número invoice", "fatura"],
+  invoice: ["invoice", "nr invoice", "n r invoice", "n invoice", "nº invoice", "numero invoice", "número invoice", "fatura"],
   supplier: ["fornecedor", "supplier", "fabricante"],
   qty: ["qtd", "quantidade", "qty", "quantity", "quantidade mts", "qtd mts", "saldo"],
   unit: ["unidade", "und", "unit", "um", "u.m."],
@@ -96,15 +96,104 @@ function excelDateToDate(value) {
     const parsed = XLSX.SSF.parse_date_code(value);
     if (parsed) return new Date(parsed.y, parsed.m - 1, parsed.d);
   }
+
   const text = String(value).trim();
-  const br = text.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
-  if (br) {
-    let year = Number(br[3]); if (year < 100) year += 2000;
-    const d = new Date(year, Number(br[2]) - 1, Number(br[1]));
-    return isNaN(d) ? null : d;
+  if (!text) return null;
+
+  // As células da planilha podem conter textos como:
+  // "Embarcou 5/7/2026 e chegada prevista no porto 12/08/2026".
+  // Para os indicadores usamos a última data informada no texto.
+  const matches = [...text.matchAll(/(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?/g)];
+  if (matches.length) {
+    let fallbackYear = null;
+    for (const match of matches) {
+      if (match[3]) {
+        fallbackYear = Number(match[3]);
+        if (fallbackYear < 100) fallbackYear += 2000;
+      }
+    }
+    const match = matches[matches.length - 1];
+    let year = match[3] ? Number(match[3]) : fallbackYear;
+    if (year != null && year < 100) year += 2000;
+    if (year == null) year = new Date().getFullYear();
+    const date = new Date(year, Number(match[2]) - 1, Number(match[1]));
+    return isNaN(date) ? null : date;
   }
-  const d = new Date(text);
-  return isNaN(d) ? null : d;
+
+  const parsed = new Date(text);
+  return isNaN(parsed) ? null : parsed;
+}
+
+function cellText(value) {
+  if (value == null) return "";
+  if (value instanceof Date && !isNaN(value)) return formatDate(value);
+  return String(value).trim();
+}
+
+function headerScore(row) {
+  const headers = row.map(cellText);
+  let score = 0;
+  Object.values(ALIASES).forEach(aliases => {
+    if (findColumn(headers, aliases)) score += 1;
+  });
+  return score;
+}
+
+function findHeaderRow(matrix) {
+  let bestIndex = -1;
+  let bestScore = 0;
+  const limit = Math.min(matrix.length, 30);
+  for (let index = 0; index < limit; index++) {
+    const score = headerScore(matrix[index] || []);
+    if (score > bestScore) {
+      bestScore = score;
+      bestIndex = index;
+    }
+  }
+  return bestScore >= 3 ? { index: bestIndex, score: bestScore } : null;
+}
+
+function matrixToObjects(matrix, headerIndex) {
+  const rawHeaders = matrix[headerIndex] || [];
+  const headers = rawHeaders.map((value, index) => cellText(value) || `__COL_${index}`);
+  return matrix.slice(headerIndex + 1).map(row => {
+    const result = {};
+    headers.forEach((header, index) => result[header] = row?.[index] ?? "");
+    return result;
+  });
+}
+
+function fillDownRows(rawRows, cols) {
+  // Na planilha Smart_STK_TH, os valores mesclados são expandidos antes
+  // desta etapa. Aqui mantemos somente campos auxiliares, evitando que
+  // datas de um bloco sejam copiadas indevidamente para o bloco seguinte.
+  const fillKeys = ["order", "place", "status", "origin", "supplier"];
+  const last = {};
+
+  return rawRows.map(row => {
+    const copy = { ...row };
+
+    // Linhas de separação/título encerram o contexto anterior.
+    const hasMaterial = cols.material && cellText(copy[cols.material]);
+    const hasInvoice = cols.invoice && cellText(copy[cols.invoice]);
+    const hasQty = cols.qty && parseNumber(copy[cols.qty]) !== 0;
+
+    if (!hasMaterial && !hasInvoice && !hasQty) {
+      Object.keys(last).forEach(key => delete last[key]);
+      return copy;
+    }
+
+    fillKeys.forEach(key => {
+      const column = cols[key];
+      if (!column) return;
+      const value = copy[column];
+      const hasValue = value !== "" && value != null;
+      if (hasValue) last[key] = value;
+      else if (last[key] !== undefined) copy[column] = last[key];
+    });
+
+    return copy;
+  });
 }
 
 function formatDate(date) {
@@ -138,34 +227,124 @@ function mapRows(rawRows) {
   const required = ["material", "invoice", "qty"];
   const missing = required.filter(key => !cols[key]);
   if (missing.length) {
-    throw new Error("Não encontrei as colunas obrigatórias: Material, Invoice e Quantidade.");
+    throw new Error("Não encontrei as colunas obrigatórias: Material, Nr. Invoice e Quantidade.");
   }
 
-  return rawRows.map((row, index) => ({
-    id: index + 1,
-    material: String(row[cols.material] ?? "").trim(),
-    color: String(cols.color ? row[cols.color] ?? "" : "").trim(),
-    invoice: String(row[cols.invoice] ?? "").trim(),
-    supplier: String(cols.supplier ? row[cols.supplier] ?? "" : "").trim(),
-    qty: parseNumber(row[cols.qty]),
-    unit: String(cols.unit ? row[cols.unit] ?? "MTS" : "MTS").trim() || "MTS",
-    arrival: excelDateToDate(cols.arrival ? row[cols.arrival] : null),
-    place: String(cols.place ? row[cols.place] ?? "" : "").trim(),
-    delivery: excelDateToDate(cols.delivery ? row[cols.delivery] : null),
-    status: String(cols.status ? row[cols.status] ?? "" : "").trim(),
-    origin: String(cols.origin ? row[cols.origin] ?? "" : "").trim(),
-    order: String(cols.order ? row[cols.order] ?? "" : "").trim()
-  })).filter(row => row.material || row.invoice || row.qty);
+  const completedRows = fillDownRows(rawRows, cols);
+
+  return completedRows.map((row, index) => {
+    const arrivalRaw = cols.arrival ? row[cols.arrival] : null;
+    const deliveryRaw = cols.delivery ? row[cols.delivery] : null;
+    return {
+      id: index + 1,
+      material: cellText(row[cols.material]),
+      color: cellText(cols.color ? row[cols.color] : ""),
+      invoice: cellText(row[cols.invoice]),
+      supplier: cellText(cols.supplier ? row[cols.supplier] : ""),
+      qty: parseNumber(row[cols.qty]),
+      unit: cellText(cols.unit ? row[cols.unit] : "MTS") || "MTS",
+      arrival: excelDateToDate(arrivalRaw),
+      arrivalNote: cellText(arrivalRaw),
+      place: cellText(cols.place ? row[cols.place] : ""),
+      delivery: excelDateToDate(deliveryRaw),
+      deliveryNote: cellText(deliveryRaw),
+      status: cellText(cols.status ? row[cols.status] : ""),
+      origin: cellText(cols.origin ? row[cols.origin] : ""),
+      order: cellText(cols.order ? row[cols.order] : "")
+    };
+  }).filter(row =>
+    row.material &&
+    row.invoice &&
+    row.qty !== 0 &&
+    normalizeText(row.material) !== "material"
+  );
+}
+
+function expandMergedCells(sheet, matrix) {
+  const merges = sheet["!merges"] || [];
+  const range = XLSX.utils.decode_range(sheet["!ref"] || "A1");
+
+  merges.forEach(merge => {
+    const sourceRow = merge.s.r - range.s.r;
+    const sourceCol = merge.s.c - range.s.c;
+    const value = matrix[sourceRow]?.[sourceCol] ?? "";
+
+    for (let row = merge.s.r; row <= merge.e.r; row++) {
+      const matrixRow = row - range.s.r;
+      if (!matrix[matrixRow]) matrix[matrixRow] = [];
+
+      for (let col = merge.s.c; col <= merge.e.c; col++) {
+        const matrixCol = col - range.s.c;
+        matrix[matrixRow][matrixCol] = value;
+      }
+    }
+  });
+
+  return matrix;
+}
+
+function getSmartSheet(workbook) {
+  // Prioridade absoluta para a aba oficial do COMEX.
+  const exactName = workbook.SheetNames.find(
+    name => normalizeText(name) === normalizeText("Smart_STK_TH")
+  );
+
+  if (!exactName) {
+    throw new Error(
+      'A aba obrigatória "Smart_STK_TH" não foi encontrada. ' +
+      'Confira o nome da aba e carregue novamente a planilha.'
+    );
+  }
+
+  return {
+    name: exactName,
+    sheet: workbook.Sheets[exactName]
+  };
 }
 
 async function readFile(file) {
-  if (!window.XLSX) throw new Error("Biblioteca de leitura do Excel não carregada.");
+  if (!window.XLSX) {
+    throw new Error("Biblioteca de leitura do Excel não carregada.");
+  }
+
   const buffer = await file.arrayBuffer();
-  const workbook = XLSX.read(buffer, { type: "array", cellDates: true });
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  if (!sheet) throw new Error("A planilha não possui uma aba válida.");
-  const raw = XLSX.utils.sheet_to_json(sheet, { defval: "", raw: true });
-  return mapRows(raw);
+  const workbook = XLSX.read(buffer, {
+    type: "array",
+    cellDates: true,
+    cellText: true
+  });
+
+  const selected = getSmartSheet(workbook);
+
+  let matrix = XLSX.utils.sheet_to_json(selected.sheet, {
+    header: 1,
+    defval: "",
+    raw: true,
+    blankrows: true
+  });
+
+  // Replica o conteúdo das células mescladas em todas as linhas do bloco.
+  // Isso é necessário para as colunas OC, Chegada e Previsão de Entrega.
+  matrix = expandMergedCells(selected.sheet, matrix);
+
+  const header = findHeaderRow(matrix);
+  if (!header) {
+    throw new Error(
+      'A aba "Smart_STK_TH" foi encontrada, mas o cabeçalho esperado não foi localizado. ' +
+      'São necessárias as colunas Nr. Invoice, Material e Quantidade.'
+    );
+  }
+
+  const rawRows = matrixToObjects(matrix, header.index);
+  const rows = mapRows(rawRows);
+
+  if (!rows.length) {
+    throw new Error(
+      'A aba "Smart_STK_TH" foi localizada, porém nenhuma linha válida foi encontrada.'
+    );
+  }
+
+  return rows;
 }
 
 function uniqueSorted(values) {
@@ -224,8 +403,8 @@ function render() {
       <td>${escapeHtml(row.invoice || "—")}</td>
       <td>${escapeHtml(row.supplier || "—")}</td>
       <td>${formatNumber(row.qty)} ${escapeHtml(row.unit)}</td>
-      <td>${formatDate(row.arrival)}${row.place ? `<br><small>${escapeHtml(row.place)}</small>` : ""}</td>
-      <td>${formatDate(row.delivery)}</td>
+      <td>${formatDate(row.arrival)}${row.place ? `<br><small>${escapeHtml(row.place)}</small>` : ""}${row.arrivalNote && row.arrivalNote !== formatDate(row.arrival) ? `<br><small title="${escapeHtml(row.arrivalNote)}">${escapeHtml(row.arrivalNote)}</small>` : ""}</td>
+      <td>${formatDate(row.delivery)}${row.deliveryNote && row.deliveryNote !== formatDate(row.delivery) ? `<br><small title="${escapeHtml(row.deliveryNote)}">${escapeHtml(row.deliveryNote)}</small>` : ""}</td>
       <td><span class="status ${css}">${status}</span></td>
       <td>${escapeHtml(row.origin || "—")}</td>
       <td>${escapeHtml(row.order || "—")}</td>
