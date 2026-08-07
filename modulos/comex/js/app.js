@@ -1148,6 +1148,492 @@ function exportEmbarques() {
 }
 
 
+
+
+// ============================================================
+// ETAPA 5 - FORNECEDORES
+// Executa somente quando a guia Fornecedores é aberta.
+// ============================================================
+
+function groupBySupplier(rows) {
+  const map = new Map();
+
+  rows
+    .filter(row => row.supplier)
+    .forEach(row => {
+      const key = row.supplier;
+
+      if (!map.has(key)) {
+        map.set(key, {
+          supplier: key,
+          invoices: new Set(),
+          rows: 0,
+          qty: 0,
+          late: 0,
+          deliveries: [],
+          units: new Set()
+        });
+      }
+
+      const item = map.get(key);
+
+      item.rows += 1;
+      item.qty += row.qty || 0;
+
+      if (row.invoice) {
+        item.invoices.add(row.invoice);
+      }
+
+      if (row.unit) {
+        item.units.add(row.unit);
+      }
+
+      if (
+        statusInfo(
+          row.status,
+          row.delivery
+        )[0] === "Atrasado"
+      ) {
+        item.late += 1;
+      }
+
+      if (row.delivery) {
+        item.deliveries.push(row.delivery);
+      }
+    });
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return [...map.values()]
+    .map(item => {
+      const futureDeliveries =
+        item.deliveries
+          .filter(date => date >= today)
+          .sort((a, b) => a - b);
+
+      return {
+        ...item,
+        unitList: [...item.units],
+        nextDelivery:
+          futureDeliveries[0] || null
+      };
+    })
+    .sort(
+      (a, b) =>
+        b.qty - a.qty ||
+        b.invoices.size - a.invoices.size
+    );
+}
+
+
+function supplierStatus(item) {
+  if (item.late > 0) {
+    return {
+      label: "Atenção",
+      css: "status-atrasado"
+    };
+  }
+
+  return {
+    label: "Regular",
+    css: "status-transito"
+  };
+}
+
+
+function renderSuppliers() {
+  const rowsEl =
+    document.getElementById(
+      "supplierRows"
+    );
+
+  if (!rowsEl) {
+    return;
+  }
+
+  const suppliers =
+    groupBySupplier(
+      state.rows
+    );
+
+  const rowsWithSupplier =
+    state.rows.filter(
+      row => row.supplier
+    );
+
+  const invoicesWithSupplier =
+    new Set(
+      rowsWithSupplier
+        .map(row => row.invoice)
+        .filter(Boolean)
+    );
+
+  const qty =
+    rowsWithSupplier.reduce(
+      (sum, row) =>
+        sum + (row.qty || 0),
+      0
+    );
+
+  const missing =
+    state.rows.filter(
+      row => !row.supplier
+    ).length;
+
+
+  const countEl =
+    document.getElementById(
+      "supplierCount"
+    );
+
+  const invoiceEl =
+    document.getElementById(
+      "supplierInvoices"
+    );
+
+  const qtyEl =
+    document.getElementById(
+      "supplierQty"
+    );
+
+  const missingEl =
+    document.getElementById(
+      "supplierMissing"
+    );
+
+  const summaryEl =
+    document.getElementById(
+      "supplierSummary"
+    );
+
+  const rankingEl =
+    document.getElementById(
+      "supplierRanking"
+    );
+
+  const attentionEl =
+    document.getElementById(
+      "supplierAttention"
+    );
+
+  const emptyEl =
+    document.getElementById(
+      "supplierEmpty"
+    );
+
+
+  if (countEl) {
+    countEl.textContent =
+      suppliers.length;
+  }
+
+  if (invoiceEl) {
+    invoiceEl.textContent =
+      invoicesWithSupplier.size;
+  }
+
+  if (qtyEl) {
+    qtyEl.textContent =
+      formatNumber(qty);
+  }
+
+  if (missingEl) {
+    missingEl.textContent =
+      missing;
+  }
+
+
+  if (summaryEl) {
+    summaryEl.textContent =
+      suppliers.length
+        ? `${suppliers.length} fornecedor(es) identificado(s)`
+        : (
+            state.rows.length
+              ? "A coluna Fornecedor não existe ou está vazia na planilha atual"
+              : "Nenhuma base carregada"
+          );
+  }
+
+
+  rowsEl.innerHTML =
+    suppliers
+      .map(item => {
+        const status =
+          supplierStatus(item);
+
+        return `
+          <tr>
+
+            <td>
+              <strong>
+                ${escapeHtml(
+                  item.supplier
+                )}
+              </strong>
+            </td>
+
+            <td>
+              ${item.invoices.size}
+            </td>
+
+            <td>
+              ${item.rows}
+            </td>
+
+            <td>
+              ${formatNumber(
+                item.qty
+              )}
+              ${escapeHtml(
+                item.unitList.join(", ")
+              )}
+            </td>
+
+            <td>
+              ${item.late}
+            </td>
+
+            <td>
+              ${formatDate(
+                item.nextDelivery
+              )}
+            </td>
+
+            <td>
+              <span
+                class="status ${status.css}"
+              >
+                ${status.label}
+              </span>
+            </td>
+
+          </tr>
+        `;
+      })
+      .join("");
+
+
+  if (rankingEl) {
+    const maxQty =
+      Math.max(
+        1,
+        ...suppliers.map(
+          item => item.qty
+        )
+      );
+
+    rankingEl.innerHTML =
+      suppliers.length
+        ? suppliers
+            .slice(0, 8)
+            .map(
+              (item, index) => {
+
+                const percent =
+                  Math.round(
+                    (
+                      item.qty /
+                      maxQty
+                    ) * 100
+                  );
+
+                return `
+                  <div class="supplier-ranking-row">
+
+                    <div class="supplier-ranking-order">
+                      ${index + 1}
+                    </div>
+
+                    <div class="supplier-ranking-main">
+
+                      <div class="supplier-ranking-meta">
+                        <strong
+                          title="${escapeHtml(
+                            item.supplier
+                          )}"
+                        >
+                          ${escapeHtml(
+                            item.supplier
+                          )}
+                        </strong>
+
+                        <span>
+                          ${formatNumber(
+                            item.qty
+                          )}
+                          ${escapeHtml(
+                            item.unitList.join(", ")
+                          )}
+                        </span>
+                      </div>
+
+                      <div class="supplier-ranking-bar">
+                        <div
+                          style="width:${percent}%"
+                        ></div>
+                      </div>
+
+                      <small>
+                        ${item.invoices.size}
+                        invoice(s)
+                        ·
+                        ${item.rows}
+                        registro(s)
+                      </small>
+
+                    </div>
+
+                  </div>
+                `;
+              }
+            )
+            .join("")
+        : `
+            <div
+              class="empty-state"
+              style="min-height:180px"
+            >
+              <p>
+                Nenhum fornecedor identificado.
+              </p>
+            </div>
+          `;
+  }
+
+
+  if (attentionEl) {
+    const attention =
+      suppliers
+        .filter(
+          item => item.late > 0
+        )
+        .sort(
+          (a, b) =>
+            b.late - a.late ||
+            b.qty - a.qty
+        )
+        .slice(0, 8);
+
+    attentionEl.innerHTML =
+      attention.length
+        ? attention
+            .map(item => `
+              <div class="supplier-attention-row">
+
+                <div>
+                  <strong
+                    title="${escapeHtml(
+                      item.supplier
+                    )}"
+                  >
+                    ${escapeHtml(
+                      item.supplier
+                    )}
+                  </strong>
+
+                  <small>
+                    ${item.invoices.size}
+                    invoice(s)
+                  </small>
+                </div>
+
+                <span class="supplier-late-badge">
+                  ${item.late}
+                  atraso(s)
+                </span>
+
+              </div>
+            `)
+            .join("")
+        : `
+            <div
+              class="empty-state"
+              style="min-height:180px"
+            >
+              <p>
+                Nenhum fornecedor com atraso identificado.
+              </p>
+            </div>
+          `;
+  }
+
+
+  emptyEl?.classList.toggle(
+    "hide",
+    suppliers.length > 0
+  );
+}
+
+
+function exportFornecedores() {
+  const suppliers =
+    groupBySupplier(
+      state.rows
+    );
+
+  if (!suppliers.length) {
+    showToast(
+      "A planilha atual não possui fornecedor informado."
+    );
+
+    return;
+  }
+
+  const data =
+    suppliers.map(
+      item => ({
+        "Fornecedor":
+          item.supplier,
+
+        "Invoices":
+          item.invoices.size,
+
+        "Registros":
+          item.rows,
+
+        "Quantidade":
+          item.qty,
+
+        "Unidade":
+          item.unitList.join(", "),
+
+        "Atrasos":
+          item.late,
+
+        "Próxima entrega":
+          formatDate(
+            item.nextDelivery
+          ),
+
+        "Status":
+          item.late > 0
+            ? "Atenção"
+            : "Regular"
+      })
+    );
+
+  const workbook =
+    XLSX.utils.book_new();
+
+  const worksheet =
+    XLSX.utils.json_to_sheet(
+      data
+    );
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Fornecedores"
+  );
+
+  XLSX.writeFile(
+    workbook,
+    "COMEX_Fornecedores.xlsx"
+  );
+}
+
+
 function openView(view) {
   state.view = view;
 
@@ -1220,6 +1706,10 @@ function openView(view) {
   if (view === "embarques") {
     renderShipments();
   }
+
+  if (view === "fornecedores") {
+    renderSuppliers();
+  }
 }
 
 document.querySelectorAll(".comex-nav button").forEach(btn => btn.addEventListener("click", () => openView(btn.dataset.view)));
@@ -1282,6 +1772,13 @@ document
   ?.addEventListener(
     "click",
     exportEmbarques
+  );
+
+document
+  .getElementById("exportFornecedoresButton")
+  ?.addEventListener(
+    "click",
+    exportFornecedores
   );
 
 els.currentDate.textContent = formatDate(new Date());

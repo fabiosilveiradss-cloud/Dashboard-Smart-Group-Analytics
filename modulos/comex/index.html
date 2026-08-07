@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COMEX — Smart Group Analytics</title>
-  <link rel="stylesheet" href="style.css?v=5">
-  <link rel="stylesheet" href="responsive.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="responsive.css?v=6">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -485,6 +485,154 @@
 
       </section>
 
+      
+      <section id="fornecedoresView" class="view operational-view">
+
+        <section class="section-intro">
+
+          <div>
+            <span class="eyebrow">FORNECEDORES</span>
+
+            <h2>Fornecedores internacionais</h2>
+
+            <p>
+              Consolidação automática da coluna Fornecedor da aba Smart_STK_TH.
+              Quando a coluna existir, esta guia mostra volume, invoices,
+              atrasos e próximas entregas por fornecedor.
+            </p>
+          </div>
+
+          <button
+            id="exportFornecedoresButton"
+            class="btn btn-outline"
+            type="button"
+          >
+            <i class="fa-solid fa-download"></i>
+            Exportar
+          </button>
+
+        </section>
+
+
+        <section class="mini-kpi-grid">
+
+          <article class="mini-kpi-card">
+            <span>Fornecedores identificados</span>
+            <strong id="supplierCount">0</strong>
+            <small>Fornecedores distintos</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Invoices vinculadas</span>
+            <strong id="supplierInvoices">0</strong>
+            <small>Invoices com fornecedor</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Quantidade vinculada</span>
+            <strong id="supplierQty">0</strong>
+            <small>Quantidade com fornecedor</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Sem fornecedor</span>
+            <strong id="supplierMissing">0</strong>
+            <small>Registros sem fornecedor</small>
+          </article>
+
+        </section>
+
+
+        <section class="supplier-layout">
+
+          <article class="panel supplier-ranking-panel">
+
+            <div class="panel-header">
+              <div>
+                <h2>Ranking de fornecedores</h2>
+                <p>Ordenado pela quantidade total movimentada</p>
+              </div>
+            </div>
+
+            <div
+              id="supplierRanking"
+              class="supplier-ranking"
+            ></div>
+
+          </article>
+
+
+          <article class="panel supplier-alert-panel">
+
+            <div class="panel-header">
+              <div>
+                <h2>Fornecedores com atenção</h2>
+                <p>Fornecedores com registros atrasados</p>
+              </div>
+            </div>
+
+            <div
+              id="supplierAttention"
+              class="supplier-attention"
+            ></div>
+
+          </article>
+
+        </section>
+
+
+        <section class="panel">
+
+          <div class="panel-header">
+            <div>
+              <h2>Desempenho por fornecedor</h2>
+              <p id="supplierSummary">
+                Nenhuma base carregada
+              </p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+
+            <table class="operational-table">
+              <thead>
+                <tr>
+                  <th>Fornecedor</th>
+                  <th>Invoices</th>
+                  <th>Registros</th>
+                  <th>Quantidade</th>
+                  <th>Atrasos</th>
+                  <th>Próxima entrega</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody id="supplierRows"></tbody>
+            </table>
+
+
+            <div
+              id="supplierEmpty"
+              class="empty-state"
+            >
+              <i class="fa-solid fa-building"></i>
+
+              <h3>
+                Fornecedor não disponível na planilha atual
+              </h3>
+
+              <p>
+                Adicione uma coluna chamada Fornecedor na aba Smart_STK_TH
+                para habilitar esta análise automaticamente.
+              </p>
+            </div>
+
+          </div>
+
+        </section>
+
+      </section>
+
       <section id="placeholderView" class="view placeholder-view">
         <div class="placeholder-card">
           <div class="placeholder-icon"><i id="placeholderIcon" class="fa-solid fa-cube"></i></div>
@@ -498,6 +646,6 @@
     <div id="toast" class="toast" role="status"></div>
   </div>
 
-  <script type="module" src="js/app.js?v=5"></script>
+  <script type="module" src="js/app.js?v=6"></script>
 </body>
 </html>

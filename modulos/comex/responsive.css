@@ -56,3 +56,22 @@
     grid-template-columns:1fr;
   }
 }
+
+
+@media(max-width:850px){
+  .supplier-layout{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:720px){
+  .supplier-ranking-meta{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:3px;
+  }
+
+  .supplier-attention-row{
+    align-items:flex-start;
+  }
+}
