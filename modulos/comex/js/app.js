@@ -13,6 +13,8 @@ const $ = (selector) => document.querySelector(selector);
 const els = {
   material: $("#materialFilter"),
   color: $("#colorFilter"),
+  invoice: $("#invoiceFilter"),
+  invoiceOptions: $("#invoiceOptions"),
   file: $("#fileInput"),
   rows: $("#deliveryRows"),
   empty: $("#emptyState"),
@@ -369,10 +371,35 @@ function uniqueSorted(values) {
 
 function populateFilters() {
   const selectedMaterial = els.material.value;
+  const selectedInvoice = els.invoice?.value || "";
+
   els.material.innerHTML = `<option value="">Todos os materiais</option>` +
     uniqueSorted(state.rows.map(r => r.material)).map(v => `<option>${escapeHtml(v)}</option>`).join("");
-  if ([...els.material.options].some(o => o.value === selectedMaterial)) els.material.value = selectedMaterial;
+
+  if ([...els.material.options].some(o => o.value === selectedMaterial)) {
+    els.material.value = selectedMaterial;
+  }
+
   updateColorOptions();
+  updateInvoiceOptions();
+
+  if (els.invoice && selectedInvoice) {
+    els.invoice.value = selectedInvoice;
+  }
+}
+
+function updateInvoiceOptions() {
+  if (!els.invoiceOptions) return;
+
+  const invoices = uniqueSorted(
+    state.rows
+      .map(row => row.invoice)
+      .filter(Boolean)
+  );
+
+  els.invoiceOptions.innerHTML = invoices
+    .map(invoice => `<option value="${escapeHtml(invoice)}"></option>`)
+    .join("");
 }
 
 function updateColorOptions() {
@@ -387,10 +414,18 @@ function updateColorOptions() {
 function applyFilters() {
   const material = els.material.value;
   const color = els.color.value;
-  state.filtered = state.rows.filter(row =>
-    (!material || row.material === material) &&
-    (!color || row.color === color)
-  );
+  const invoiceSearch = normalizeText(els.invoice?.value || "");
+
+  state.filtered = state.rows.filter(row => {
+    const rowInvoice = normalizeText(row.invoice || "");
+
+    return (
+      (!material || row.material === material) &&
+      (!color || row.color === color) &&
+      (!invoiceSearch || rowInvoice.includes(invoiceSearch))
+    );
+  });
+
   render();
 }
 
@@ -472,7 +507,7 @@ function dashboardStatusKey(row) {
 function renderDashboard() {
   if (!els.dashboardView) return;
 
-  const rows = state.rows;
+  const rows = state.filtered;
   const hasData = rows.length > 0;
 
   els.dashboardEmpty?.classList.toggle("show", !hasData);
@@ -768,7 +803,7 @@ function statusCssByLabel(label) {
 }
 
 function renderContainers() {
-  const groups = groupByInvoice(state.rows);
+  const groups = groupByInvoice(state.filtered);
 
   const totalQty = groups.reduce(
     (sum, group) => sum + group.qty,
@@ -857,15 +892,15 @@ function renderContainers() {
 }
 
 function renderInvoices() {
-  const groups = groupByInvoice(state.rows);
+  const groups = groupByInvoice(state.filtered);
 
   const materials = new Set(
-    state.rows
+    state.filtered
       .map(row => row.material)
       .filter(Boolean)
   );
 
-  const totalQty = state.rows.reduce(
+  const totalQty = state.filtered.reduce(
     (sum, row) => sum + row.qty,
     0
   );
@@ -937,7 +972,7 @@ function renderInvoices() {
 }
 
 function exportContainers() {
-  const groups = groupByInvoice(state.rows);
+  const groups = groupByInvoice(state.filtered);
 
   if (!groups.length) {
     showToast("Não há processos para exportar.");
@@ -964,7 +999,7 @@ function exportContainers() {
 }
 
 function exportInvoices() {
-  const groups = groupByInvoice(state.rows);
+  const groups = groupByInvoice(state.filtered);
 
   if (!groups.length) {
     showToast("Não há Invoices para exportar.");
@@ -1008,7 +1043,7 @@ function renderShipments() {
   const cardsEl = document.getElementById("shipmentCards");
   if (!cardsEl) return;
 
-  const groups = groupByInvoice(state.rows);
+  const groups = groupByInvoice(state.filtered);
   const today = startOfTodayForShipments();
 
   const future = groups.filter(
@@ -1113,7 +1148,7 @@ function renderShipments() {
 }
 
 function exportEmbarques() {
-  const groups = groupByInvoice(state.rows);
+  const groups = groupByInvoice(state.filtered);
 
   if (!groups.length) {
     showToast("Não há embarques para exportar.");
@@ -1254,11 +1289,11 @@ function renderSuppliers() {
 
   const suppliers =
     groupBySupplier(
-      state.rows
+      state.filtered
     );
 
   const rowsWithSupplier =
-    state.rows.filter(
+    state.filtered.filter(
       row => row.supplier
     );
 
@@ -1277,7 +1312,7 @@ function renderSuppliers() {
     );
 
   const missing =
-    state.rows.filter(
+    state.filtered.filter(
       row => !row.supplier
     ).length;
 
@@ -1349,7 +1384,7 @@ function renderSuppliers() {
       suppliers.length
         ? `${suppliers.length} fornecedor(es) identificado(s)`
         : (
-            state.rows.length
+            state.filtered.length
               ? "A coluna Fornecedor não existe ou está vazia na planilha atual"
               : "Nenhuma base carregada"
           );
@@ -1569,7 +1604,7 @@ function renderSuppliers() {
 function exportFornecedores() {
   const suppliers =
     groupBySupplier(
-      state.rows
+      state.filtered
     );
 
   if (!suppliers.length) {
@@ -1771,7 +1806,7 @@ function renderDocuments() {
 
   const groups =
     groupByInvoice(
-      state.rows
+      state.filtered
     );
 
   const documents =
@@ -1983,7 +2018,7 @@ function renderDocuments() {
 function exportDocumentos() {
   const groups =
     groupByInvoice(
-      state.rows
+      state.filtered
     );
 
   if (!groups.length) {
@@ -2146,9 +2181,27 @@ $("#dashboardDeliveriesButton")?.addEventListener("click", () => openView("entre
 $("#dashboardSeeAll")?.addEventListener("click", () => openView("entregas"));
 $("#dashboardUploadButton")?.addEventListener("click", () => els.file.click());
 $("#dashboardEmptyUpload")?.addEventListener("click", () => els.file.click());
-els.material.addEventListener("change", () => { updateColorOptions(); applyFilters(); });
+els.material.addEventListener("change", () => {
+  updateColorOptions();
+  applyFilters();
+});
+
 els.color.addEventListener("change", applyFilters);
-$("#clearFilters").addEventListener("click", () => { els.material.value = ""; updateColorOptions(); els.color.value = ""; applyFilters(); });
+
+els.invoice?.addEventListener("input", applyFilters);
+els.invoice?.addEventListener("change", applyFilters);
+
+$("#clearFilters").addEventListener("click", () => {
+  els.material.value = "";
+  updateColorOptions();
+  els.color.value = "";
+
+  if (els.invoice) {
+    els.invoice.value = "";
+  }
+
+  applyFilters();
+});
 $("#exportButton").addEventListener("click", exportFiltered);
 els.file.addEventListener("change", async event => {
   const file = event.target.files?.[0];

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COMEX — Smart Group Analytics</title>
-  <link rel="stylesheet" href="style.css?v=7">
-  <link rel="stylesheet" href="responsive.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="responsive.css?v=8">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -182,6 +182,22 @@
             <span>Cor</span>
             <select id="colorFilter"><option value="">Todas as cores</option></select>
           </label>
+
+          <label class="field invoice-search-field">
+            <span>Invoice</span>
+            <div class="invoice-search-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                id="invoiceFilter"
+                list="invoiceOptions"
+                type="search"
+                autocomplete="off"
+                placeholder="Digite ou selecione uma Invoice"
+              >
+              <datalist id="invoiceOptions"></datalist>
+            </div>
+          </label>
+
           <button id="clearFilters" class="btn btn-outline"><i class="fa-solid fa-filter-circle-xmark"></i> Limpar filtros</button>
           <label class="upload-card" for="fileInput">
             <i class="fa-solid fa-cloud-arrow-up"></i>
@@ -788,6 +804,6 @@
     <div id="toast" class="toast" role="status"></div>
   </div>
 
-  <script type="module" src="js/app.js?v=7"></script>
+  <script type="module" src="js/app.js?v=8"></script>
 </body>
 </html>
