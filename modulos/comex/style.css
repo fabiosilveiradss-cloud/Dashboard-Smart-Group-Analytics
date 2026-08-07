@@ -230,3 +230,108 @@ tfoot td{font-weight:800;background:#071b3d}
   margin-top:5px;
   max-width:420px;
 }
+
+
+/* =========================================================
+   ETAPA 4 CORRIGIDA - EMBARQUES
+========================================================= */
+
+.shipment-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  padding:16px;
+}
+
+.shipment-card{
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:linear-gradient(
+    145deg,
+    rgba(15,52,111,.92),
+    rgba(7,29,66,.96)
+  );
+  padding:15px;
+}
+
+.shipment-card-head{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+}
+
+.shipment-icon{
+  width:42px;
+  height:42px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:#087b78;
+  color:#55e5dc;
+}
+
+.shipment-card-head div:nth-child(2)>span{
+  display:block;
+  color:#8faace;
+  font-size:9px;
+  margin-bottom:3px;
+}
+
+.shipment-card-head div:nth-child(2)>strong{
+  display:block;
+  font-size:13px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.shipment-dates{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:15px;
+}
+
+.shipment-dates div{
+  padding:10px;
+  border-radius:9px;
+  background:#082755;
+}
+
+.shipment-dates span{
+  display:block;
+  color:#8fa9cd;
+  font-size:8px;
+  margin-bottom:5px;
+}
+
+.shipment-dates strong{
+  font-size:12px;
+}
+
+.shipment-note{
+  min-height:52px;
+  margin-top:11px;
+  padding:10px;
+  border-radius:9px;
+  background:rgba(255,255,255,.035);
+  color:#b6c8e4;
+  font-size:9px;
+  line-height:1.45;
+}
+
+.shipment-footer{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:11px;
+  padding-top:10px;
+  border-top:1px solid var(--line);
+  color:#91a9cb;
+  font-size:9px;
+}
+
+.shipment-footer strong{
+  color:#e6efff;
+}

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COMEX — Smart Group Analytics</title>
-  <link rel="stylesheet" href="style.css?v=4">
-  <link rel="stylesheet" href="responsive.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="responsive.css?v=5">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -413,6 +413,78 @@
 
       </section>
 
+      
+      <section id="embarquesView" class="view operational-view">
+
+        <section class="section-intro">
+          <div>
+            <span class="eyebrow">EMBARQUES</span>
+            <h2>Cronograma de Embarques</h2>
+            <p>
+              Acompanhamento consolidado por Invoice usando somente as datas e
+              observações existentes na planilha Smart_STK_TH.
+            </p>
+          </div>
+
+          <button
+            id="exportEmbarquesButton"
+            class="btn btn-outline"
+            type="button"
+          >
+            <i class="fa-solid fa-download"></i>
+            Exportar
+          </button>
+        </section>
+
+        <section class="mini-kpi-grid">
+
+          <article class="mini-kpi-card">
+            <span>Processos</span>
+            <strong id="shipmentCount">0</strong>
+            <small>Invoices acompanhadas</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Chegadas futuras</span>
+            <strong id="shipmentFuture">0</strong>
+            <small>Processos com chegada futura</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Sem data de chegada</span>
+            <strong id="shipmentNoDate">0</strong>
+            <small>Exigem atualização</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Atrasados</span>
+            <strong id="shipmentLate">0</strong>
+            <small>Processos em atraso</small>
+          </article>
+
+        </section>
+
+        <section class="panel">
+
+          <div class="panel-header">
+            <div>
+              <h2>Agenda de embarques e chegadas</h2>
+              <p id="shipmentSummary">Nenhuma base carregada</p>
+            </div>
+          </div>
+
+          <div id="shipmentCards" class="shipment-grid"></div>
+
+          <div id="shipmentEmpty" class="empty-state">
+            <i class="fa-solid fa-ship"></i>
+            <h3>Nenhum embarque carregado</h3>
+            <p>Carregue a planilha Smart_STK_TH.</p>
+          </div>
+
+        </section>
+
+      </section>
+
       <section id="placeholderView" class="view placeholder-view">
         <div class="placeholder-card">
           <div class="placeholder-icon"><i id="placeholderIcon" class="fa-solid fa-cube"></i></div>
@@ -426,6 +498,6 @@
     <div id="toast" class="toast" role="status"></div>
   </div>
 
-  <script type="module" src="js/app.js?v=4"></script>
+  <script type="module" src="js/app.js?v=5"></script>
 </body>
 </html>

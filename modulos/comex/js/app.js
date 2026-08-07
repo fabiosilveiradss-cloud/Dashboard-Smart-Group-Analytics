@@ -991,6 +991,163 @@ function exportInvoices() {
 }
 
 
+
+
+// ============================================================
+// ETAPA 4 CORRIGIDA - EMBARQUES
+// Executa somente quando a guia Embarques é aberta.
+// ============================================================
+
+function startOfTodayForShipments() {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+function renderShipments() {
+  const cardsEl = document.getElementById("shipmentCards");
+  if (!cardsEl) return;
+
+  const groups = groupByInvoice(state.rows);
+  const today = startOfTodayForShipments();
+
+  const future = groups.filter(
+    group =>
+      group.arrival &&
+      group.arrival >= today
+  );
+
+  const noDate = groups.filter(
+    group => !group.arrival
+  );
+
+  const late = groups.filter(
+    group => group.status === "Atrasado"
+  );
+
+  const countEl = document.getElementById("shipmentCount");
+  const futureEl = document.getElementById("shipmentFuture");
+  const noDateEl = document.getElementById("shipmentNoDate");
+  const lateEl = document.getElementById("shipmentLate");
+  const summaryEl = document.getElementById("shipmentSummary");
+  const emptyEl = document.getElementById("shipmentEmpty");
+
+  if (countEl) countEl.textContent = groups.length;
+  if (futureEl) futureEl.textContent = future.length;
+  if (noDateEl) noDateEl.textContent = noDate.length;
+  if (lateEl) lateEl.textContent = late.length;
+
+  if (summaryEl) {
+    summaryEl.textContent = groups.length
+      ? `${groups.length} processo(s) acompanhados`
+      : "Nenhuma base carregada";
+  }
+
+  const sorted = [...groups].sort((a, b) => {
+    const aDate = a.arrival?.getTime() ?? Number.MAX_SAFE_INTEGER;
+    const bDate = b.arrival?.getTime() ?? Number.MAX_SAFE_INTEGER;
+    return aDate - bDate;
+  });
+
+  cardsEl.innerHTML = sorted.map(group => {
+    const css = statusCssByLabel(group.status);
+
+    const note =
+      group.arrivalNotes?.[0] ||
+      group.placeList?.join(", ") ||
+      "Sem observação registrada";
+
+    return `
+      <article class="shipment-card">
+
+        <div class="shipment-card-head">
+          <div class="shipment-icon">
+            <i class="fa-solid fa-ship"></i>
+          </div>
+
+          <div>
+            <span>Invoice</span>
+            <strong>${escapeHtml(group.invoice)}</strong>
+          </div>
+
+          <span class="status ${css}">
+            ${group.status}
+          </span>
+        </div>
+
+        <div class="shipment-dates">
+
+          <div>
+            <span>Chegada Porto / Aeroporto</span>
+            <strong>${formatDate(group.arrival)}</strong>
+          </div>
+
+          <div>
+            <span>Entrega na Smart</span>
+            <strong>${formatDate(group.delivery)}</strong>
+          </div>
+
+        </div>
+
+        <p class="shipment-note">
+          ${escapeHtml(note)}
+        </p>
+
+        <div class="shipment-footer">
+          <span>${group.rows.length} item(ns)</span>
+
+          <strong>
+            ${formatNumber(group.qty)}
+            ${escapeHtml(group.unitList.join(", "))}
+          </strong>
+        </div>
+
+      </article>
+    `;
+  }).join("");
+
+  emptyEl?.classList.toggle(
+    "hide",
+    groups.length > 0
+  );
+}
+
+function exportEmbarques() {
+  const groups = groupByInvoice(state.rows);
+
+  if (!groups.length) {
+    showToast("Não há embarques para exportar.");
+    return;
+  }
+
+  const data = groups.map(group => ({
+    "Invoice": group.invoice,
+    "OC": group.order,
+    "Itens": group.rows.length,
+    "Quantidade": group.qty,
+    "Unidade": group.unitList.join(", "),
+    "Chegada Porto / Aeroporto": formatDate(group.arrival),
+    "Observação de Chegada": group.arrivalNotes.join(" | "),
+    "Entrega Smart": formatDate(group.delivery),
+    "Status": group.status
+  }));
+
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.json_to_sheet(data);
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Embarques"
+  );
+
+  XLSX.writeFile(
+    workbook,
+    "COMEX_Embarques.xlsx"
+  );
+}
+
+
 function openView(view) {
   state.view = view;
 
@@ -1059,6 +1216,10 @@ function openView(view) {
   if (view === "invoices") {
     renderInvoices();
   }
+
+  if (view === "embarques") {
+    renderShipments();
+  }
 }
 
 document.querySelectorAll(".comex-nav button").forEach(btn => btn.addEventListener("click", () => openView(btn.dataset.view)));
@@ -1114,6 +1275,13 @@ document
   ?.addEventListener(
     "click",
     exportInvoices
+  );
+
+document
+  .getElementById("exportEmbarquesButton")
+  ?.addEventListener(
+    "click",
+    exportEmbarques
   );
 
 els.currentDate.textContent = formatDate(new Date());
