@@ -430,6 +430,8 @@ function render() {
   els.empty.classList.toggle("hide", rows.length > 0);
   renderTimeline(rows);
   renderDashboard();
+  renderContainers();
+  renderInvoices();
 }
 
 function renderTimeline(rows) {
@@ -673,83 +675,83 @@ function exportFiltered() {
   XLSX.writeFile(book, "COMEX_Entregas_por_Material.xlsx");
 }
 
-function openView(view) {
-  state.view = view;
 
-  document
-    .querySelectorAll(".comex-nav button")
-    .forEach(button => {
-      button.classList.toggle(
-        "active",
-        button.dataset.view === view
-      );
-    });
 
-  const meta =
-    VIEW_META[view] ||
-    VIEW_META.entregas;
+// ============================================================
+// ETAPA 2 + 3 - PROCESSOS / CONTAINERS E INVOICES
+// ============================================================
 
-  const title =
-    document.getElementById("pageTitle");
+function groupByInvoice(rows) {
+  const map = new Map();
 
-  const subtitle =
-    document.getElementById("pageSubtitle");
+  rows.forEach(row => {
+    const key = row.invoice || "Sem Invoice";
 
-  if (title) {
-    title.textContent = meta[0];
-  }
-
-  if (subtitle) {
-    subtitle.textContent = meta[1];
-  }
-
-  document
-    .querySelectorAll(".view")
-    .forEach(element => {
-      element.classList.remove("active");
-    });
-
-  const directView =
-    document.getElementById(`${view}View`);
-
-  if (directView) {
-    directView.classList.add("active");
-  } else {
-    const placeholder =
-      document.getElementById("placeholderView");
-
-    placeholder?.classList.add("active");
-
-    const titleEl =
-      document.getElementById("placeholderTitle");
-
-    const textEl =
-      document.getElementById("placeholderText");
-
-    const iconEl =
-      document.getElementById("placeholderIcon");
-
-    if (titleEl) titleEl.textContent = meta[0];
-    if (textEl) textEl.textContent = meta[1];
-
-    if (iconEl) {
-      iconEl.className =
-        `fa-solid ${meta[2]}`;
+    if (!map.has(key)) {
+      map.set(key, {
+        invoice: key,
+        orders: new Set(),
+        materials: new Set(),
+        rows: [],
+        qty: 0,
+        units: new Set(),
+        arrivals: [],
+        deliveries: [],
+        arrivalNotes: [],
+        places: new Set()
+      });
     }
-  }
 
-  if (view === "dashboard" && typeof renderDashboard === "function") {
-    renderDashboard();
-  }
+    const item = map.get(key);
 
-  if (view === "entregas") {
-    renderDeliveries();
-    renderTimeline(state.filtered);
-  }
+    item.rows.push(row);
+    item.qty += row.qty || 0;
 
-  if (view === "containers") {
-    renderContainers();
-  }
+    if (row.order) item.orders.add(row.order);
+    if (row.material) item.materials.add(row.material);
+    if (row.unit) item.units.add(row.unit);
+    if (row.arrival) item.arrivals.push(row.arrival);
+    if (row.delivery) item.deliveries.push(row.delivery);
+    if (row.arrivalNote) item.arrivalNotes.push(row.arrivalNote);
+    if (row.place) item.places.add(row.place);
+  });
+
+  return [...map.values()]
+    .map(item => {
+      const statuses = item.rows.map(row =>
+        statusInfo(row.status, row.delivery)[0]
+      );
+
+      let status = "Previsto";
+
+      if (statuses.includes("Atrasado")) {
+        status = "Atrasado";
+      } else if (statuses.includes("Em Trânsito")) {
+        status = "Em Trânsito";
+      } else if (statuses.includes("Programado")) {
+        status = "Programado";
+      }
+
+      return {
+        ...item,
+        order: [...item.orders].join(", "),
+        materialList: [...item.materials],
+        unitList: [...item.units],
+        placeList: [...item.places],
+        arrival: item.arrivals.length
+          ? new Date(Math.min(...item.arrivals.map(date => date.getTime())))
+          : null,
+        delivery: item.deliveries.length
+          ? new Date(Math.min(...item.deliveries.map(date => date.getTime())))
+          : null,
+        status
+      };
+    })
+    .sort((a, b) => {
+      const da = a.arrival?.getTime() ?? Number.MAX_SAFE_INTEGER;
+      const db = b.arrival?.getTime() ?? Number.MAX_SAFE_INTEGER;
+      return da - db;
+    });
 }
 
 function statusCssByLabel(label) {
@@ -854,6 +856,86 @@ function renderContainers() {
   );
 }
 
+function renderInvoices() {
+  const groups = groupByInvoice(state.rows);
+
+  const materials = new Set(
+    state.rows
+      .map(row => row.material)
+      .filter(Boolean)
+  );
+
+  const totalQty = state.rows.reduce(
+    (sum, row) => sum + row.qty,
+    0
+  );
+
+  const late = groups.filter(
+    group => group.status === "Atrasado"
+  );
+
+  const countEl = document.getElementById("invoiceCount");
+  const materialsEl = document.getElementById("invoiceMaterials");
+  const qtyEl = document.getElementById("invoiceQty");
+  const lateEl = document.getElementById("invoiceLate");
+  const summaryEl = document.getElementById("invoiceSummary");
+  const rowsEl = document.getElementById("invoiceRows");
+  const emptyEl = document.getElementById("invoiceEmpty");
+
+  if (!rowsEl) return;
+
+  if (countEl) countEl.textContent = groups.length;
+  if (materialsEl) materialsEl.textContent = materials.size;
+  if (qtyEl) qtyEl.textContent = formatNumber(totalQty);
+  if (lateEl) lateEl.textContent = late.length;
+
+  if (summaryEl) {
+    summaryEl.textContent = groups.length
+      ? `${groups.length} Invoice(s) distintas na base`
+      : "Nenhuma base carregada";
+  }
+
+  rowsEl.innerHTML = groups.map(group => {
+    const css = statusCssByLabel(group.status);
+
+    const materialText =
+      group.materialList.length <= 3
+        ? group.materialList.join(", ")
+        : `${group.materialList.slice(0, 3).join(", ")} +${group.materialList.length - 3}`;
+
+    return `
+      <tr>
+        <td>
+          <strong>${escapeHtml(group.invoice)}</strong>
+        </td>
+
+        <td>${escapeHtml(group.order || "—")}</td>
+
+        <td>${escapeHtml(materialText || "—")}</td>
+
+        <td>${formatNumber(group.qty)}</td>
+
+        <td>${escapeHtml(group.unitList.join(", ") || "—")}</td>
+
+        <td>${formatDate(group.arrival)}</td>
+
+        <td>${formatDate(group.delivery)}</td>
+
+        <td>
+          <span class="status ${css}">
+            ${group.status}
+          </span>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  emptyEl?.classList.toggle(
+    "hide",
+    groups.length > 0
+  );
+}
+
 function exportContainers() {
   const groups = groupByInvoice(state.rows);
 
@@ -877,40 +959,105 @@ function exportContainers() {
   const workbook = XLSX.utils.book_new();
   const worksheet = XLSX.utils.json_to_sheet(data);
 
-  XLSX.utils.book_append_sheet(
-    workbook,
-    worksheet,
-    "Processos"
-  );
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Processos");
+  XLSX.writeFile(workbook, "COMEX_Containers_Processos.xlsx");
+}
 
-  XLSX.writeFile(
-    workbook,
-    "COMEX_Containers_Processos.xlsx"
-  );
+function exportInvoices() {
+  const groups = groupByInvoice(state.rows);
+
+  if (!groups.length) {
+    showToast("Não há Invoices para exportar.");
+    return;
+  }
+
+  const data = groups.map(group => ({
+    "Invoice": group.invoice,
+    "OC": group.order,
+    "Materiais": group.materialList.join(" | "),
+    "Itens": group.rows.length,
+    "Quantidade": group.qty,
+    "Unidade": group.unitList.join(", "),
+    "Chegada": formatDate(group.arrival),
+    "Entrega Smart": formatDate(group.delivery),
+    "Status": group.status
+  }));
+
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.json_to_sheet(data);
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Invoices");
+  XLSX.writeFile(workbook, "COMEX_Invoices.xlsx");
 }
 
 
-document.querySelectorAll(".comex-nav button").forEach(btn => btn.classList.toggle("active", btn.dataset.view === view));
+function openView(view) {
+  state.view = view;
 
-  const meta = VIEW_META[view] || VIEW_META.entregas;
+  document
+    .querySelectorAll(".comex-nav button")
+    .forEach(btn => {
+      btn.classList.toggle(
+        "active",
+        btn.dataset.view === view
+      );
+    });
+
+  const meta =
+    VIEW_META[view] ||
+    VIEW_META.entregas;
+
   const [title, subtitle, icon] = meta;
+
   $("#pageTitle").textContent = title;
   $("#pageSubtitle").textContent = subtitle;
 
-  $("#dashboardView")?.classList.toggle("active", view === "dashboard");
-  $("#entregasView").classList.toggle("active", view === "entregas");
+  document
+    .querySelectorAll(".view")
+    .forEach(viewElement => {
+      viewElement.classList.remove("active");
+    });
 
-  const isPlaceholder = !["dashboard", "entregas"].includes(view);
-  $("#placeholderView").classList.toggle("active", isPlaceholder);
+  const directView =
+    document.getElementById(`${view}View`);
+
+  if (directView) {
+    directView.classList.add("active");
+  } else {
+    const placeholder =
+      document.getElementById("placeholderView");
+
+    placeholder?.classList.add("active");
+
+    if ($("#placeholderTitle")) {
+      $("#placeholderTitle").textContent = title;
+    }
+
+    if ($("#placeholderText")) {
+      $("#placeholderText").textContent =
+        `${subtitle} A estrutura desta área já está criada e pode ser implementada por etapas.`;
+    }
+
+    if ($("#placeholderIcon")) {
+      $("#placeholderIcon").className =
+        `fa-solid ${icon}`;
+    }
+  }
 
   if (view === "dashboard") {
     renderDashboard();
   }
 
-  if (isPlaceholder) {
-    $("#placeholderTitle").textContent = title;
-    $("#placeholderText").textContent = `${subtitle} A estrutura desta área já está criada e pode ser implementada por etapas.`;
-    $("#placeholderIcon").className = `fa-solid ${icon}`;
+  if (view === "entregas") {
+    render();
+  }
+
+  if (view === "containers") {
+    renderContainers();
+  }
+
+  if (view === "invoices") {
+    renderInvoices();
   }
 }
 
@@ -955,14 +1102,20 @@ upload.addEventListener("drop", e => {
   const dt = new DataTransfer(); dt.items.add(file); els.file.files = dt.files; els.file.dispatchEvent(new Event("change"));
 });
 
-els.currentDate.textContent = formatDate(new Date());
-render();
-restoreLocal();
-
-
 document
   .getElementById("exportContainersButton")
   ?.addEventListener(
     "click",
     exportContainers
   );
+
+document
+  .getElementById("exportInvoicesButton")
+  ?.addEventListener(
+    "click",
+    exportInvoices
+  );
+
+els.currentDate.textContent = formatDate(new Date());
+render();
+restoreLocal();

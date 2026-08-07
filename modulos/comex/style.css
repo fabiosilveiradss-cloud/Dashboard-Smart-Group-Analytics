@@ -133,7 +133,7 @@ tfoot td{font-weight:800;background:#071b3d}
 
 
 /* =========================================================
-   ETAPA 2 - CONTAINERS / PROCESSOS
+   ETAPA 2 + 3 — CONTAINERS E INVOICES
 ========================================================= */
 
 .operational-view{
@@ -220,11 +220,6 @@ tfoot td{font-weight:800;background:#071b3d}
 .operational-table td,
 .operational-table th{
   vertical-align:top;
-}
-
-.operational-table td:nth-child(3),
-.operational-table th:nth-child(3){
-  text-align:left;
 }
 
 .cell-note{

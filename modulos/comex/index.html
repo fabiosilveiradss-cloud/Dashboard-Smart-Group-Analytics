@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COMEX — Smart Group Analytics</title>
-  <link rel="stylesheet" href="style.css?v=3">
-  <link rel="stylesheet" href="responsive.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="responsive.css?v=4">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -246,28 +246,19 @@
       <section id="containersView" class="view operational-view">
 
         <section class="section-intro">
-
           <div>
             <span class="eyebrow">CONTAINERS / PROCESSOS</span>
-
             <h2>Controle de cargas por Invoice</h2>
-
             <p>
               A planilha atual não possui Nº do container, armador ou free time.
-              Por isso esta visão consolida cada processo pela Invoice, sem
-              inventar informações inexistentes.
+              Esta visão consolida cada processo pela Invoice, sem inventar dados.
             </p>
           </div>
 
-          <button
-            id="exportContainersButton"
-            class="btn btn-outline"
-            type="button"
-          >
+          <button id="exportContainersButton" class="btn btn-outline" type="button">
             <i class="fa-solid fa-download"></i>
             Exportar
           </button>
-
         </section>
 
         <section class="mini-kpi-grid">
@@ -287,7 +278,7 @@
           <article class="mini-kpi-card">
             <span>Com chegada identificada</span>
             <strong id="containersArrival">0</strong>
-            <small>Processos com data/localização</small>
+            <small>Processos com chegada</small>
           </article>
 
           <article class="mini-kpi-card">
@@ -303,9 +294,7 @@
           <div class="panel-header">
             <div>
               <h2>Processos consolidados</h2>
-              <p id="containersSummary">
-                Nenhuma base carregada
-              </p>
+              <p id="containersSummary">Nenhuma base carregada</p>
             </div>
           </div>
 
@@ -323,13 +312,98 @@
                   <th>Status</th>
                 </tr>
               </thead>
-
               <tbody id="containersRows"></tbody>
             </table>
 
             <div id="containersEmpty" class="empty-state">
               <i class="fa-solid fa-box"></i>
               <h3>Nenhum processo carregado</h3>
+              <p>Carregue a planilha Smart_STK_TH.</p>
+            </div>
+
+          </div>
+
+        </section>
+
+      </section>
+
+
+      <section id="invoicesView" class="view operational-view">
+
+        <section class="section-intro">
+          <div>
+            <span class="eyebrow">INVOICES</span>
+            <h2>Gestão das Invoices</h2>
+            <p>
+              Consolidação automática por Nr. Invoice com materiais,
+              quantidades, OC, chegada, entrega e situação.
+            </p>
+          </div>
+
+          <button id="exportInvoicesButton" class="btn btn-outline" type="button">
+            <i class="fa-solid fa-download"></i>
+            Exportar
+          </button>
+        </section>
+
+        <section class="mini-kpi-grid">
+
+          <article class="mini-kpi-card">
+            <span>Total de Invoices</span>
+            <strong id="invoiceCount">0</strong>
+            <small>Invoices distintas</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Materiais</span>
+            <strong id="invoiceMaterials">0</strong>
+            <small>Materiais distintos</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Quantidade total</span>
+            <strong id="invoiceQty">0</strong>
+            <small>Quantidade consolidada</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Invoices atrasadas</span>
+            <strong id="invoiceLate">0</strong>
+            <small>Processos com atenção</small>
+          </article>
+
+        </section>
+
+        <section class="panel">
+
+          <div class="panel-header">
+            <div>
+              <h2>Invoices consolidadas</h2>
+              <p id="invoiceSummary">Nenhuma base carregada</p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+
+            <table class="operational-table">
+              <thead>
+                <tr>
+                  <th>Invoice</th>
+                  <th>OC</th>
+                  <th>Materiais</th>
+                  <th>Qtd.</th>
+                  <th>Unidade</th>
+                  <th>Chegada</th>
+                  <th>Entrega Smart</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="invoiceRows"></tbody>
+            </table>
+
+            <div id="invoiceEmpty" class="empty-state">
+              <i class="fa-solid fa-file-invoice"></i>
+              <h3>Nenhuma Invoice carregada</h3>
               <p>Carregue a planilha Smart_STK_TH.</p>
             </div>
 
@@ -352,6 +426,6 @@
     <div id="toast" class="toast" role="status"></div>
   </div>
 
-  <script type="module" src="js/app.js?v=3"></script>
+  <script type="module" src="js/app.js?v=4"></script>
 </body>
 </html>
