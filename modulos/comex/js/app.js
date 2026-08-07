@@ -27,7 +27,23 @@ const els = {
   lastUpdate: $("#lastUpdate"),
   currentDate: $("#currentDate"),
   unitLabel: $("#unitLabel"),
-  toast: $("#toast")
+  toast: $("#toast"),
+  dashboardView: $("#dashboardView"),
+  dashboardEmpty: $("#dashboardEmpty"),
+  dashInvoices: $("#dashInvoices"),
+  dashInvoicesNote: $("#dashInvoicesNote"),
+  dashMaterials: $("#dashMaterials"),
+  dashQuantity: $("#dashQuantity"),
+  dashQuantityUnit: $("#dashQuantityUnit"),
+  dashOnTimeRate: $("#dashOnTimeRate"),
+  dashLate: $("#dashLate"),
+  dashNext7: $("#dashNext7"),
+  dashNoDelivery: $("#dashNoDelivery"),
+  dashSuppliers: $("#dashSuppliers"),
+  dashStatusList: $("#dashStatusList"),
+  dashUpcoming: $("#dashUpcoming"),
+  dashCriticalMaterials: $("#dashCriticalMaterials"),
+  dashSupplierList: $("#dashSupplierList")
 };
 
 const VIEW_META = {
@@ -413,6 +429,7 @@ function render() {
 
   els.empty.classList.toggle("hide", rows.length > 0);
   renderTimeline(rows);
+  renderDashboard();
 }
 
 function renderTimeline(rows) {
@@ -436,6 +453,172 @@ function renderTimeline(rows) {
       <span>${escapeHtml(event.title)}<br>${escapeHtml(event.detail || "")}</span>
     </div>`).join("") :
     `<div class="empty-state" style="width:100%;min-height:120px"><p>As principais datas aparecerão aqui.</p></div>`;
+}
+
+
+function addDays(date, days) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+function dashboardStatusKey(row) {
+  const [label] = statusInfo(row.status, row.delivery);
+  return normalizeText(label);
+}
+
+function renderDashboard() {
+  if (!els.dashboardView) return;
+
+  const rows = state.rows;
+  const hasData = rows.length > 0;
+
+  els.dashboardEmpty?.classList.toggle("show", !hasData);
+  els.dashboardView.querySelectorAll(
+    ".dashboard-kpi-grid,.dashboard-alert-grid,.dashboard-columns,.dashboard-actions"
+  ).forEach(element => element.classList.toggle("dashboard-data-hidden", !hasData));
+
+  if (!hasData) {
+    if (els.dashInvoices) els.dashInvoices.textContent = "0";
+    if (els.dashMaterials) els.dashMaterials.textContent = "0";
+    if (els.dashQuantity) els.dashQuantity.textContent = "0";
+    if (els.dashOnTimeRate) els.dashOnTimeRate.textContent = "0%";
+    return;
+  }
+
+  const invoices = new Set(rows.map(row => row.invoice).filter(Boolean));
+  const materials = new Set(rows.map(row => row.material).filter(Boolean));
+  const suppliers = new Set(rows.map(row => row.supplier).filter(Boolean));
+  const units = uniqueSorted(rows.map(row => row.unit));
+  const totalQty = rows.reduce((sum, row) => sum + row.qty, 0);
+
+  const classified = rows.map(row => ({
+    row,
+    status: statusInfo(row.status, row.delivery)[0],
+    key: dashboardStatusKey(row)
+  }));
+
+  const lateRows = classified.filter(item => item.key.includes("atras")).map(item => item.row);
+  const noDelayCount = rows.length - lateRows.length;
+  const noDelayRate = rows.length ? Math.round((noDelayCount / rows.length) * 100) : 0;
+
+  const today = startOfToday();
+  const sevenDays = addDays(today, 7);
+  const next7 = rows.filter(row =>
+    row.delivery &&
+    row.delivery >= today &&
+    row.delivery <= sevenDays
+  );
+  const noDelivery = rows.filter(row => !row.delivery);
+
+  els.dashInvoices.textContent = invoices.size;
+  els.dashInvoicesNote.textContent = state.sourceName ? state.sourceName : `${rows.length} registro(s) na base`;
+  els.dashMaterials.textContent = materials.size;
+  els.dashQuantity.textContent = formatNumber(totalQty);
+  els.dashQuantityUnit.textContent = units.length === 1 ? `Unidade: ${units[0]}` : (units.length ? `Unidades: ${units.join(", ")}` : "Quantidade consolidada");
+  els.dashOnTimeRate.textContent = `${noDelayRate}%`;
+  els.dashLate.textContent = lateRows.length;
+  els.dashNext7.textContent = next7.length;
+  els.dashNoDelivery.textContent = noDelivery.length;
+  els.dashSuppliers.textContent = suppliers.size;
+
+  const statusOrder = [
+    ["Em Trânsito", "transito"],
+    ["Programado", "programado"],
+    ["Previsto", "previsto"],
+    ["Atrasado", "atrasado"]
+  ];
+
+  els.dashStatusList.innerHTML = statusOrder.map(([label, key]) => {
+    const count = classified.filter(item => item.key === normalizeText(label)).length;
+    const percent = rows.length ? Math.round((count / rows.length) * 100) : 0;
+    return `
+      <div class="dashboard-status-row ${key}">
+        <div class="dashboard-status-meta">
+          <span>${label}</span>
+          <strong>${count} · ${percent}%</strong>
+        </div>
+        <div class="dashboard-progress"><div style="width:${percent}%"></div></div>
+      </div>`;
+  }).join("");
+
+  const upcoming = rows
+    .filter(row => row.delivery && row.delivery >= today)
+    .sort((a, b) => a.delivery - b.delivery)
+    .slice(0, 5);
+
+  els.dashUpcoming.innerHTML = upcoming.length
+    ? upcoming.map(row => {
+        const [status, css] = statusInfo(row.status, row.delivery);
+        const month = row.delivery.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "").toUpperCase();
+        return `
+          <div class="dashboard-upcoming-item">
+            <div class="dashboard-date-box">
+              <strong>${String(row.delivery.getDate()).padStart(2, "0")}</strong>
+              <span>${escapeHtml(month)}</span>
+            </div>
+            <div class="dashboard-upcoming-info">
+              <strong title="${escapeHtml(row.material)}">${escapeHtml(row.material || "Material não informado")}</strong>
+              <span>${escapeHtml(row.invoice || "Sem invoice")} · ${formatNumber(row.qty)} ${escapeHtml(row.unit || "")}</span>
+            </div>
+            <span class="status ${css}">${status}</span>
+          </div>`;
+      }).join("")
+    : `<div class="empty-state" style="min-height:180px"><p>Nenhuma entrega futura com data identificada.</p></div>`;
+
+  const lateByMaterial = new Map();
+  lateRows.forEach(row => {
+    const key = row.material || "Material não informado";
+    const current = lateByMaterial.get(key) || { count: 0, qty: 0, unit: row.unit || "" };
+    current.count += 1;
+    current.qty += row.qty;
+    lateByMaterial.set(key, current);
+  });
+
+  const critical = [...lateByMaterial.entries()]
+    .sort((a, b) => b[1].count - a[1].count || b[1].qty - a[1].qty)
+    .slice(0, 5);
+
+  els.dashCriticalMaterials.innerHTML = critical.length
+    ? critical.map(([material, info]) => `
+        <div class="dashboard-list-row">
+          <div>
+            <strong title="${escapeHtml(material)}">${escapeHtml(material)}</strong>
+            <small>${formatNumber(info.qty)} ${escapeHtml(info.unit)} em registros atrasados</small>
+          </div>
+          <div class="dashboard-list-value">
+            <span class="dashboard-mini-badge">${info.count} atraso(s)</span>
+          </div>
+        </div>`).join("")
+    : `<div class="empty-state" style="min-height:180px"><p>Nenhum material com atraso identificado.</p></div>`;
+
+  const supplierMap = new Map();
+  rows.forEach(row => {
+    const supplier = row.supplier || "Fornecedor não informado";
+    const current = supplierMap.get(supplier) || { invoices: new Set(), rows: 0, late: 0 };
+    if (row.invoice) current.invoices.add(row.invoice);
+    current.rows += 1;
+    if (dashboardStatusKey(row).includes("atras")) current.late += 1;
+    supplierMap.set(supplier, current);
+  });
+
+  const topSuppliers = [...supplierMap.entries()]
+    .sort((a, b) => b[1].invoices.size - a[1].invoices.size || b[1].rows - a[1].rows)
+    .slice(0, 5);
+
+  els.dashSupplierList.innerHTML = topSuppliers.length
+    ? topSuppliers.map(([supplier, info]) => `
+        <div class="dashboard-list-row">
+          <div>
+            <strong title="${escapeHtml(supplier)}">${escapeHtml(supplier)}</strong>
+            <small>${info.rows} registro(s) · ${info.late} atraso(s)</small>
+          </div>
+          <div class="dashboard-list-value">
+            <strong>${info.invoices.size}</strong>
+            <small>invoice(s)</small>
+          </div>
+        </div>`).join("")
+    : `<div class="empty-state" style="min-height:180px"><p>Nenhum fornecedor identificado na base.</p></div>`;
 }
 
 function escapeHtml(value) {
@@ -493,12 +676,23 @@ function exportFiltered() {
 function openView(view) {
   state.view = view;
   document.querySelectorAll(".comex-nav button").forEach(btn => btn.classList.toggle("active", btn.dataset.view === view));
-  const [title, subtitle, icon] = VIEW_META[view];
+
+  const meta = VIEW_META[view] || VIEW_META.entregas;
+  const [title, subtitle, icon] = meta;
   $("#pageTitle").textContent = title;
   $("#pageSubtitle").textContent = subtitle;
+
+  $("#dashboardView")?.classList.toggle("active", view === "dashboard");
   $("#entregasView").classList.toggle("active", view === "entregas");
-  $("#placeholderView").classList.toggle("active", view !== "entregas");
-  if (view !== "entregas") {
+
+  const isPlaceholder = !["dashboard", "entregas"].includes(view);
+  $("#placeholderView").classList.toggle("active", isPlaceholder);
+
+  if (view === "dashboard") {
+    renderDashboard();
+  }
+
+  if (isPlaceholder) {
     $("#placeholderTitle").textContent = title;
     $("#placeholderText").textContent = `${subtitle} A estrutura desta área já está criada e pode ser implementada por etapas.`;
     $("#placeholderIcon").className = `fa-solid ${icon}`;
@@ -506,6 +700,11 @@ function openView(view) {
 }
 
 document.querySelectorAll(".comex-nav button").forEach(btn => btn.addEventListener("click", () => openView(btn.dataset.view)));
+
+$("#dashboardDeliveriesButton")?.addEventListener("click", () => openView("entregas"));
+$("#dashboardSeeAll")?.addEventListener("click", () => openView("entregas"));
+$("#dashboardUploadButton")?.addEventListener("click", () => els.file.click());
+$("#dashboardEmptyUpload")?.addEventListener("click", () => els.file.click());
 els.material.addEventListener("change", () => { updateColorOptions(); applyFilters(); });
 els.color.addEventListener("change", applyFilters);
 $("#clearFilters").addEventListener("click", () => { els.material.value = ""; updateColorOptions(); els.color.value = ""; applyFilters(); });

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COMEX — Smart Group Analytics</title>
-  <link rel="stylesheet" href="style.css?v=1">
-  <link rel="stylesheet" href="responsive.css?v=1">
+  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="responsive.css?v=2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -41,6 +41,137 @@
     </nav>
 
     <main id="mainContent">
+
+      <section id="dashboardView" class="view dashboard-view">
+        <section class="dashboard-actions">
+          <div>
+            <span class="eyebrow">VISÃO EXECUTIVA</span>
+            <h2>Resumo da operação</h2>
+            <p>Indicadores calculados automaticamente com a mesma base usada em Entregas por Material.</p>
+          </div>
+          <div class="dashboard-action-buttons">
+            <button id="dashboardUploadButton" class="btn btn-outline" type="button">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Atualizar planilha
+            </button>
+            <button id="dashboardDeliveriesButton" class="btn btn-primary" type="button">
+              <i class="fa-solid fa-boxes-stacked"></i> Ver entregas
+            </button>
+          </div>
+        </section>
+
+        <section class="dashboard-kpi-grid">
+          <article class="dashboard-kpi-card">
+            <div class="dashboard-kpi-icon blue"><i class="fa-regular fa-file-lines"></i></div>
+            <div>
+              <span>Invoices acompanhadas</span>
+              <strong id="dashInvoices">0</strong>
+              <small id="dashInvoicesNote">Nenhuma base carregada</small>
+            </div>
+          </article>
+          <article class="dashboard-kpi-card">
+            <div class="dashboard-kpi-icon cyan"><i class="fa-solid fa-layer-group"></i></div>
+            <div>
+              <span>Materiais</span>
+              <strong id="dashMaterials">0</strong>
+              <small>Materiais distintos na base</small>
+            </div>
+          </article>
+          <article class="dashboard-kpi-card">
+            <div class="dashboard-kpi-icon purple"><i class="fa-solid fa-chart-simple"></i></div>
+            <div>
+              <span>Quantidade total</span>
+              <strong id="dashQuantity">0</strong>
+              <small id="dashQuantityUnit">Quantidade consolidada</small>
+            </div>
+          </article>
+          <article class="dashboard-kpi-card">
+            <div class="dashboard-kpi-icon green"><i class="fa-solid fa-circle-check"></i></div>
+            <div>
+              <span>Sem atraso identificado</span>
+              <strong id="dashOnTimeRate">0%</strong>
+              <small>Com base no status e previsão</small>
+            </div>
+          </article>
+        </section>
+
+        <section class="dashboard-alert-grid">
+          <article class="dashboard-alert danger">
+            <div><i class="fa-solid fa-triangle-exclamation"></i><span>Atrasadas</span></div>
+            <strong id="dashLate">0</strong>
+            <small>Registros que exigem atenção</small>
+          </article>
+          <article class="dashboard-alert warning">
+            <div><i class="fa-regular fa-calendar"></i><span>Próximos 7 dias</span></div>
+            <strong id="dashNext7">0</strong>
+            <small>Entregas previstas na próxima semana</small>
+          </article>
+          <article class="dashboard-alert orange">
+            <div><i class="fa-regular fa-clock"></i><span>Sem previsão</span></div>
+            <strong id="dashNoDelivery">0</strong>
+            <small>Registros sem data de entrega</small>
+          </article>
+          <article class="dashboard-alert success">
+            <div><i class="fa-solid fa-building"></i><span>Fornecedores</span></div>
+            <strong id="dashSuppliers">0</strong>
+            <small>Fornecedores distintos identificados</small>
+          </article>
+        </section>
+
+        <section class="dashboard-columns">
+          <article class="panel dashboard-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Status das entregas</h2>
+                <p>Distribuição dos registros da base atual</p>
+              </div>
+            </div>
+            <div id="dashStatusList" class="dashboard-status-list"></div>
+          </article>
+
+          <article class="panel dashboard-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Próximas entregas</h2>
+                <p>Datas futuras mais próximas</p>
+              </div>
+              <button id="dashboardSeeAll" class="dashboard-link-button" type="button">Ver todas</button>
+            </div>
+            <div id="dashUpcoming" class="dashboard-upcoming"></div>
+          </article>
+        </section>
+
+        <section class="dashboard-columns">
+          <article class="panel dashboard-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Materiais que exigem atenção</h2>
+                <p>Materiais com maior quantidade de registros atrasados</p>
+              </div>
+            </div>
+            <div id="dashCriticalMaterials" class="dashboard-critical-list"></div>
+          </article>
+
+          <article class="panel dashboard-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Fornecedores em acompanhamento</h2>
+                <p>Fornecedores com maior volume de invoices</p>
+              </div>
+            </div>
+            <div id="dashSupplierList" class="dashboard-supplier-list"></div>
+          </article>
+        </section>
+
+        <section id="dashboardEmpty" class="dashboard-empty">
+          <i class="fa-solid fa-chart-pie"></i>
+          <h3>Carregue uma planilha para visualizar os indicadores</h3>
+          <p>O Dashboard utiliza a mesma base de Entregas por Material. Nenhum cadastro ou importação adicional é necessário.</p>
+          <button id="dashboardEmptyUpload" class="btn btn-primary" type="button">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Carregar documento
+          </button>
+        </section>
+      </section>
+
       <section id="entregasView" class="view active">
         <section class="toolbar">
           <label class="field">
@@ -124,6 +255,6 @@
     <div id="toast" class="toast" role="status"></div>
   </div>
 
-  <script type="module" src="js/app.js?v=1"></script>
+  <script type="module" src="js/app.js?v=2"></script>
 </body>
 </html>
