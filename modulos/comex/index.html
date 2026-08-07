@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COMEX — Smart Group Analytics</title>
-  <link rel="stylesheet" href="style.css?v=2">
-  <link rel="stylesheet" href="responsive.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="responsive.css?v=3">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -242,6 +242,103 @@
         </section>
       </section>
 
+      
+      <section id="containersView" class="view operational-view">
+
+        <section class="section-intro">
+
+          <div>
+            <span class="eyebrow">CONTAINERS / PROCESSOS</span>
+
+            <h2>Controle de cargas por Invoice</h2>
+
+            <p>
+              A planilha atual não possui Nº do container, armador ou free time.
+              Por isso esta visão consolida cada processo pela Invoice, sem
+              inventar informações inexistentes.
+            </p>
+          </div>
+
+          <button
+            id="exportContainersButton"
+            class="btn btn-outline"
+            type="button"
+          >
+            <i class="fa-solid fa-download"></i>
+            Exportar
+          </button>
+
+        </section>
+
+        <section class="mini-kpi-grid">
+
+          <article class="mini-kpi-card">
+            <span>Processos / Invoices</span>
+            <strong id="containersCount">0</strong>
+            <small>Processos identificados</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Quantidade movimentada</span>
+            <strong id="containersQty">0</strong>
+            <small>Somatório da base</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Com chegada identificada</span>
+            <strong id="containersArrival">0</strong>
+            <small>Processos com data/localização</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Com atraso</span>
+            <strong id="containersLate">0</strong>
+            <small>Processos que exigem atenção</small>
+          </article>
+
+        </section>
+
+        <section class="panel">
+
+          <div class="panel-header">
+            <div>
+              <h2>Processos consolidados</h2>
+              <p id="containersSummary">
+                Nenhuma base carregada
+              </p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+
+            <table class="operational-table">
+              <thead>
+                <tr>
+                  <th>Invoice / Processo</th>
+                  <th>OC</th>
+                  <th>Itens</th>
+                  <th>Quantidade</th>
+                  <th>Chegada</th>
+                  <th>Entrega Smart</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody id="containersRows"></tbody>
+            </table>
+
+            <div id="containersEmpty" class="empty-state">
+              <i class="fa-solid fa-box"></i>
+              <h3>Nenhum processo carregado</h3>
+              <p>Carregue a planilha Smart_STK_TH.</p>
+            </div>
+
+          </div>
+
+        </section>
+
+      </section>
+
       <section id="placeholderView" class="view placeholder-view">
         <div class="placeholder-card">
           <div class="placeholder-icon"><i id="placeholderIcon" class="fa-solid fa-cube"></i></div>
@@ -255,6 +352,6 @@
     <div id="toast" class="toast" role="status"></div>
   </div>
 
-  <script type="module" src="js/app.js?v=2"></script>
+  <script type="module" src="js/app.js?v=3"></script>
 </body>
 </html>

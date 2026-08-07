@@ -15,3 +15,25 @@
   .dashboard-upcoming-item .status{grid-column:2;justify-self:start}
 }
 
+
+
+@media(max-width:1180px){
+  .mini-kpi-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:720px){
+  .mini-kpi-grid{
+    grid-template-columns:1fr;
+  }
+
+  .section-intro{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .section-intro .btn{
+    width:100%;
+  }
+}

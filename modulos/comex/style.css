@@ -130,3 +130,108 @@ tfoot td{font-weight:800;background:#071b3d}
 .dashboard-empty .btn i{font-size:inherit;color:inherit;margin:0 6px 0 0}
 .dashboard-data-hidden{display:none!important}
 
+
+
+/* =========================================================
+   ETAPA 2 - CONTAINERS / PROCESSOS
+========================================================= */
+
+.operational-view{
+  animation:viewFade .18s ease-out;
+}
+
+@keyframes viewFade{
+  from{
+    opacity:.55;
+    transform:translateY(3px);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
+}
+
+.section-intro{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:16px;
+  padding:17px 19px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:linear-gradient(
+    135deg,
+    rgba(18,58,122,.91),
+    rgba(7,31,70,.94)
+  );
+}
+
+.section-intro h2{
+  font-size:20px;
+  margin-bottom:6px;
+}
+
+.section-intro p{
+  max-width:900px;
+  color:var(--muted);
+  line-height:1.55;
+  font-size:12px;
+}
+
+.mini-kpi-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-bottom:16px;
+}
+
+.mini-kpi-card{
+  min-height:96px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:linear-gradient(
+    135deg,
+    rgba(18,55,117,.92),
+    rgba(8,34,75,.96)
+  );
+  padding:16px 17px;
+}
+
+.mini-kpi-card span{
+  display:block;
+  color:#bdd0eb;
+  font-size:10px;
+  font-weight:700;
+}
+
+.mini-kpi-card strong{
+  display:block;
+  margin:8px 0 4px;
+  font-size:23px;
+  color:#fff;
+}
+
+.mini-kpi-card small{
+  color:#8ea9cf;
+  font-size:9px;
+}
+
+.operational-table td,
+.operational-table th{
+  vertical-align:top;
+}
+
+.operational-table td:nth-child(3),
+.operational-table th:nth-child(3){
+  text-align:left;
+}
+
+.cell-note{
+  display:block;
+  color:#91a9ca;
+  font-size:9px;
+  line-height:1.4;
+  margin-top:5px;
+  max-width:420px;
+}

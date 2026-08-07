@@ -675,7 +675,222 @@ function exportFiltered() {
 
 function openView(view) {
   state.view = view;
-  document.querySelectorAll(".comex-nav button").forEach(btn => btn.classList.toggle("active", btn.dataset.view === view));
+
+  document
+    .querySelectorAll(".comex-nav button")
+    .forEach(button => {
+      button.classList.toggle(
+        "active",
+        button.dataset.view === view
+      );
+    });
+
+  const meta =
+    VIEW_META[view] ||
+    VIEW_META.entregas;
+
+  const title =
+    document.getElementById("pageTitle");
+
+  const subtitle =
+    document.getElementById("pageSubtitle");
+
+  if (title) {
+    title.textContent = meta[0];
+  }
+
+  if (subtitle) {
+    subtitle.textContent = meta[1];
+  }
+
+  document
+    .querySelectorAll(".view")
+    .forEach(element => {
+      element.classList.remove("active");
+    });
+
+  const directView =
+    document.getElementById(`${view}View`);
+
+  if (directView) {
+    directView.classList.add("active");
+  } else {
+    const placeholder =
+      document.getElementById("placeholderView");
+
+    placeholder?.classList.add("active");
+
+    const titleEl =
+      document.getElementById("placeholderTitle");
+
+    const textEl =
+      document.getElementById("placeholderText");
+
+    const iconEl =
+      document.getElementById("placeholderIcon");
+
+    if (titleEl) titleEl.textContent = meta[0];
+    if (textEl) textEl.textContent = meta[1];
+
+    if (iconEl) {
+      iconEl.className =
+        `fa-solid ${meta[2]}`;
+    }
+  }
+
+  if (view === "dashboard" && typeof renderDashboard === "function") {
+    renderDashboard();
+  }
+
+  if (view === "entregas") {
+    renderDeliveries();
+    renderTimeline(state.filtered);
+  }
+
+  if (view === "containers") {
+    renderContainers();
+  }
+}
+
+function statusCssByLabel(label) {
+  switch (normalizeText(label)) {
+    case "atrasado":
+      return "status-atrasado";
+    case "em transito":
+      return "status-transito";
+    case "programado":
+      return "status-programado";
+    default:
+      return "status-previsto";
+  }
+}
+
+function renderContainers() {
+  const groups = groupByInvoice(state.rows);
+
+  const totalQty = groups.reduce(
+    (sum, group) => sum + group.qty,
+    0
+  );
+
+  const withArrival = groups.filter(
+    group => group.arrival || group.arrivalNotes.length
+  );
+
+  const late = groups.filter(
+    group => group.status === "Atrasado"
+  );
+
+  const countEl = document.getElementById("containersCount");
+  const qtyEl = document.getElementById("containersQty");
+  const arrivalEl = document.getElementById("containersArrival");
+  const lateEl = document.getElementById("containersLate");
+  const summaryEl = document.getElementById("containersSummary");
+  const rowsEl = document.getElementById("containersRows");
+  const emptyEl = document.getElementById("containersEmpty");
+
+  if (!rowsEl) return;
+
+  if (countEl) countEl.textContent = groups.length;
+  if (qtyEl) qtyEl.textContent = formatNumber(totalQty);
+  if (arrivalEl) arrivalEl.textContent = withArrival.length;
+  if (lateEl) lateEl.textContent = late.length;
+
+  if (summaryEl) {
+    summaryEl.textContent = groups.length
+      ? `${groups.length} processo(s) consolidados por Invoice`
+      : "Nenhuma base carregada";
+  }
+
+  rowsEl.innerHTML = groups.map(group => {
+    const css = statusCssByLabel(group.status);
+
+    const note =
+      group.arrivalNotes[0] ||
+      group.placeList.join(", ") ||
+      "";
+
+    return `
+      <tr>
+        <td>
+          <strong>${escapeHtml(group.invoice)}</strong>
+          <small class="cell-note">
+            Nº do container não existe na planilha atual
+          </small>
+        </td>
+
+        <td>${escapeHtml(group.order || "—")}</td>
+
+        <td>${group.rows.length}</td>
+
+        <td>
+          ${formatNumber(group.qty)}
+          ${escapeHtml(group.unitList.join(", "))}
+        </td>
+
+        <td>
+          ${formatDate(group.arrival)}
+          ${
+            note
+              ? `<small class="cell-note">${escapeHtml(note)}</small>`
+              : ""
+          }
+        </td>
+
+        <td>${formatDate(group.delivery)}</td>
+
+        <td>
+          <span class="status ${css}">
+            ${group.status}
+          </span>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  emptyEl?.classList.toggle(
+    "hide",
+    groups.length > 0
+  );
+}
+
+function exportContainers() {
+  const groups = groupByInvoice(state.rows);
+
+  if (!groups.length) {
+    showToast("Não há processos para exportar.");
+    return;
+  }
+
+  const data = groups.map(group => ({
+    "Invoice / Processo": group.invoice,
+    "OC": group.order,
+    "Nº Container": "Não disponível na planilha atual",
+    "Itens": group.rows.length,
+    "Quantidade": group.qty,
+    "Unidade": group.unitList.join(", "),
+    "Chegada": formatDate(group.arrival),
+    "Entrega Smart": formatDate(group.delivery),
+    "Status": group.status
+  }));
+
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.json_to_sheet(data);
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Processos"
+  );
+
+  XLSX.writeFile(
+    workbook,
+    "COMEX_Containers_Processos.xlsx"
+  );
+}
+
+
+document.querySelectorAll(".comex-nav button").forEach(btn => btn.classList.toggle("active", btn.dataset.view === view));
 
   const meta = VIEW_META[view] || VIEW_META.entregas;
   const [title, subtitle, icon] = meta;
@@ -743,3 +958,11 @@ upload.addEventListener("drop", e => {
 els.currentDate.textContent = formatDate(new Date());
 render();
 restoreLocal();
+
+
+document
+  .getElementById("exportContainersButton")
+  ?.addEventListener(
+    "click",
+    exportContainers
+  );
