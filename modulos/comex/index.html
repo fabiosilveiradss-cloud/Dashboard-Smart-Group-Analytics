@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COMEX — Smart Group Analytics</title>
-  <link rel="stylesheet" href="style.css?v=6">
-  <link rel="stylesheet" href="responsive.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="responsive.css?v=7">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -633,6 +633,148 @@
 
       </section>
 
+      
+      <section id="documentosView" class="view operational-view">
+
+        <section class="section-intro">
+
+          <div>
+            <span class="eyebrow">DOCUMENTOS</span>
+
+            <h2>Situação documental por Invoice</h2>
+
+            <p>
+              Esta guia utiliza apenas evidências presentes na planilha:
+              Invoice, OC e textos que mencionem documentos como DUIMP,
+              BL, Packing List, DI ou XML.
+            </p>
+          </div>
+
+          <button
+            id="exportDocumentosButton"
+            class="btn btn-outline"
+            type="button"
+          >
+            <i class="fa-solid fa-download"></i>
+            Exportar
+          </button>
+
+        </section>
+
+
+        <section class="mini-kpi-grid">
+
+          <article class="mini-kpi-card">
+            <span>Invoices analisadas</span>
+            <strong id="docsInvoices">0</strong>
+            <small>Processos verificados</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Com OC</span>
+            <strong id="docsOrder">0</strong>
+            <small>OC identificada</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Com documento citado</span>
+            <strong id="docsMentioned">0</strong>
+            <small>BL, DUIMP, DI, Packing List ou XML</small>
+          </article>
+
+          <article class="mini-kpi-card">
+            <span>Sem evidência documental</span>
+            <strong id="docsPending">0</strong>
+            <small>Sem documento citado nas observações</small>
+          </article>
+
+        </section>
+
+
+        <section class="document-summary-grid">
+
+          <article class="document-summary-card">
+            <span>DUIMP</span>
+            <strong id="docsDuimp">0</strong>
+            <small>Menções encontradas</small>
+          </article>
+
+          <article class="document-summary-card">
+            <span>BL</span>
+            <strong id="docsBl">0</strong>
+            <small>Menções encontradas</small>
+          </article>
+
+          <article class="document-summary-card">
+            <span>Packing List</span>
+            <strong id="docsPacking">0</strong>
+            <small>Menções encontradas</small>
+          </article>
+
+          <article class="document-summary-card">
+            <span>DI</span>
+            <strong id="docsDi">0</strong>
+            <small>Menções encontradas</small>
+          </article>
+
+          <article class="document-summary-card">
+            <span>XML</span>
+            <strong id="docsXml">0</strong>
+            <small>Menções encontradas</small>
+          </article>
+
+        </section>
+
+
+        <section class="panel">
+
+          <div class="panel-header">
+            <div>
+              <h2>Checklist documental</h2>
+              <p id="docsSummary">
+                Nenhuma base carregada
+              </p>
+            </div>
+          </div>
+
+
+          <div class="table-wrap">
+
+            <table class="operational-table">
+              <thead>
+                <tr>
+                  <th>Invoice</th>
+                  <th>OC</th>
+                  <th>DUIMP</th>
+                  <th>BL</th>
+                  <th>Packing List</th>
+                  <th>DI</th>
+                  <th>XML</th>
+                  <th>Observação encontrada</th>
+                </tr>
+              </thead>
+
+              <tbody id="docsRows"></tbody>
+            </table>
+
+
+            <div id="docsEmpty" class="empty-state">
+              <i class="fa-solid fa-folder-open"></i>
+
+              <h3>Nenhuma informação documental</h3>
+
+              <p>
+                Carregue a planilha Smart_STK_TH para analisar
+                as evidências documentais existentes.
+              </p>
+            </div>
+
+          </div>
+
+        </section>
+
+      </section>
+
       <section id="placeholderView" class="view placeholder-view">
         <div class="placeholder-card">
           <div class="placeholder-icon"><i id="placeholderIcon" class="fa-solid fa-cube"></i></div>
@@ -646,6 +788,6 @@
     <div id="toast" class="toast" role="status"></div>
   </div>
 
-  <script type="module" src="js/app.js?v=6"></script>
+  <script type="module" src="js/app.js?v=7"></script>
 </body>
 </html>

@@ -477,3 +477,75 @@ tfoot td{font-weight:800;background:#071b3d}
   font-size:9px;
   font-weight:800;
 }
+
+
+/* =========================================================
+   ETAPA 6 - DOCUMENTOS
+========================================================= */
+
+.document-summary-grid{
+  display:grid;
+  grid-template-columns:
+    repeat(5,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.document-summary-card{
+  min-height:84px;
+  padding:14px 15px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:linear-gradient(
+    135deg,
+    rgba(18,55,117,.88),
+    rgba(8,34,75,.95)
+  );
+}
+
+.document-summary-card span{
+  display:block;
+  color:#bdd0eb;
+  font-size:10px;
+  font-weight:700;
+}
+
+.document-summary-card strong{
+  display:block;
+  margin:7px 0 3px;
+  font-size:22px;
+}
+
+.document-summary-card small{
+  color:#8ea9cf;
+  font-size:8px;
+}
+
+.document-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 8px;
+  border-radius:7px;
+  font-size:9px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.document-badge.ok{
+  background:rgba(33,196,123,.17);
+  color:#55de9d;
+}
+
+.document-badge.neutral{
+  background:rgba(133,156,190,.12);
+  color:#9fb3d2;
+}
+
+.document-note{
+  min-width:320px;
+  max-width:560px;
+  color:#c1d3ec;
+  line-height:1.45;
+  font-size:10px;
+}

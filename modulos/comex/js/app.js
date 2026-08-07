@@ -1634,6 +1634,430 @@ function exportFornecedores() {
 }
 
 
+
+
+// ============================================================
+// ETAPA 6 - DOCUMENTOS
+// Executa somente quando a guia Documentos é aberta.
+// ============================================================
+
+function buildDocumentInfo(group) {
+  const noteText =
+    [
+      ...(group.arrivalNotes || []),
+      ...(group.deliveryNotes || [])
+    ]
+      .filter(Boolean)
+      .join(" | ");
+
+  const normalized =
+    normalizeText(
+      noteText
+    );
+
+  const hasDuimp =
+    normalized.includes("duimp");
+
+  const hasBl =
+    /\bbl\b/.test(normalized)
+    ||
+    normalized.includes("bill of lading");
+
+  const hasPacking =
+    normalized.includes("packing list")
+    ||
+    normalized.includes("packinglist");
+
+  const hasDi =
+    /\bdi\b/.test(normalized)
+    ||
+    normalized.includes("declaracao de importacao");
+
+  const hasXml =
+    /\bxml\b/.test(normalized);
+
+  const hasAnyDocument =
+    hasDuimp
+    ||
+    hasBl
+    ||
+    hasPacking
+    ||
+    hasDi
+    ||
+    hasXml;
+
+  return {
+    invoice:
+      group.invoice,
+
+    order:
+      group.order,
+
+    hasInvoice:
+      Boolean(
+        group.invoice
+      ),
+
+    hasOrder:
+      Boolean(
+        group.order
+      ),
+
+    hasDuimp,
+
+    hasBl,
+
+    hasPacking,
+
+    hasDi,
+
+    hasXml,
+
+    hasAnyDocument,
+
+    note:
+      noteText
+  };
+}
+
+
+function documentBadge(
+  ok,
+  positive = "Identificado",
+  negative = "Não identificado"
+) {
+  return `
+    <span
+      class="
+        document-badge
+        ${
+          ok
+            ? "ok"
+            : "neutral"
+        }
+      "
+    >
+      <i
+        class="
+          fa-solid
+          ${
+            ok
+              ? "fa-circle-check"
+              : "fa-minus"
+          }
+        "
+      ></i>
+
+      ${
+        ok
+          ? positive
+          : negative
+      }
+    </span>
+  `;
+}
+
+
+function renderDocuments() {
+  const rowsEl =
+    document.getElementById(
+      "docsRows"
+    );
+
+  if (!rowsEl) {
+    return;
+  }
+
+  const groups =
+    groupByInvoice(
+      state.rows
+    );
+
+  const documents =
+    groups.map(
+      buildDocumentInfo
+    );
+
+  const withOrder =
+    documents.filter(
+      item => item.hasOrder
+    );
+
+  const withMention =
+    documents.filter(
+      item => item.hasAnyDocument
+    );
+
+  const pending =
+    documents.filter(
+      item =>
+        !item.hasAnyDocument
+    );
+
+  const duimpCount =
+    documents.filter(
+      item => item.hasDuimp
+    ).length;
+
+  const blCount =
+    documents.filter(
+      item => item.hasBl
+    ).length;
+
+  const packingCount =
+    documents.filter(
+      item => item.hasPacking
+    ).length;
+
+  const diCount =
+    documents.filter(
+      item => item.hasDi
+    ).length;
+
+  const xmlCount =
+    documents.filter(
+      item => item.hasXml
+    ).length;
+
+
+  const setText = (
+    id,
+    value
+  ) => {
+    const element =
+      document.getElementById(
+        id
+      );
+
+    if (element) {
+      element.textContent =
+        value;
+    }
+  };
+
+
+  setText(
+    "docsInvoices",
+    documents.length
+  );
+
+  setText(
+    "docsOrder",
+    withOrder.length
+  );
+
+  setText(
+    "docsMentioned",
+    withMention.length
+  );
+
+  setText(
+    "docsPending",
+    pending.length
+  );
+
+  setText(
+    "docsDuimp",
+    duimpCount
+  );
+
+  setText(
+    "docsBl",
+    blCount
+  );
+
+  setText(
+    "docsPacking",
+    packingCount
+  );
+
+  setText(
+    "docsDi",
+    diCount
+  );
+
+  setText(
+    "docsXml",
+    xmlCount
+  );
+
+
+  const summaryEl =
+    document.getElementById(
+      "docsSummary"
+    );
+
+  if (summaryEl) {
+    summaryEl.textContent =
+      documents.length
+        ? `${documents.length} processo(s) analisado(s) com base apenas nas informações existentes`
+        : "Nenhuma base carregada";
+  }
+
+
+  rowsEl.innerHTML =
+    documents
+      .map(item => `
+        <tr>
+
+          <td>
+            <strong>
+              ${escapeHtml(
+                item.invoice || "—"
+              )}
+            </strong>
+          </td>
+
+          <td>
+            ${escapeHtml(
+              item.order || "—"
+            )}
+          </td>
+
+          <td>
+            ${documentBadge(
+              item.hasDuimp,
+              "Mencionada",
+              "Não mencionada"
+            )}
+          </td>
+
+          <td>
+            ${documentBadge(
+              item.hasBl,
+              "Mencionado",
+              "Não mencionado"
+            )}
+          </td>
+
+          <td>
+            ${documentBadge(
+              item.hasPacking,
+              "Mencionado",
+              "Não mencionado"
+            )}
+          </td>
+
+          <td>
+            ${documentBadge(
+              item.hasDi,
+              "Mencionada",
+              "Não mencionada"
+            )}
+          </td>
+
+          <td>
+            ${documentBadge(
+              item.hasXml,
+              "Mencionado",
+              "Não mencionado"
+            )}
+          </td>
+
+          <td class="document-note">
+            ${escapeHtml(
+              item.note
+              ||
+              "Nenhuma observação documental encontrada"
+            )}
+          </td>
+
+        </tr>
+      `)
+      .join("");
+
+
+  const emptyEl =
+    document.getElementById(
+      "docsEmpty"
+    );
+
+  emptyEl?.classList.toggle(
+    "hide",
+    documents.length > 0
+  );
+}
+
+
+function exportDocumentos() {
+  const groups =
+    groupByInvoice(
+      state.rows
+    );
+
+  if (!groups.length) {
+    showToast(
+      "Não há processos para exportar."
+    );
+
+    return;
+  }
+
+  const data =
+    groups
+      .map(
+        buildDocumentInfo
+      )
+      .map(
+        item => ({
+          "Invoice":
+            item.invoice,
+
+          "OC":
+            item.order,
+
+          "DUIMP mencionada":
+            item.hasDuimp
+              ? "Sim"
+              : "Não",
+
+          "BL mencionado":
+            item.hasBl
+              ? "Sim"
+              : "Não",
+
+          "Packing List mencionado":
+            item.hasPacking
+              ? "Sim"
+              : "Não",
+
+          "DI mencionada":
+            item.hasDi
+              ? "Sim"
+              : "Não",
+
+          "XML mencionado":
+            item.hasXml
+              ? "Sim"
+              : "Não",
+
+          "Observação encontrada":
+            item.note
+        })
+      );
+
+  const workbook =
+    XLSX.utils.book_new();
+
+  const worksheet =
+    XLSX.utils.json_to_sheet(
+      data
+    );
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Documentos"
+  );
+
+  XLSX.writeFile(
+    workbook,
+    "COMEX_Documentos.xlsx"
+  );
+}
+
+
 function openView(view) {
   state.view = view;
 
@@ -1710,6 +2134,10 @@ function openView(view) {
   if (view === "fornecedores") {
     renderSuppliers();
   }
+
+  if (view === "documentos") {
+    renderDocuments();
+  }
 }
 
 document.querySelectorAll(".comex-nav button").forEach(btn => btn.addEventListener("click", () => openView(btn.dataset.view)));
@@ -1779,6 +2207,13 @@ document
   ?.addEventListener(
     "click",
     exportFornecedores
+  );
+
+document
+  .getElementById("exportDocumentosButton")
+  ?.addEventListener(
+    "click",
+    exportDocumentos
   );
 
 els.currentDate.textContent = formatDate(new Date());
