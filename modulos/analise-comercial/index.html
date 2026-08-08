@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Análise Integrada Comercial</title>
+
+    <link
+        rel="stylesheet"
+        href="comercial.css?v=1"
+    >
+</head>
+
+<body>
+
+    <main class="modulo-comercial">
+
+        <div class="barra-comercial">
+
+            <div>
+                <strong>
+                    Análise Integrada Comercial
+                </strong>
+
+                <span>
+                    Estoque, vendas, carteira e análise por produto.
+                </span>
+            </div>
+
+            <span class="status-local">
+                Desenvolvimento
+            </span>
+
+        </div>
+
+
+        <section class="conteudo-comercial">
+
+            <iframe
+                id="comercialFrame"
+                src="http://localhost:5173"
+                title="Análise Integrada Comercial"
+                loading="eager"
+                allow="fullscreen"
+            ></iframe>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        /*
+         * IMPORTANTE
+         *
+         * O Compras continua usando:
+         *
+         * https://smartstocksight.onrender.com
+         *
+         * Este módulo NÃO utiliza aquela URL.
+         *
+         * Durante o desenvolvimento, o Comercial
+         * será uma aplicação independente em:
+         *
+         * http://localhost:5173
+         */
+
+        const COMERCIAL_URL =
+            "http://localhost:5173";
+
+
+        document.getElementById(
+            "comercialFrame"
+        ).src =
+            COMERCIAL_URL;
+
+    </script>
+
+</body>
+</html>
